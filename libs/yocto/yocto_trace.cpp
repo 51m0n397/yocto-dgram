@@ -1317,6 +1317,64 @@ static trace_result trace_falsecolor(const scene_data& scene,
   return {srgb_to_rgb(result), true, material.color, normal};
 }
 
+
+
+
+
+static trace_result trace_color(const scene_data& scene,
+    const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray_,
+    rng_state& rng, const trace_params& params) {
+
+  // initialize
+  auto radiance   = vec3f{0, 0, 0};
+  auto ray        = ray_;
+  auto hit        = false;
+  auto hit_albedo = vec3f{0, 0, 0};
+  auto hit_normal = vec3f{0, 0, 0};
+  auto opbounce   = 0;
+
+  // trace  path
+  for (auto bounce = 0; bounce < params.bounces; bounce++) {
+    // intersect next point
+    auto intersection = intersect_scene(bvh, scene, ray);
+    if (!intersection.hit) {
+      if (bounce > 0 || !params.envhidden)
+        radiance += eval_environment(scene, ray.d);
+      break;
+    }
+
+    // prepare shading point
+    auto outgoing = -ray.d;
+    auto position = eval_shading_position(scene, intersection, outgoing);
+    auto normal   = eval_shading_normal(scene, intersection, outgoing);
+    auto material = eval_material(scene, intersection);
+
+    // handle opacity
+    if (material.opacity < 1 && rand1f(rng) >= material.opacity) {
+      if (opbounce++ > 128) break;
+      ray = {position + ray.d * 1e-2f, ray.d};
+      bounce -= 1;
+      continue;
+    }
+
+    // set hit variables
+    if (bounce == 0) {
+      hit        = true;
+      hit_albedo = material.color;
+      hit_normal = normal;
+    }
+
+    // accumulate emission
+    radiance += hit_albedo;
+    break;
+  }
+
+  return {radiance, hit, hit_albedo, hit_normal};
+}
+
+
+
+
 // Trace a single ray from the camera using the given algorithm.
 using sampler_func = trace_result (*)(const scene_data& scene,
     const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
@@ -1331,6 +1389,7 @@ static sampler_func get_trace_sampler_func(const trace_params& params) {
     case trace_sampler_type::eyelightao: return trace_eyelightao;
     case trace_sampler_type::furnace: return trace_furnace;
     case trace_sampler_type::falsecolor: return trace_falsecolor;
+    case trace_sampler_type::color: return trace_color;
     default: {
       throw std::runtime_error("sampler unknown");
       return nullptr;
@@ -1349,6 +1408,7 @@ bool is_sampler_lit(const trace_params& params) {
     case trace_sampler_type::eyelightao: return false;
     case trace_sampler_type::furnace: return true;
     case trace_sampler_type::falsecolor: return false;
+    case trace_sampler_type::color: return false;
     default: {
       throw std::runtime_error("sampler unknown");
       return false;
