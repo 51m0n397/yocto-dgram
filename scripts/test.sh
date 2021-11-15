@@ -1,1 +1,1 @@
-./bin/yscene render --scene tests/cornellbox/cornellbox.json --output out/cornellbox.jpg --samples 256 --resolution 512
+./bin/yscene render --scene tests/opacity/opacity.json --output out/opacity.jpg --samples 64 --resolution 1024 --sampler color
