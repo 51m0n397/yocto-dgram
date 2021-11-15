@@ -682,6 +682,7 @@ namespace yocto {
 // Intersect a ray with a point (approximate)
 inline bool intersect_point(
     const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist) {
+  /*
   // find parameter for line-point minimum distance
   auto w = p - ray.o;
   auto t = dot(w, ray.d) / dot(ray.d, ray.d);
@@ -698,11 +699,47 @@ inline bool intersect_point(
   uv   = {0, 0};
   dist = t;
   return true;
+  */
+
+  
+  // compute parameters
+  auto a = dot(ray.d, ray.d);
+  auto b = 2 * dot(ray.o - p, ray.d);
+  auto c = dot(ray.o - p, ray.o - p) - r * r;
+
+  // check discriminant
+  auto dis = b * b - 4 * a * c;
+  if (dis < 0) return false;
+
+  // compute ray parameter
+  auto t = (-b - sqrt(dis)) / (2 * a);
+
+  // exit if not within bounds
+  if (t < ray.tmin || t > ray.tmax) return false;
+
+  // try other ray parameter
+  t = (-b + sqrt(dis)) / (2 * a);
+
+  // exit if not within bounds
+  if (t < ray.tmin || t > ray.tmax) return false;
+
+  // compute local point for uvs
+  auto plocal = ((ray.o + ray.d * t) - p) / r;
+  auto u      = atan2(plocal.y, plocal.x) / (2 * pif);
+  if (u < 0) u += 1;
+  auto v = acos(clamp(plocal.z, -1.0f, 1.0f)) / pif;
+
+  // intersection occurred: set params and exit
+  uv   = {u, v};
+  dist = t;
+  return true;
+  
 }
 
 // Intersect a ray with a line
 inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
     float r0, float r1, vec2f& uv, float& dist) {
+  /*
   // setup intersection params
   auto u = ray.d;
   auto v = p1 - p0;
@@ -744,6 +781,51 @@ inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
   uv   = {s, sqrt(d2) / r};
   dist = t;
   return true;
+  */
+
+  
+  auto ba = p1 - p0;
+  auto oa = ray.o - p0;
+  auto ob = ray.o - p1;
+  auto rr = r0 - r1;
+  auto m0 = dot(ba,ba);
+  auto m1 = dot(ba,oa);
+  auto m2 = dot(ba,ray.d);
+  auto m3 = dot(ray.d,oa);
+  auto m5 = dot(oa,oa);
+  auto m6 = dot(ob,ray.d);
+  auto m7 = dot(ob,ob);
+  
+  // body
+  auto d2 = m0-rr*rr;
+  auto k2 = d2    - m2*m2;
+  auto k1 = d2*m3 - m1*m2 + m2*rr*r0;
+  auto k0 = d2*m5 - m1*m1 + m1*rr*r0*2.0 - m0*r0*r0;
+  auto  h = k1*k1 - k0*k2;
+  if (h < 0.0) return false;
+  float t  = (-sqrt(h)-k1)/k2;
+  auto y  = m1 - r0*rr + t*m2;
+
+  // caps
+  if (y <= 0.0 || y >= d2) {
+    float h1 = m3*m3 - m5 + r0*r0;
+    float h2 = m6*m6 - m7 + r1*r1;
+    if(max(h1,h2) < 0.0) return false;
+    if(h1 > 0.0) t  = -m3 - sqrt(h1);
+    if(h2 > 0.0) t = -m6 - sqrt(h2);
+  }
+
+  auto pos = ray.o + t*ray.d;
+  auto w = normalize(p1-p0);
+  auto u = normalize(cross(w,vec3f{0,0,1}));
+  auto v = normalize(cross(u,w));
+  auto q = (pos-p0)*mat3f{u,v,w};
+  
+  // intersection occurred: set params and exit
+  uv   = vec2f{vec2f{16.0,64.0}*vec2f{atan2(q.y,q.x),q.z}};
+  dist = t;
+  return true;
+  
 }
 
 // Intersect a ray with a sphere
