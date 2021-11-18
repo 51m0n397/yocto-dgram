@@ -730,7 +730,7 @@ namespace yocto {
 
 // Intersect ray with a bvh.
 static bool intersect_bvh(const shape_bvh& bvh, const shape_data& shape,
-    const ray3f& ray_, int& element, vec2f& uv, float& distance,
+    const ray3f& ray_, int& element, vec2f& uv, float& distance, vec3f& pos, vec3f& norm,
     bool find_any) {
 #ifdef YOCTO_EMBREE
   // call Embree if needed
@@ -784,7 +784,7 @@ static bool intersect_bvh(const shape_bvh& bvh, const shape_data& shape,
       for (auto idx = node.start; idx < node.start + node.num; idx++) {
         auto& p = shape.points[bvh.primitives[idx]];
         if (intersect_point(
-                ray, shape.positions[p], shape.radius[p], uv, distance)) {
+                ray, shape.positions[p], shape.radius[p], uv, distance, pos, norm)) {
           hit      = true;
           element  = bvh.primitives[idx];
           ray.tmax = distance;
@@ -794,7 +794,7 @@ static bool intersect_bvh(const shape_bvh& bvh, const shape_data& shape,
       for (auto idx = node.start; idx < node.start + node.num; idx++) {
         auto& l = shape.lines[bvh.primitives[idx]];
         if (intersect_line(ray, shape.positions[l.x], shape.positions[l.y],
-                shape.radius[l.x], shape.radius[l.y], uv, distance)) {
+                shape.radius[l.x], shape.radius[l.y], uv, distance, pos, norm)) {
           hit      = true;
           element  = bvh.primitives[idx];
           ray.tmax = distance;
@@ -804,7 +804,7 @@ static bool intersect_bvh(const shape_bvh& bvh, const shape_data& shape,
       for (auto idx = node.start; idx < node.start + node.num; idx++) {
         auto& t = shape.triangles[bvh.primitives[idx]];
         if (intersect_triangle(ray, shape.positions[t.x], shape.positions[t.y],
-                shape.positions[t.z], uv, distance)) {
+                shape.positions[t.z], uv, distance, pos, norm)) {
           hit      = true;
           element  = bvh.primitives[idx];
           ray.tmax = distance;
@@ -814,7 +814,7 @@ static bool intersect_bvh(const shape_bvh& bvh, const shape_data& shape,
       for (auto idx = node.start; idx < node.start + node.num; idx++) {
         auto& q = shape.quads[bvh.primitives[idx]];
         if (intersect_quad(ray, shape.positions[q.x], shape.positions[q.y],
-                shape.positions[q.z], shape.positions[q.w], uv, distance)) {
+                shape.positions[q.z], shape.positions[q.w], uv, distance, pos, norm)) {
           hit      = true;
           element  = bvh.primitives[idx];
           ray.tmax = distance;
@@ -831,7 +831,7 @@ static bool intersect_bvh(const shape_bvh& bvh, const shape_data& shape,
 
 // Intersect ray with a bvh.
 static bool intersect_bvh(const scene_bvh& bvh, const scene_data& scene,
-    const ray3f& ray_, int& instance, int& element, vec2f& uv, float& distance,
+    const ray3f& ray_, int& instance, int& element, vec2f& uv, float& distance, vec3f& pos, vec3f& norm,
     bool find_any) {
 #ifdef YOCTO_EMBREE
   // call Embree if needed
@@ -886,7 +886,7 @@ static bool intersect_bvh(const scene_bvh& bvh, const scene_data& scene,
         auto& instance_ = scene.instances[bvh.primitives[idx]];
         auto  inv_ray   = transform_ray(inverse(instance_.frame, true), ray);
         if (intersect_bvh(bvh.shapes[instance_.shape],
-                scene.shapes[instance_.shape], inv_ray, element, uv, distance,
+                scene.shapes[instance_.shape], inv_ray, element, uv, distance, pos, norm,
                 find_any)) {
           hit      = true;
           instance = bvh.primitives[idx];
@@ -904,33 +904,33 @@ static bool intersect_bvh(const scene_bvh& bvh, const scene_data& scene,
 
 // Intersect ray with a bvh.
 static bool intersect_bvh(const scene_bvh& bvh, const scene_data& scene,
-    int instance_, const ray3f& ray, int& element, vec2f& uv, float& distance,
+    int instance_, const ray3f& ray, int& element, vec2f& uv, float& distance, vec3f& pos, vec3f& norm,
     bool find_any) {
   auto& instance = scene.instances[instance_];
   auto  inv_ray  = transform_ray(inverse(instance.frame, true), ray);
   return intersect_bvh(bvh.shapes[instance.shape], scene.shapes[instance.shape],
-      inv_ray, element, uv, distance, find_any);
+      inv_ray, element, uv, distance, pos, norm, find_any);
 }
 
 shape_intersection intersect_shape(const shape_bvh& bvh,
     const shape_data& shape, const ray3f& ray, bool find_any) {
   auto intersection = shape_intersection{};
   intersection.hit  = intersect_bvh(bvh, shape, ray, intersection.element,
-      intersection.uv, intersection.distance, find_any);
+      intersection.uv, intersection.distance, intersection.position, intersection.normal, find_any);
   return intersection;
 }
 scene_intersection intersect_scene(const scene_bvh& bvh,
     const scene_data& scene, const ray3f& ray, bool find_any) {
   auto intersection = scene_intersection{};
   intersection.hit  = intersect_bvh(bvh, scene, ray, intersection.instance,
-      intersection.element, intersection.uv, intersection.distance, find_any);
+      intersection.element, intersection.uv, intersection.distance, intersection.position, intersection.normal, find_any);
   return intersection;
 }
 scene_intersection intersect_instance(const scene_bvh& bvh,
     const scene_data& scene, int instance, const ray3f& ray, bool find_any) {
   auto intersection     = scene_intersection{};
   intersection.hit      = intersect_bvh(bvh, scene, instance, ray,
-      intersection.element, intersection.uv, intersection.distance, find_any);
+      intersection.element, intersection.uv, intersection.distance, intersection.position, intersection.normal, find_any);
   intersection.instance = instance;
   return intersection;
 }

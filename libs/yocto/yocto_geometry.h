@@ -275,19 +275,19 @@ namespace yocto {
 
 // Intersect a ray with a point (approximate)
 inline bool intersect_point(
-    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist);
+    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
 
 // Intersect a ray with a line
 inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-    float r0, float r1, vec2f& uv, float& dist);
+    float r0, float r1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
 
 // Intersect a ray with a triangle
 inline bool intersect_triangle(const ray3f& ray, const vec3f& p0,
-    const vec3f& p1, const vec3f& p2, vec2f& uv, float& dist);
+    const vec3f& p1, const vec3f& p2, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
 
 // Intersect a ray with a quad.
 inline bool intersect_quad(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-    const vec3f& p2, const vec3f& p3, vec2f& uv, float& dist);
+    const vec3f& p2, const vec3f& p3, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
 
 // Intersect a ray with a axis-aligned bounding box
 inline bool intersect_bbox(const ray3f& ray, const bbox3f& bbox);
@@ -681,7 +681,7 @@ namespace yocto {
 
 // Intersect a ray with a point (approximate)
 inline bool intersect_point(
-    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist) {
+    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
   /*
   // find parameter for line-point minimum distance
   auto w = p - ray.o;
@@ -732,13 +732,15 @@ inline bool intersect_point(
   // intersection occurred: set params and exit
   uv   = {u, v};
   dist = t;
+  pos  = ray.o + t*ray.d;
+  norm = normalize(pos-ray.o);
   return true;
   
 }
 
 // Intersect a ray with a line
 inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-    float r0, float r1, vec2f& uv, float& dist) {
+    float r0, float r1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
   /*
   // setup intersection params
   auto u = ray.d;
@@ -805,32 +807,61 @@ inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
   if (h < 0.0) return false;
   float t  = (-sqrt(h)-k1)/k2;
   auto y  = m1 - r0*rr + t*m2;
+  auto n  = normalize(d2*(oa+t*ray.d)-ba*y);
 
   // caps
   if (y <= 0.0 || y >= d2) {
     float h1 = m3*m3 - m5 + r0*r0;
     float h2 = m6*m6 - m7 + r1*r1;
     if(max(h1,h2) < 0.0) return false;
-    if(h1 > 0.0) t  = -m3 - sqrt(h1);
-    if(h2 > 0.0) t = -m6 - sqrt(h2);
+    if(h1 > 0.0) {
+      t = -m3 - sqrt(h1);
+      n = (oa+t*ray.d)/r0;
+    }
+    if(h2 > 0.0) {
+      t = -m6 - sqrt(h2);
+      n = (ob+t*ray.d)/r1;
+    }
   }
 
-  auto pos = ray.o + t*ray.d;
-  auto w = normalize(p1-p0);
-  auto u = normalize(cross(w,vec3f{0,0,1}));
-  auto v = normalize(cross(u,w));
-  auto q = (pos-p0)*mat3f{u,v,w};
+  uv   = {0, 0};
+
+
+  /*auto u = ray.d;
+  auto v = p1 - p0;
+  auto w = ray.o - p0;
+  auto a   = dot(u, u);
+  auto b   = dot(u, v);
+  auto c   = dot(v, v);
+  auto d   = dot(u, w);
+  auto e   = dot(v, w);
+  auto det = a * c - b * b;
+  if (det != 0) {
+    auto ta = (b * e - c * d) / det;
+    auto s = (a * e - b * d) / det;
+    if (ta >= ray.tmin && ta <= ray.tmax) {
+      s = clamp(s, (float)0, (float)1);
+      auto pr  = ray.o + ray.d * ta;
+      auto pl  = p0 + (p1 - p0) * s;
+      auto prl = pr - pl;
+      auto d2a = dot(prl, prl);
+      auto r  = r0 * (1 - s) + r1 * s;
+      if (d2a <= r * r) uv = {s, sqrt(d2a) / r};
+    }
+  }*/
+
   
   // intersection occurred: set params and exit
-  uv   = vec2f{vec2f{16.0,64.0}*vec2f{atan2(q.y,q.x),q.z}};
   dist = t;
+  pos  = ray.o + t*ray.d;
+  norm = n;
   return true;
   
 }
 
 // Intersect a ray with a sphere
 inline bool intersect_sphere(
-    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist) {
+    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
   // compute parameters
   auto a = dot(ray.d, ray.d);
   auto b = 2 * dot(ray.o - p, ray.d);
@@ -861,12 +892,14 @@ inline bool intersect_sphere(
   // intersection occurred: set params and exit
   uv   = {u, v};
   dist = t;
+  pos  = ray.o + t*ray.d;
+  norm = normalize(pos-ray.o);
   return true;
 }
 
 // Intersect a ray with a triangle
 inline bool intersect_triangle(const ray3f& ray, const vec3f& p0,
-    const vec3f& p1, const vec3f& p2, vec2f& uv, float& dist) {
+    const vec3f& p1, const vec3f& p2, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
   // compute triangle edges
   auto edge1 = p1 - p0;
   auto edge2 = p2 - p0;
@@ -897,22 +930,24 @@ inline bool intersect_triangle(const ray3f& ray, const vec3f& p0,
   // intersection occurred: set params and exit
   uv   = {u, v};
   dist = t;
+  pos  = ray.o + t*ray.d;
+  norm = normalize(cross(edge1, edge2));
   return true;
 }
 
 // Intersect a ray with a quad.
 inline bool intersect_quad(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-    const vec3f& p2, const vec3f& p3, vec2f& uv, float& dist) {
+    const vec3f& p2, const vec3f& p3, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
   if (p2 == p3) {
-    return intersect_triangle(ray, p0, p1, p3, uv, dist);
+    return intersect_triangle(ray, p0, p1, p3, uv, dist, pos, norm);
   }
   auto hit  = false;
   auto tray = ray;
-  if (intersect_triangle(tray, p0, p1, p3, uv, dist)) {
+  if (intersect_triangle(tray, p0, p1, p3, uv, dist, pos, norm)) {
     hit       = true;
     tray.tmax = dist;
   }
-  if (intersect_triangle(tray, p2, p3, p1, uv, dist)) {
+  if (intersect_triangle(tray, p2, p3, p1, uv, dist, pos, norm)) {
     hit       = true;
     uv        = 1 - uv;
     tray.tmax = dist;

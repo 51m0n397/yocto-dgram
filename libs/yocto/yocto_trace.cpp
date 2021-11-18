@@ -1344,9 +1344,9 @@ static trace_result trace_color(const scene_data& scene,
     }
 
     // prepare shading point
-    auto outgoing = -ray.d;
-    auto position = eval_shading_position(scene, intersection, outgoing);
-    auto normal   = eval_shading_normal(scene, intersection, outgoing);
+    //auto outgoing = -ray.d;
+    auto position = intersection.position;//eval_shading_position(scene, intersection, outgoing);
+    auto normal   = intersection.normal;//eval_shading_normal(scene, intersection, outgoing);
     auto material = eval_material(scene, intersection);
 
     // handle opacity
