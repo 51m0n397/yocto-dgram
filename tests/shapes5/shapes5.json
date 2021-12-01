@@ -121,11 +121,27 @@
       "emission": [20.0, 20.0, 20.0]
     },
     {
-      "name": "uvgrid",
-      "type": "glossy",
+      "name": "uvgrid-100",
       "color": [1.0, 1.0, 1.0],
-      "roughness": 0.10000000149011612,
       "color_tex": 2
+    },
+    {
+      "name": "uvgrid-75",
+      "color": [1.0, 1.0, 1.0],
+      "color_tex": 2,
+      "opacity": 0.75
+    },
+    {
+      "name": "uvgrid-50",
+      "color": [1.0, 1.0, 1.0],
+      "color_tex": 2,
+      "opacity": 0.50
+    },
+    {
+      "name": "uvgrid-25",
+      "color": [1.0, 1.0, 1.0],
+      "color_tex": 2,
+      "opacity": 0.25
     }
   ],
   "shapes": [
@@ -216,7 +232,7 @@
         0.0
       ],
       "shape": 4,
-      "material": 3
+      "material": 4
     },
     {
       "name": "triangle",
@@ -225,7 +241,7 @@
         0.0
       ],
       "shape": 5,
-      "material": 3
+      "material": 5
     },
     {
       "name": "quad",
@@ -234,7 +250,7 @@
         0.0
       ],
       "shape": 6,
-      "material": 3
+      "material": 6
     }
   ]
 }
