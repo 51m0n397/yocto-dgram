@@ -75,7 +75,6 @@ enum struct trace_sampler_type {
   eyelightao,  // eyelight with ambient occlusion
   furnace,     // furnace test
   falsecolor,  // false color rendering
-  color
 };
 // Type of false color visualization
 enum struct trace_falsecolor_type {
@@ -212,8 +211,7 @@ inline const auto trace_sampler_labels =
         {trace_sampler_type::eyelight, "eyelight"},
         {trace_sampler_type::eyelightao, "eyelightao"},
         {trace_sampler_type::furnace, "furnace"},
-        {trace_sampler_type::falsecolor, "falsecolor"},
-        {trace_sampler_type::color, "color"}};
+        {trace_sampler_type::falsecolor, "falsecolor"}};
 
 // false color labels
 inline const auto trace_falsecolor_labels =
