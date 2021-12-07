@@ -66,7 +66,7 @@ namespace yocto {
 namespace yocto {
 
   // Type of tracing algorithm
-  enum struct trace_sampler_type { color };
+  enum struct trace_sampler_type { color, normal };
 
   // Default trace seed
   const auto trace_default_seed = 961748941ull;
@@ -157,12 +157,13 @@ namespace yocto {
 namespace yocto {
 
   // trace sampler names
-  inline const auto trace_sampler_names = vector<string>{"color"};
+  inline const auto trace_sampler_names = vector<string>{"color", "normal"};
 
   // trace sampler labels
   inline const auto trace_sampler_labels =
       vector<pair<trace_sampler_type, string>>{
-          {trace_sampler_type::color, "color"}};
+          {trace_sampler_type::color, "color"},
+          {trace_sampler_type::normal, "normal"}};
 
 }  // namespace yocto
 

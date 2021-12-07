@@ -146,6 +146,15 @@ namespace yocto {
     return {material.color, true};
   }
 
+  static trace_result trace_normal(const scene_data& scene, const scene_bvh& bvh,
+      const trace_lights& lights, const ray3f& ray, rng_state& rng,
+      const trace_params& params) {
+    auto intersection = intersect_scene(bvh, scene, ray);
+    if (!intersection.hit) return {eval_environment(scene, ray.d), false};
+
+    return {intersection.normal, true};
+  }
+
   // Trace a single ray from the camera using the given algorithm.
   using sampler_func = trace_result (*)(const scene_data& scene,
       const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
@@ -153,6 +162,7 @@ namespace yocto {
   static sampler_func get_trace_sampler_func(const trace_params& params) {
     switch (params.sampler) {
       case trace_sampler_type::color: return trace_color;
+      case trace_sampler_type::normal: return trace_normal;
       default: {
         throw std::runtime_error("sampler unknown");
         return nullptr;
@@ -164,6 +174,7 @@ namespace yocto {
   bool is_sampler_lit(const trace_params& params) {
     switch (params.sampler) {
       case trace_sampler_type::color: return false;
+      case trace_sampler_type::normal: return false;
       default: {
         throw std::runtime_error("sampler unknown");
         return false;
