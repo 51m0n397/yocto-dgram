@@ -131,7 +131,8 @@ namespace yocto {
     auto intersection = intersect_scene(bvh, scene, ray);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
-    auto position = intersection.position;
+    auto instance = scene.instances[intersection.instance];
+    auto position = transform_point(instance.frame, intersection.position);
     auto material = eval_material(scene, intersection);
 
     if (material.opacity < 1) {
@@ -146,9 +147,9 @@ namespace yocto {
     return {material.color, true};
   }
 
-  static trace_result trace_normal(const scene_data& scene, const scene_bvh& bvh,
-      const trace_lights& lights, const ray3f& ray, rng_state& rng,
-      const trace_params& params) {
+  static trace_result trace_normal(const scene_data& scene,
+      const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
+      rng_state& rng, const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
