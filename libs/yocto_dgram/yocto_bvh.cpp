@@ -515,8 +515,8 @@ namespace yocto {
         for (auto idx = node.start; idx < node.start + node.num; idx++) {
           auto& l = shape.lines[bvh.primitives[idx]];
           if (intersect_line(ray, shape.positions[l.x], shape.positions[l.y],
-                  shape.radius[l.x], shape.radius[l.y], uv, distance, pos,
-                  norm)) {
+                  shape.radius[l.x], shape.radius[l.y], shape.ends[l.x],
+                  shape.ends[l.y], uv, distance, pos, norm)) {
             hit      = true;
             element  = bvh.primitives[idx];
             ray.tmax = distance;

@@ -2326,15 +2326,17 @@ namespace yocto {
   }
   shape_intersection intersect_lines_bvh(const bvh_tree& bvh,
       const vector<vec2i>& lines, const vector<vec3f>& positions,
-      const vector<float>& radius, const ray3f& ray, bool find_any) {
+      const vector<float>& radius, vector<line_end>& ends, const ray3f& ray,
+      bool find_any) {
     auto intersection = shape_intersection{};
     intersection.hit  = intersect_elements_bvh(
          bvh,
-         [&lines, &positions, &radius](int idx, const ray3f& ray, vec2f& uv,
-            float& distance, vec3f& pos, vec3f& norm) {
+         [&lines, &positions, &radius, &ends](int idx, const ray3f& ray,
+            vec2f& uv, float& distance, vec3f& pos, vec3f& norm) {
           auto& l = lines[idx];
           return intersect_line(ray, positions[l.x], positions[l.y],
-               radius[l.x], radius[l.y], uv, distance, pos, norm);
+               radius[l.x], radius[l.y], ends[l.x], ends[l.y], uv, distance, pos,
+               norm);
          },
          ray, intersection.element, intersection.uv, intersection.distance,
          intersection.position, intersection.normal, find_any);

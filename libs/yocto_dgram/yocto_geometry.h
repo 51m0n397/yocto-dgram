@@ -53,6 +53,15 @@ namespace yocto {
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
+// LINE ENDS
+// -----------------------------------------------------------------------------
+namespace yocto {
+
+  enum class line_end : bool { cap = false, arrow = true };
+
+}  // namespace yocto
+
+// -----------------------------------------------------------------------------
 // AXIS ALIGNED BOUNDING BOXES
 // -----------------------------------------------------------------------------
 namespace yocto {
@@ -283,7 +292,8 @@ namespace yocto {
 
   // Intersect a ray with a line
   inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-      float r0, float r1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
+      float r0, float r1, line_end e0, line_end e1, vec2f& uv, float& dist,
+      vec3f& pos, vec3f& norm);
 
   // Intersect a ray with a triangle
   inline bool intersect_triangle(const ray3f& ray, const vec3f& p0,
@@ -483,7 +493,9 @@ namespace yocto {
   }
   inline bbox3f line_bounds(
       const vec3f& p0, const vec3f& p1, float r0, float r1) {
-    return {min(p0 - r0, p1 - r1), max(p0 + r0, p1 + r1)};
+    // TODO(simone): adjust to cover extreme cases
+    return {min(p0 - (r0 * 1.5), p1 - (r1 * 1.5)),
+        max(p0 + (r0 * 1.5), p1 + (r1 * 1.5))};
   }
   inline bbox3f triangle_bounds(
       const vec3f& p0, const vec3f& p1, const vec3f& p2) {
@@ -700,85 +712,319 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Intersect a ray with a point (approximate)
+  // Intersect a ray with a point
   inline bool intersect_point(const ray3f& ray, const vec3f& p, float r,
       vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
-    auto L   = p - ray.o;
-    auto tca = dot(L, ray.d);
-    auto d2  = dot(L, L) - tca * tca;
-    auto r2  = r * r;
-    if (d2 > r2) return false;
-    auto thc = sqrt(r2 - d2);
-    auto t0  = tca - thc;
-    auto t1  = tca + thc;
+    auto b   = 2 * dot(ray.d, ray.o - p);
+    auto c   = dot(ray.o - p, ray.o - p) - r * r;
+    auto det = b * b - 4 * c;
 
-    if (t0 > t1) std::swap(t0, t1);
+    if (det < 0) return false;
 
-    if (t0 < 0) {
-      t0 = t1;
-      if (t0 < 0) return false;
+    auto t1 = (-b - sqrt(det)) / 2;
+    auto t2 = (-b + sqrt(det)) / 2;
+
+    auto t = ray.tmax;
+    if (t1 >= ray.tmin && t1 < t) {
+      t = t1;
     }
 
-    pos = ray.o + t0 * ray.d;
+    if (t2 >= ray.tmin && t2 < t) {
+      t = t2;
+    }
+
+    if (t == ray.tmax) return false;
 
     // compute local point for uvs
-    auto plocal = (pos - p) / r;
-    auto u      = atan2(plocal.y, plocal.x) / (2 * pif);
-    if (u < 0) u += 1;
-    auto v = acos(clamp(plocal.z, -1.0f, 1.0f)) / pif;
+    auto pl = ray.o + t * ray.d;
+    auto n  = normalize(pl - p);
+    auto u  = (pif - atan2(n.z, n.x)) / (2 * pif);
+    auto v  = (pif - 2 * asin(n.y)) / (2 * pif);
 
     // intersection occurred: set params and exit
-    dist = t0;
     uv   = {u, v};
-    norm = normalize(pos - p);
+    dist = t;
+    pos  = pl;
+    norm = n;
+    return true;
+  }
+
+  inline bool intersect_cylinder(const ray3f& ray, const vec3f& p0,
+      const vec3f& p1, float r, const vec3f& dir, vec2f& uv, float& dist,
+      vec3f& pos, vec3f& norm) {
+    auto av = ray.d - dot(ray.d, dir) * dir;
+    auto a  = dot(av, av);
+    auto dp = ray.o - p0;
+    auto b  = 2 * dot(ray.d - dot(ray.d, dir) * dir, dp - dot(dp, dir) * dir);
+    auto cv = dp - dot(dp, dir) * dir;
+    auto c  = dot(cv, cv) - r * r;
+
+    float det = b * b - 4 * a * c;
+    if (det < 0) return false;
+
+    det     = sqrt(det);
+    auto t1 = (-b - det) / (2. * a);
+    auto t2 = (-b + det) / (2. * a);
+
+    auto q1 = ray.o + t1 * ray.d;
+    auto q2 = ray.o + t2 * ray.d;
+
+    auto t = dist;
+    auto p = vec3f{0, 0, 0};
+
+    if (t1 >= ray.tmin && t1 < t && dot(dir, q1 - p0) > 0 &&
+        dot(dir, q1 - p1) < 0) {
+      t = t1;
+      p = q1;
+    }
+
+    if (t2 >= ray.tmin && t2 < t && dot(dir, q2 - p0) > 0 &&
+        dot(dir, q2 - p1) < 0) {
+      t = t2;
+      p = q2;
+    }
+
+    if (t == dist) return false;
+
+    auto d  = dot(p - p0, dir);
+    auto pt = p0 + d * dir;
+    auto n  = normalize(p - pt);
+
+    auto u = (pif - atan2(n.z, n.x)) / (2 * pif);
+    auto v = distance(pt, p1) / distance(p0, p1);
+
+    // intersection occurred: set params and exit
+    uv   = {u, v};
+    dist = t;
+    pos  = p;
+    norm = n;
+    return true;
+  }
+
+  inline bool intersect_cone(const ray3f& ray, const vec3f& p0, const vec3f& p1,
+      float r0, float r1, const vec3f& dir, vec2f& uv, float& dist, vec3f& pos,
+      vec3f& norm) {
+    auto ab = distance(p1, p0);    // Distance between the two ends
+    auto o = r0 * ab / (r1 - r0);  // Distance of the apex of the cone along the
+                                   // cone's axis, from p0
+    auto pa    = p0 - dir * o;     // Cone's apex point
+    auto tga   = (r1 - r0) / ab;
+    auto cosa2 = 1 / (1 + tga * tga);
+    auto co    = ray.o - pa;
+
+    auto a = dot(ray.d, dir) * dot(ray.d, dir) - cosa2;
+    auto b = 2 * (dot(ray.d, dir) * dot(co, dir) - dot(ray.d, co) * cosa2);
+    auto c = dot(co, dir) * dot(co, dir) - dot(co, co) * cosa2;
+
+    float det = b * b - 4 * a * c;
+    if (det < 0) return false;
+
+    det     = sqrt(det);
+    auto t1 = (-b - det) / (2. * a);
+    auto t2 = (-b + det) / (2. * a);
+
+    auto q1 = ray.o + t1 * ray.d;
+    auto q2 = ray.o + t2 * ray.d;
+
+    auto t = dist;
+    auto p = vec3f{0, 0, 0};
+
+    if (t1 >= ray.tmin && t1 < t && dot(dir, q1 - p0) > 0 &&
+        dot(dir, q1 - p1) < 0) {
+      t = t1;
+      p = q1;
+    }
+
+    if (t2 >= ray.tmin && t2 < t && dot(dir, q2 - p0) > 0 &&
+        dot(dir, q2 - p1) < 0) {
+      t = t2;
+      p = q2;
+    }
+
+    if (t == dist) return false;
+
+    auto cp = p - pa;
+    auto n  = normalize(cp * dot(dir, cp) / dot(cp, cp) - dir);
+
+    auto d  = dot(p - p0, dir);
+    auto pt = p0 + d * dir;
+
+    auto u = (pif - atan2(n.z, n.x)) / (2 * pif);
+    auto v = distance(pt, p1) / distance(p0, p1);
+
+    // intersection occurred: set params and exit
+    uv   = {u, v};
+    dist = t;
+    pos  = p;
+    norm = n;
+    return true;
+  }
+
+  inline bool intersect_cap(const ray3f& ray, const vec3f& pa, const vec3f& pb,
+      float r, const vec3f& dir, vec2f& uv, float& dist, vec3f& pos,
+      vec3f& norm) {
+    auto b   = 2 * dot(ray.d, ray.o - pb);
+    auto c   = dot(ray.o - pb, ray.o - pb) - r * r;
+    auto det = b * b - 4 * c;
+
+    if (det < 0) return false;
+
+    auto t1 = (-b - sqrt(det)) / 2;
+    auto t2 = (-b + sqrt(det)) / 2;
+
+    auto p1 = ray.o + t1 * ray.d;
+    auto p2 = ray.o + t2 * ray.d;
+
+    auto t = dist;
+    auto p = vec3f{0, 0, 0};
+
+    if (t1 >= ray.tmin && t1 < t && dot(p1 - pa, dir) < 0) {
+      t = t1;
+      p = p1;
+    }
+
+    if (t2 >= ray.tmin && t2 < t && dot(p2 - pa, dir) < 0) {
+      t = t2;
+      p = p2;
+    }
+
+    if (t == dist) return false;
+
+    auto n = normalize(p - pb);
+
+    auto u = (pif - atan2(n.z, n.x)) / (2 * pif);
+    auto v = (pif - 2 * asin(n.y)) / (2 * pif);
+
+    // intersection occurred: set params and exit
+    uv   = {u, v};
+    dist = t;
+    pos  = p;
+    norm = n;
+    return true;
+  }
+
+  inline bool intersect_disk(const ray3f& ray, const vec3f& p, float r1,
+      float r2, const vec3f& n, vec2f& uv, float& dist, vec3f& pos,
+      vec3f& norm) {
+    auto o = ray.o - p;
+
+    auto den = dot(ray.d, n);
+    if (den == 0) return false;
+
+    auto t = -dot(n, o) / den;
+
+    auto q  = o + ray.d * t;
+    auto q2 = sqrt(dot(q, q));
+    if (q2 <= r1 || q2 >= r2) return false;
+
+    if (t < ray.tmin || t >= dist) return false;
+
+    auto d = normalize(ray.o + ray.d * t - p);
+
+    auto u = (pif - atan2(d.z, d.x)) / (2 * pif);
+    auto v = (q2 - r1) / (r2 - r1);
+
+    // intersection occurred: set params and exit
+    uv   = {u, v};
+    dist = t;
+    pos  = ray.o + t * ray.d;
+    norm = n;
     return true;
   }
 
   // Intersect a ray with a line
   inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-      float r0, float r1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
-    auto ba = p1 - p0;
-    auto oa = ray.o - p0;
-    auto ob = ray.o - p1;
-    auto rr = r0 - r1;
-    auto m0 = dot(ba, ba);
-    auto m1 = dot(ba, oa);
-    auto m2 = dot(ba, ray.d);
-    auto m3 = dot(ray.d, oa);
-    auto m5 = dot(oa, oa);
-    auto m6 = dot(ob, ray.d);
-    auto m7 = dot(ob, ob);
+      float r0, float r1, line_end e0, line_end e1, vec2f& uv, float& dist,
+      vec3f& pos, vec3f& norm) {
+    // TODO(simone): check cone caps to cover extreme cases
+    // TODO(simone): finish uv
 
-    // body
-    auto d2 = m0 - rr * rr;
-    auto k2 = d2 - m2 * m2;
-    auto k1 = d2 * m3 - m1 * m2 + m2 * rr * r0;
-    auto k0 = d2 * m5 - m1 * m1 + m1 * rr * r0 * 2.0 - m0 * r0 * r0;
-    auto h  = k1 * k1 - k0 * k2;
-    if (h < 0.0) return false;
-    float t = (-sqrt(h) - k1) / k2;
-    auto  y = m1 - r0 * rr + t * m2;
-    auto  n = normalize(d2 * (oa + t * ray.d) - ba * y);
+    if (p0 == p1) return false;
 
-    // caps
-    if (y <= 0.0 || y >= d2) {
-      float h1 = m3 * m3 - m5 + r0 * r0;
-      float h2 = m6 * m6 - m7 + r1 * r1;
-      if (max(h1, h2) < 0.0) return false;
-      if (h1 > 0.0) {
-        t = -m3 - sqrt(h1);
-        n = (oa + t * ray.d) / r0;
-      }
-      if (h2 > 0.0) {
-        t = -m6 - sqrt(h2);
-        n = (ob + t * ray.d) / r1;
-      }
+    auto pa = p0;
+    auto ra = r0;
+    auto ea = e0;
+    auto pb = p1;
+    auto rb = r1;
+    auto eb = e1;
+
+    if (r1 < r0) {
+      pa = p1;
+      ra = r1;
+      ea = e1;
+      pb = p0;
+      rb = r0;
+      eb = e0;
     }
 
+    auto dir = normalize(pb - pa);  // The direction of the line
+
+    auto t   = ray.tmax;
+    auto p   = vec3f{0, 0, 0};
+    auto n   = vec3f{0, 0, 0};
+    auto tuv = vec2f{0, 0};
+
+    auto rac = ra;
+    auto rbc = rb;
+    auto pac = pa;
+    auto pbc = pb;
+
+    // Computing ends' parameters
+    if (ea == line_end::arrow) {
+      pa  = pa + ra * dir;
+      rac = ra * 1.5;
+    }
+    if (eb == line_end::arrow) {
+      pb  = pb - rb * dir;
+      rbc = rb * 1.5;
+    }
+
+    if (ra == rb) {  // Cylinder
+      intersect_cylinder(ray, pa, pb, ra, dir, tuv, t, p, n);
+    } else {                         // Cone
+      auto l  = distance(pb, pa);    // Distance between the two ends
+      auto oa = ra * l / (rb - ra);  // Distance of the apex of the cone
+                                     // along the cone's axis, from pa
+      auto ob = oa + l;              // Distance of the apex of the cone
+                                     // along the cone's axis, from pb
+      auto o    = pa - dir * oa;     // Cone's apex point
+      auto tga  = (rb - ra) / l;     // Tangent of Cone's angle
+      auto cosa = sqrt(ob * ob - rb * rb) / ob;  // Consine of Cone's angle
+
+      // Computing ends' parameters
+      if (ea == line_end::cap) {
+        rac = ra / cosa;
+        pac = o + dir * (oa + tga * rac);
+      }
+
+      if (eb == line_end::cap) {
+        rbc = rb / cosa;
+        pbc = o + dir * (ob + tga * rbc);
+      }
+
+      intersect_cone(ray, pa, pb, ra, rb, dir, tuv, t, p, n);
+    }
+
+    if (ea == line_end::cap)
+      intersect_cap(ray, pa, pac, rac, dir, tuv, t, p, n);
+    else {
+      intersect_disk(ray, pa, ra, rac, dir, tuv, t, p, n);
+      intersect_cone(ray, pac, pa, 0, rac, dir, tuv, t, p, n);
+    }
+
+    if (eb == line_end::cap)
+      intersect_cap(ray, pb, pbc, rbc, -dir, tuv, t, p, n);
+    else {
+      intersect_disk(ray, pb, rb, rbc, -dir, tuv, t, p, n);
+      intersect_cone(ray, pbc, pb, 0, rbc, -dir, tuv, t, p, n);
+    }
+
+    if (t == ray.tmax) return false;
+
     // intersection occurred: set params and exit
-    uv   = {0, 0};
+    uv   = tuv;
     dist = t;
-    pos  = ray.o + t * ray.d;
+    pos  = p;
     norm = n;
     return true;
   }

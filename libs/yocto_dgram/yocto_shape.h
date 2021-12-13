@@ -79,12 +79,13 @@ namespace yocto {
     vector<vec4i> quads     = {};
 
     // vertex data
-    vector<vec3f> positions = {};
-    vector<vec3f> normals   = {};
-    vector<vec2f> texcoords = {};
-    vector<vec4f> colors    = {};
-    vector<float> radius    = {};
-    vector<vec4f> tangents  = {};
+    vector<vec3f>    positions = {};
+    vector<vec3f>    normals   = {};
+    vector<vec2f>    texcoords = {};
+    vector<vec4f>    colors    = {};
+    vector<float>    radius    = {};
+    vector<vec4f>    tangents  = {};
+    vector<line_end> ends      = {};
   };
 
   // Interpolate vertex data
@@ -537,7 +538,8 @@ namespace yocto {
       const vector<float>& radius, const ray3f& ray, bool find_any = false);
   shape_intersection intersect_lines_bvh(const bvh_tree& bvh,
       const vector<vec2i>& lines, const vector<vec3f>& positions,
-      const vector<float>& radius, const ray3f& ray, bool find_any = false);
+      const vector<float>& radius, vector<line_end>& ends, const ray3f& ray,
+      bool find_any = false);
   shape_intersection intersect_triangles_bvh(const bvh_tree& bvh,
       const vector<vec3i>& triangles, const vector<vec3f>& positions,
       const ray3f& ray, bool find_any = false);

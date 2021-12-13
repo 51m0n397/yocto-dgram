@@ -3641,16 +3641,20 @@ namespace yocto {
             get_opt(element, "radius", radius);
             point = 0;
           } else if (type == "line") {
-            shape           = {};
-            auto& position1 = shape.positions.emplace_back();
-            auto& radius1   = shape.radius.emplace_back();
+            shape            = {};
+            auto&  position1 = shape.positions.emplace_back();
+            auto&  radius1   = shape.radius.emplace_back();
+            auto&  end1      = shape.ends.emplace_back();
             get_opt(element, "position1", position1);
             get_opt(element, "radius1", radius1);
+            get_opt(element, "arrow1", (bool&) end1);
 
-            auto& position2 = shape.positions.emplace_back();
-            auto& radius2   = shape.radius.emplace_back();
+            auto&  position2 = shape.positions.emplace_back();
+            auto&  radius2   = shape.radius.emplace_back();
+            auto&  end2      = shape.ends.emplace_back();
             get_opt(element, "position2", position2);
             get_opt(element, "radius2", radius2);
+            get_opt(element, "arrow2", (bool&) end2);
 
             auto& line = shape.lines.emplace_back();
             line       = {0, 1};
