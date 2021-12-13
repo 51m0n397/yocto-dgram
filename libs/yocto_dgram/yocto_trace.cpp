@@ -38,6 +38,7 @@
 #include "yocto_color.h"
 #include "yocto_geometry.h"
 #include "yocto_sampling.h"
+#include "yocto_shading.h"
 
 // -----------------------------------------------------------------------------
 // PARALLEL HELPERS
@@ -96,6 +97,109 @@ namespace yocto {
     return eval_material(scene, scene.instances[intersection.instance],
         intersection.element, intersection.uv);
   }
+  static vec3f eval_position(
+      const scene_data& scene, const scene_intersection& intersection) {
+    auto instance = scene.instances[intersection.instance];
+    return transform_point(instance.frame, intersection.position);
+  }
+  static vec3f eval_normal(
+      const scene_data& scene, const scene_intersection& intersection) {
+    auto instance = scene.instances[intersection.instance];
+    return transform_normal(instance.frame, intersection.normal);
+  }
+
+  // Evaluates/sample the BRDF scaled by the cosine of the incoming direction.
+static vec3f eval_emission(const material_point& material, const vec3f& normal,
+    const vec3f& outgoing) {
+  return dot(normal, outgoing) >= 0 ? material.emission : vec3f{0, 0, 0};
+}
+
+// Evaluates/sample the BRDF scaled by the cosine of the incoming direction.
+static vec3f eval_bsdfcos(const material_point& material, const vec3f& normal,
+    const vec3f& outgoing, const vec3f& incoming) {
+  if (material.roughness == 0) return {0, 0, 0};
+
+  if (material.type == material_type::matte) {
+    return eval_matte(material.color, normal, outgoing, incoming);
+  } else if (material.type == material_type::glossy) {
+    return eval_glossy(material.color, material.ior, material.roughness, normal,
+        outgoing, incoming);
+  } else if (material.type == material_type::reflective) {
+    return eval_reflective(
+        material.color, material.roughness, normal, outgoing, incoming);
+  } else if (material.type == material_type::transparent) {
+    return eval_transparent(material.color, material.ior, material.roughness,
+        normal, outgoing, incoming);
+  } else if (material.type == material_type::refractive) {
+    return eval_refractive(material.color, material.ior, material.roughness,
+        normal, outgoing, incoming);
+  } else if (material.type == material_type::subsurface) {
+    return eval_refractive(material.color, material.ior, material.roughness,
+        normal, outgoing, incoming);
+  } else if (material.type == material_type::gltfpbr) {
+    return eval_gltfpbr(material.color, material.ior, material.roughness,
+        material.metallic, normal, outgoing, incoming);
+  } else {
+    return {0, 0, 0};
+  }
+}
+
+static vec3f eval_delta(const material_point& material, const vec3f& normal,
+    const vec3f& outgoing, const vec3f& incoming) {
+  if (material.roughness != 0) return {0, 0, 0};
+
+  if (material.type == material_type::reflective) {
+    return eval_reflective(material.color, normal, outgoing, incoming);
+  } else if (material.type == material_type::transparent) {
+    return eval_transparent(
+        material.color, material.ior, normal, outgoing, incoming);
+  } else if (material.type == material_type::refractive) {
+    return eval_refractive(
+        material.color, material.ior, normal, outgoing, incoming);
+  } else if (material.type == material_type::volumetric) {
+    return eval_passthrough(material.color, normal, outgoing, incoming);
+  } else {
+    return {0, 0, 0};
+  }
+}
+
+static vec3f sample_delta(const material_point& material, const vec3f& normal,
+    const vec3f& outgoing, float rnl) {
+  if (material.roughness != 0) return {0, 0, 0};
+
+  if (material.type == material_type::reflective) {
+    return sample_reflective(material.color, normal, outgoing);
+  } else if (material.type == material_type::transparent) {
+    return sample_transparent(
+        material.color, material.ior, normal, outgoing, rnl);
+  } else if (material.type == material_type::refractive) {
+    return sample_refractive(
+        material.color, material.ior, normal, outgoing, rnl);
+  } else if (material.type == material_type::volumetric) {
+    return sample_passthrough(material.color, normal, outgoing);
+  } else {
+    return {0, 0, 0};
+  }
+}
+
+static float sample_delta_pdf(const material_point& material,
+    const vec3f& normal, const vec3f& outgoing, const vec3f& incoming) {
+  if (material.roughness != 0) return 0;
+
+  if (material.type == material_type::reflective) {
+    return sample_reflective_pdf(material.color, normal, outgoing, incoming);
+  } else if (material.type == material_type::transparent) {
+    return sample_tranparent_pdf(
+        material.color, material.ior, normal, outgoing, incoming);
+  } else if (material.type == material_type::refractive) {
+    return sample_refractive_pdf(
+        material.color, material.ior, normal, outgoing, incoming);
+  } else if (material.type == material_type::volumetric) {
+    return sample_passthrough_pdf(material.color, normal, outgoing, incoming);
+  } else {
+    return 0;
+  }
+}
 
   // Sample camera
   static ray3f sample_camera(const camera_data& camera, const vec2i& ij,
@@ -131,8 +235,7 @@ namespace yocto {
     auto intersection = intersect_scene(bvh, scene, ray);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
-    auto instance = scene.instances[intersection.instance];
-    auto position = transform_point(instance.frame, intersection.position);
+    auto position = eval_position(scene, intersection);
     auto material = eval_material(scene, intersection);
 
     if (material.opacity < 1) {
@@ -153,7 +256,74 @@ namespace yocto {
     auto intersection = intersect_scene(bvh, scene, ray);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
-    return {intersection.normal, true};
+    return {eval_normal(scene, intersection), true};
+  }
+
+  // Eyelight for quick previewing.
+  static trace_result trace_eyelight(const scene_data& scene,
+      const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray_,
+      rng_state& rng, const trace_params& params) {
+    // initialize
+    auto radiance   = vec3f{0, 0, 0};
+    auto weight     = vec3f{1, 1, 1};
+    auto ray        = ray_;
+    auto hit        = false;
+    auto hit_albedo = vec3f{0, 0, 0};
+    auto hit_normal = vec3f{0, 0, 0};
+    auto opbounce   = 0;
+
+    // trace  path
+    for (auto bounce = 0; bounce < max(params.bounces, 4); bounce++) {
+      // intersect next point
+      auto intersection = intersect_scene(bvh, scene, ray);
+      if (!intersection.hit) {
+        if (bounce > 0 || !params.envhidden)
+          radiance += weight * eval_environment(scene, ray.d);
+        break;
+      }
+
+      // prepare shading point
+      auto outgoing = -ray.d;
+      auto position = eval_position(scene, intersection);
+      auto normal   = eval_normal(scene, intersection);
+      auto material = eval_material(scene, intersection);
+
+      // handle opacity
+      if (material.opacity < 1 && rand1f(rng) >= material.opacity) {
+        if (opbounce++ > 128) break;
+        ray = {position + ray.d * 1e-2f, ray.d};
+        bounce -= 1;
+        continue;
+      }
+
+      // set hit variables
+      if (bounce == 0) {
+        hit        = true;
+        hit_albedo = material.color;
+        hit_normal = normal;
+      }
+
+      // accumulate emission
+      auto incoming = outgoing;
+      radiance += weight * eval_emission(material, normal, outgoing);
+
+      // brdf * light
+      radiance += weight * pif *
+                  eval_bsdfcos(material, normal, outgoing, incoming);
+
+      // continue path
+      if (!is_delta(material)) break;
+      incoming = sample_delta(material, normal, outgoing, rand1f(rng));
+      if (incoming == vec3f{0, 0, 0}) break;
+      weight *= eval_delta(material, normal, outgoing, incoming) /
+                sample_delta_pdf(material, normal, outgoing, incoming);
+      if (weight == vec3f{0, 0, 0} || !isfinite(weight)) break;
+
+      // setup next iteration
+      ray = {position, incoming};
+    }
+
+    return {radiance, hit};
   }
 
   // Trace a single ray from the camera using the given algorithm.
@@ -164,6 +334,7 @@ namespace yocto {
     switch (params.sampler) {
       case trace_sampler_type::color: return trace_color;
       case trace_sampler_type::normal: return trace_normal;
+      case trace_sampler_type::eyelight: return trace_eyelight;
       default: {
         throw std::runtime_error("sampler unknown");
         return nullptr;
@@ -176,6 +347,7 @@ namespace yocto {
     switch (params.sampler) {
       case trace_sampler_type::color: return false;
       case trace_sampler_type::normal: return false;
+      case trace_sampler_type::eyelight: return false;
       default: {
         throw std::runtime_error("sampler unknown");
         return false;

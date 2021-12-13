@@ -8,6 +8,7 @@ add_library(yocto_dgram STATIC
   yocto_scene.h yocto_scene.cpp
   yocto_trace.h yocto_trace.cpp
   yocto_sceneio.h yocto_sceneio.cpp
+  yocto_shading.h
   yocto_gui.h yocto_gui.cpp
   yocto_parallel.h yocto_cli.h
   ext/stb_image.h ext/stb_image_resize.h ext/stb_image_write.h ext/stb_image.cpp
