@@ -750,8 +750,8 @@ namespace yocto {
   }
 
   inline bool intersect_cylinder(const ray3f& ray, const vec3f& p0,
-      const vec3f& p1, float r, const vec3f& dir, vec2f& uv, float& dist,
-      vec3f& pos, vec3f& norm) {
+      const vec3f& p1, float r, const vec3f& dir, const frame3f& frame,
+      vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
     auto av = ray.d - dot(ray.d, dir) * dir;
     auto a  = dot(av, av);
     auto dp = ray.o - p0;
@@ -790,8 +790,9 @@ namespace yocto {
     auto pt = p0 + d * dir;
     auto n  = normalize(p - pt);
 
-    auto u = (pif - atan2(n.z, n.x)) / (2 * pif);
-    auto v = distance(pt, p1) / distance(p0, p1);
+    auto tn = transform_normal(frame, n);
+    auto u  = (pif - atan2(tn.z, tn.x)) / (2 * pif);
+    auto v  = distance(pt, p1) / distance(p0, p1);
 
     // intersection occurred: set params and exit
     uv   = {u, v};
@@ -802,8 +803,8 @@ namespace yocto {
   }
 
   inline bool intersect_cone(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-      float r0, float r1, const vec3f& dir, vec2f& uv, float& dist, vec3f& pos,
-      vec3f& norm) {
+      float r0, float r1, const vec3f& dir, const frame3f& frame, vec2f& uv,
+      float& dist, vec3f& pos, vec3f& norm) {
     auto ab = distance(p1, p0);    // Distance between the two ends
     auto o = r0 * ab / (r1 - r0);  // Distance of the apex of the cone along the
                                    // cone's axis, from p0
@@ -849,8 +850,9 @@ namespace yocto {
     auto d  = dot(p - p0, dir);
     auto pt = p0 + d * dir;
 
-    auto u = (pif - atan2(n.z, n.x)) / (2 * pif);
-    auto v = distance(pt, p1) / distance(p0, p1);
+    auto tn = transform_normal(frame, n);
+    auto u  = (pif - atan2(tn.z, tn.x)) / (2 * pif);
+    auto v  = distance(pt, p1) / distance(p0, p1);
 
     // intersection occurred: set params and exit
     uv   = {u, v};
@@ -861,8 +863,8 @@ namespace yocto {
   }
 
   inline bool intersect_cap(const ray3f& ray, const vec3f& pa, const vec3f& pb,
-      float r, const vec3f& dir, vec2f& uv, float& dist, vec3f& pos,
-      vec3f& norm) {
+      float r, const vec3f& dir, const frame3f& frame, vec2f& uv, float& dist,
+      vec3f& pos, vec3f& norm) {
     auto b   = 2 * dot(ray.d, ray.o - pb);
     auto c   = dot(ray.o - pb, ray.o - pb) - r * r;
     auto det = b * b - 4 * c;
@@ -892,8 +894,9 @@ namespace yocto {
 
     auto n = normalize(p - pb);
 
-    auto u = (pif - atan2(n.z, n.x)) / (2 * pif);
-    auto v = (pif - 2 * asin(n.y)) / (2 * pif);
+    auto tn = transform_normal(frame, n);
+    auto u  = (pif - atan2(tn.z, tn.x)) / (2 * pif);
+    auto v  = (pif - 2 * asin(tn.y)) / (2 * pif);
 
     // intersection occurred: set params and exit
     uv   = {u, v};
@@ -904,8 +907,8 @@ namespace yocto {
   }
 
   inline bool intersect_disk(const ray3f& ray, const vec3f& p, float r1,
-      float r2, const vec3f& n, vec2f& uv, float& dist, vec3f& pos,
-      vec3f& norm) {
+      float r2, const vec3f& n, const frame3f& frame, vec2f& uv, float& dist,
+      vec3f& pos, vec3f& norm) {
     auto o = ray.o - p;
 
     auto den = dot(ray.d, n);
@@ -921,8 +924,9 @@ namespace yocto {
 
     auto d = normalize(ray.o + ray.d * t - p);
 
-    auto u = (pif - atan2(d.z, d.x)) / (2 * pif);
-    auto v = (q2 - r1) / (r2 - r1);
+    auto tn = transform_normal(frame, d);
+    auto u  = (pif - atan2(tn.z, tn.x)) / (2 * pif);
+    auto v  = (q2 - r1) / (r2 - r1);
 
     // intersection occurred: set params and exit
     uv   = {u, v};
@@ -979,8 +983,17 @@ namespace yocto {
       rbc = rb * 1.5;
     }
 
+    auto dira = normalize(p1 - p0);
+    auto xy   = vec3f{dira.x, dira.y, 0};
+    auto yz   = vec3f{0, dira.y, dira.z};
+
+    auto ax = angle(xy, {0, 1, 0});
+    auto az = angle(yz, {0, 1, 0});
+
+    auto frame = rotation_frame({1, 0, 0}, az) * rotation_frame({0, 0, -1}, ax);
+
     if (ra == rb) {  // Cylinder
-      intersect_cylinder(ray, pa, pb, ra, dir, tuv, t, p, n);
+      intersect_cylinder(ray, pa, pb, ra, dir, frame, tuv, t, p, n);
     } else {                         // Cone
       auto l  = distance(pb, pa);    // Distance between the two ends
       auto oa = ra * l / (rb - ra);  // Distance of the apex of the cone
@@ -1002,21 +1015,21 @@ namespace yocto {
         pbc = o + dir * (ob + tga * rbc);
       }
 
-      intersect_cone(ray, pa, pb, ra, rb, dir, tuv, t, p, n);
+      intersect_cone(ray, pa, pb, ra, rb, dir, frame, tuv, t, p, n);
     }
 
     if (ea == line_end::cap)
-      intersect_cap(ray, pa, pac, rac, dir, tuv, t, p, n);
+      intersect_cap(ray, pa, pac, rac, dir, frame, tuv, t, p, n);
     else {
-      intersect_disk(ray, pa, ra, rac, dir, tuv, t, p, n);
-      intersect_cone(ray, pac, pa, 0, rac, dir, tuv, t, p, n);
+      intersect_disk(ray, pa, ra, rac, dir, frame, tuv, t, p, n);
+      intersect_cone(ray, pac, pa, 0, rac, dir, frame, tuv, t, p, n);
     }
 
     if (eb == line_end::cap)
-      intersect_cap(ray, pb, pbc, rbc, -dir, tuv, t, p, n);
+      intersect_cap(ray, pb, pbc, rbc, -dir, frame, tuv, t, p, n);
     else {
-      intersect_disk(ray, pb, rb, rbc, -dir, tuv, t, p, n);
-      intersect_cone(ray, pbc, pb, 0, rbc, -dir, tuv, t, p, n);
+      intersect_disk(ray, pb, rb, rbc, -dir, frame, tuv, t, p, n);
+      intersect_cone(ray, pbc, pb, 0, rbc, -dir, frame, tuv, t, p, n);
     }
 
     if (t == ray.tmax) return false;
