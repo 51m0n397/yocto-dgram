@@ -142,6 +142,10 @@
       "color": [1.0, 1.0, 1.0],
       "color_tex": 2,
       "opacity": 0.25
+    },
+    {
+      "name": "black",
+      "color": [0.0, 0.0, 0.0]
     }
   ],
   "shapes": [
@@ -160,23 +164,26 @@
     {
       "name": "point",
       "type": "point",
-      "position": [0.0, 0.07, 0.0],
+      "position": [0.0, 0.2, 0.0],
       "radius": 0.06
     },
     {
       "name": "line",
       "type": "line",
-      "position1": [0.0, 0.02, 0.0],
-      "radius1": 0.01,
-      "position2": [0.0, 0.1, 0.0],
-      "radius2": 0.02
+      "position1": [0.0, 0.05, 0.0],
+      "radius1": 0.05,
+      "arrow1": true,
+      "position2": [0.0, 0.2, 0.0],
+      "radius2": 0.05,
+      "arrow2": false
     },
     {
       "name": "triangle",
       "type": "triangle",
       "position1": [-0.05, 0.01, 0.0],
       "position2": [0.05, 0.01, 0.0],
-      "position3": [0.0, 0.1, 0.0]
+      "position3": [0.0, 0.1, 0.0],
+      "border_size": 0.001
     },
     {
       "name": "quad",
@@ -184,7 +191,17 @@
       "position1": [-0.05, 0.01, 0.0],
       "position2": [-0.05, 0.11, 0.0],
       "position3": [0.05, 0.11, 0.0],
-      "position4": [0.05, 0.01, 0.0]
+      "position4": [0.05, 0.01, 0.0],
+      "border_size": 0.005
+      
+    },
+    {
+      "name": "quad",
+      "type": "quad",
+      "position1": [0.07, 0.05, 0.0],
+      "position2": [0.07, 0.2, 0.0],
+      "position3": [0.1, 0.2, 0.0],
+      "position4": [0.1, 0.05, 0.0]
       
     }
   ],
@@ -232,7 +249,16 @@
         0.0
       ],
       "shape": 4,
-      "material": 4
+      "material": 3
+    },
+    {
+      "name": "line-ref",
+      "frame": [
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -0.1, 0.0,
+        0.0
+      ],
+      "shape": 7,
+      "material": 3
     },
     {
       "name": "triangle",
@@ -241,7 +267,8 @@
         0.0
       ],
       "shape": 5,
-      "material": 5
+      "material": 3,
+      "border_material": 7
     },
     {
       "name": "quad",
@@ -250,7 +277,8 @@
         0.0
       ],
       "shape": 6,
-      "material": 6
+      "material": 6,
+      "border_material": 7
     }
   ]
 }
