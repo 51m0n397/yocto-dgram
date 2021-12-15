@@ -171,8 +171,8 @@ namespace yocto {
   inline bbox3f point_bounds(const vec3f& p);
   inline bbox3f point_bounds(const vec3f& p, float r);
   inline bbox3f line_bounds(const vec3f& p0, const vec3f& p1);
-  inline bbox3f line_bounds(
-      const vec3f& p0, const vec3f& p1, float r0, float r1);
+  inline bbox3f line_bounds(const vec3f& p0, const vec3f& p1, float r0,
+      float r1, line_end e0, line_end e1);
   inline bbox3f triangle_bounds(
       const vec3f& p0, const vec3f& p1, const vec3f& p2);
   inline bbox3f quad_bounds(
@@ -491,11 +491,65 @@ namespace yocto {
   inline bbox3f line_bounds(const vec3f& p0, const vec3f& p1) {
     return {min(p0, p1), max(p0, p1)};
   }
-  inline bbox3f line_bounds(
-      const vec3f& p0, const vec3f& p1, float r0, float r1) {
-    // TODO(simone): adjust to cover extreme cases
-    return {min(p0 - (r0 * 1.5), p1 - (r1 * 1.5)),
-        max(p0 + (r0 * 1.5), p1 + (r1 * 1.5))};
+  inline bbox3f line_bounds(const vec3f& p0, const vec3f& p1, float r0,
+      float r1, line_end e0, line_end e1) {
+        
+    auto pa = p0;
+    auto ra = r0;
+    auto ea = e0;
+    auto pb = p1;
+    auto rb = r1;
+    auto eb = e1;
+
+    if (r1 < r0) {
+      pa = p1;
+      ra = r1;
+      ea = e1;
+      pb = p0;
+      rb = r0;
+      eb = e0;
+    }
+
+    auto dir = normalize(pb - pa);  // The direction of the line
+
+    auto rac = ra;
+    auto rbc = rb;
+    auto pac = pa;
+    auto pbc = pb;
+
+    // Computing ends' parameters
+    if (ea == line_end::arrow) {
+      pa  = pa + ra * dir;
+      rac = ra * 1.5;
+    }
+    if (eb == line_end::arrow) {
+      pb  = pb - rb * dir;
+      rbc = rb * 1.5;
+    }
+
+    if (ra != rb) {                  // Cone
+      auto l  = distance(pb, pa);    // Distance between the two ends
+      auto oa = ra * l / (rb - ra);  // Distance of the apex of the cone
+                                     // along the cone's axis, from pa
+      auto ob = oa + l;              // Distance of the apex of the cone
+                                     // along the cone's axis, from pb
+      auto o    = pa - dir * oa;     // Cone's apex point
+      auto tga  = (rb - ra) / l;     // Tangent of Cone's angle
+      auto cosa = sqrt(ob * ob - rb * rb) / ob;  // Consine of Cone's angle
+
+      // Computing ends' parameters
+      if (ea == line_end::cap) {
+        rac = ra / cosa;
+        pac = o + dir * (oa + tga * rac);
+      }
+
+      if (eb == line_end::cap) {
+        rbc = rb / cosa;
+        pbc = o + dir * (ob + tga * rbc);
+      }
+    }
+
+    return {min(pac - rac, pbc - rbc), max(pac + rac, pbc + rbc)};
   }
   inline bbox3f triangle_bounds(
       const vec3f& p0, const vec3f& p1, const vec3f& p2) {
