@@ -2059,6 +2059,14 @@ namespace yocto {
     }
   }
 
+  // Add missing caps.
+  static void add_missing_caps(scene_data& scene) {
+    for (auto& shape : scene.shapes) {
+      if (!shape.lines.empty() && shape.ends.empty())
+        shape.ends.assign(shape.positions.size(), line_end::cap);
+    }
+  }
+
   // Add missing cameras.
   void add_missing_material(scene_data& scene) {
     auto default_material = invalidid;
@@ -3658,7 +3666,7 @@ namespace yocto {
 
             shape.lines.push_back({0, 1});
           } else if (type == "triangle") {
-            shape = {};
+            shape           = {};
             auto& position1 = shape.positions.emplace_back();
             get_opt(element, "position1", position1);
 
@@ -3672,7 +3680,7 @@ namespace yocto {
 
             get_opt(element, "border_size", shape.border_radius);
           } else if (type == "quad") {
-            shape = {};
+            shape           = {};
             auto& position1 = shape.positions.emplace_back();
             get_opt(element, "position1", position1);
 
@@ -3802,6 +3810,7 @@ namespace yocto {
     // fix scene
     add_missing_camera(scene);
     add_missing_radius(scene);
+    add_missing_caps(scene);
     trim_memory(scene);
 
     // done
