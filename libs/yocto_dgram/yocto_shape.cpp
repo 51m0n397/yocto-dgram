@@ -2147,13 +2147,14 @@ namespace yocto {
     return bvh;
   }
   bvh_tree make_lines_bvh(const vector<vec2i>& lines,
-      const vector<vec3f>& positions, const vector<float>& radius) {
+      const vector<vec3f>& positions, const vector<float>& radius,
+      const vector<line_end>& ends) {
     // build primitives
     auto bboxes = vector<bbox3f>(lines.size());
     for (auto idx = 0; idx < bboxes.size(); idx++) {
       auto& l     = lines[idx];
-      bboxes[idx] = line_bounds(
-          positions[l.x], positions[l.y], radius[l.x], radius[l.y]);
+      bboxes[idx] = line_bounds(positions[l.x], positions[l.y], radius[l.x],
+          radius[l.y], ends[l.x], ends[l.y]);
     }
 
     // build nodes
@@ -2205,13 +2206,14 @@ namespace yocto {
     update_bvh(bvh, bboxes);
   }
   void update_lines_bvh(bvh_tree& bvh, const vector<vec2i>& lines,
-      const vector<vec3f>& positions, const vector<float>& radius) {
+      const vector<vec3f>& positions, const vector<float>& radius,
+      const vector<line_end>& ends) {
     // build primitives
     auto bboxes = vector<bbox3f>(lines.size());
     for (auto idx = 0; idx < bboxes.size(); idx++) {
       auto& l     = lines[idx];
-      bboxes[idx] = line_bounds(
-          positions[l.x], positions[l.y], radius[l.x], radius[l.y]);
+      bboxes[idx] = line_bounds(positions[l.x], positions[l.y], radius[l.x],
+          radius[l.y], ends[l.x], ends[l.y]);
     }
 
     // update nodes

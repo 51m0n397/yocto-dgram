@@ -519,8 +519,10 @@ static pair<vec3f, vec3f> eval_tangents(
 
   // Evaluate material
   material_point eval_material(const scene_data& scene,
-      const instance_data& instance, int element, const vec2f& uv) {
-    auto& material = scene.materials[instance.material];
+      const instance_data& instance, int element, const vec2f& uv,
+      const bool border) {
+    auto& material = border ? scene.materials[instance.border_material]
+                            : scene.materials[instance.material];
     auto  texcoord = eval_texcoord(scene, instance, element, uv);
 
     // evaluate textures

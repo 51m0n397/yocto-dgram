@@ -86,6 +86,8 @@ namespace yocto {
     vector<float>    radius    = {};
     vector<vec4f>    tangents  = {};
     vector<line_end> ends      = {};
+
+    float border_radius = 0;
   };
 
   // Interpolate vertex data
@@ -507,6 +509,7 @@ namespace yocto {
     vec3f position = {0, 0, 0};
     vec3f normal   = {0, 0, 0};
     bool  hit      = false;
+    bool  border   = false;
   };
 
   // Make shape bvh

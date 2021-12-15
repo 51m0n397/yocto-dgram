@@ -2086,6 +2086,7 @@ namespace yocto {
       shape.colors.shrink_to_fit();
       shape.radius.shrink_to_fit();
       shape.tangents.shrink_to_fit();
+      shape.ends.shrink_to_fit();
     }
     for (auto& subdiv : scene.subdivs) {
       subdiv.positions.shrink_to_fit();
@@ -3636,30 +3637,28 @@ namespace yocto {
             shape          = {};
             auto& position = shape.positions.emplace_back();
             auto& radius   = shape.radius.emplace_back();
-            auto& point    = shape.points.emplace_back();
             get_opt(element, "position", position);
             get_opt(element, "radius", radius);
-            point = 0;
+            shape.points.push_back(0);
           } else if (type == "line") {
-            shape            = {};
-            auto&  position1 = shape.positions.emplace_back();
-            auto&  radius1   = shape.radius.emplace_back();
-            auto&  end1      = shape.ends.emplace_back();
+            shape           = {};
+            auto& position1 = shape.positions.emplace_back();
+            auto& radius1   = shape.radius.emplace_back();
+            auto& end1      = shape.ends.emplace_back();
             get_opt(element, "position1", position1);
             get_opt(element, "radius1", radius1);
-            get_opt(element, "arrow1", (bool&) end1);
+            get_opt(element, "arrow1", (bool&)end1);
 
-            auto&  position2 = shape.positions.emplace_back();
-            auto&  radius2   = shape.radius.emplace_back();
-            auto&  end2      = shape.ends.emplace_back();
+            auto& position2 = shape.positions.emplace_back();
+            auto& radius2   = shape.radius.emplace_back();
+            auto& end2      = shape.ends.emplace_back();
             get_opt(element, "position2", position2);
             get_opt(element, "radius2", radius2);
-            get_opt(element, "arrow2", (bool&) end2);
+            get_opt(element, "arrow2", (bool&)end2);
 
-            auto& line = shape.lines.emplace_back();
-            line       = {0, 1};
+            shape.lines.push_back({0, 1});
           } else if (type == "triangle") {
-            shape           = {};
+            shape = {};
             auto& position1 = shape.positions.emplace_back();
             get_opt(element, "position1", position1);
 
@@ -3669,10 +3668,11 @@ namespace yocto {
             auto& position3 = shape.positions.emplace_back();
             get_opt(element, "position3", position3);
 
-            auto& triangle = shape.triangles.emplace_back();
-            triangle       = {0, 1, 2};
+            shape.triangles.push_back({0, 1, 2});
+
+            get_opt(element, "border_size", shape.border_radius);
           } else if (type == "quad") {
-            shape           = {};
+            shape = {};
             auto& position1 = shape.positions.emplace_back();
             get_opt(element, "position1", position1);
 
@@ -3685,8 +3685,9 @@ namespace yocto {
             auto& position4 = shape.positions.emplace_back();
             get_opt(element, "position4", position4);
 
-            auto& quad = shape.quads.emplace_back();
-            quad       = {0, 1, 2, 3};
+            shape.quads.push_back({0, 1, 2, 3});
+
+            get_opt(element, "border_size", shape.border_radius);
           } else {
             type = "uri";
             get_opt(element, "uri", uri);
@@ -3723,6 +3724,7 @@ namespace yocto {
           get_opt(element, "frame", instance.frame);
           get_opt(element, "shape", instance.shape);
           get_opt(element, "material", instance.material);
+          get_opt(element, "border_material", instance.border_material);
         }
       }
       if (json.contains("environments")) {

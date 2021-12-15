@@ -95,7 +95,7 @@ namespace yocto {
   static material_point eval_material(
       const scene_data& scene, const scene_intersection& intersection) {
     return eval_material(scene, scene.instances[intersection.instance],
-        intersection.element, intersection.uv);
+        intersection.element, intersection.uv, intersection.border);
   }
   static vec3f eval_position(
       const scene_data& scene, const scene_intersection& intersection) {

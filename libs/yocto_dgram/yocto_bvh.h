@@ -124,6 +124,7 @@ namespace yocto {
     vec3f position = {0, 0, 0};
     vec3f normal   = {0, 0, 0};
     bool  hit      = false;
+    bool  border   = false;
   };
 
   // Intersect ray with a bvh returning either the first or any intersection

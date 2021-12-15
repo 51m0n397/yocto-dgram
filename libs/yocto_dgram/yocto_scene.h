@@ -141,9 +141,10 @@ namespace yocto {
   // Instance.
   struct instance_data {
     // instance data
-    frame3f frame    = identity3x4f;
-    int     shape    = invalidid;
-    int     material = invalidid;
+    frame3f frame           = identity3x4f;
+    int     shape           = invalidid;
+    int     material        = invalidid;
+    int     border_material = invalidid;
   };
 
   // Environment map.
@@ -310,7 +311,8 @@ namespace yocto {
 
   // Eval material to obtain emission, brdf and opacity.
   material_point eval_material(const scene_data& scene,
-      const instance_data& instance, int element, const vec2f& uv);
+      const instance_data& instance, int element, const vec2f& uv,
+      const bool border);
   // check if a material has a volume
   bool is_volumetric(const scene_data& scene, const instance_data& instance);
 

@@ -323,8 +323,8 @@ namespace yocto {
       for (auto idx = 0; idx < shape.lines.size(); idx++) {
         auto& line  = shape.lines[idx];
         bboxes[idx] = line_bounds(shape.positions[line.x],
-            shape.positions[line.y], shape.radius[line.x],
-            shape.radius[line.y]);
+            shape.positions[line.y], shape.radius[line.x], shape.radius[line.y],
+            shape.ends[line.x], shape.ends[line.y]);
       }
     } else if (!shape.triangles.empty()) {
       bboxes = vector<bbox3f>(shape.triangles.size());
@@ -332,6 +332,21 @@ namespace yocto {
         auto& triangle = shape.triangles[idx];
         bboxes[idx]    = triangle_bounds(shape.positions[triangle.x],
                shape.positions[triangle.y], shape.positions[triangle.z]);
+
+        if (shape.border_radius > 0) {
+          expand(bboxes[idx],
+              line_bounds(shape.positions[triangle.x],
+                  shape.positions[triangle.y], shape.border_radius,
+                  shape.border_radius, line_end::cap, line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[triangle.y],
+                  shape.positions[triangle.z], shape.border_radius,
+                  shape.border_radius, line_end::cap, line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[triangle.z],
+                  shape.positions[triangle.x], shape.border_radius,
+                  shape.border_radius, line_end::cap, line_end::cap));
+        }
       }
     } else if (!shape.quads.empty()) {
       bboxes = vector<bbox3f>(shape.quads.size());
@@ -340,6 +355,25 @@ namespace yocto {
         bboxes[idx] = quad_bounds(shape.positions[quad.x],
             shape.positions[quad.y], shape.positions[quad.z],
             shape.positions[quad.w]);
+
+        if (shape.border_radius > 0) {
+          expand(bboxes[idx],
+              line_bounds(shape.positions[quad.x], shape.positions[quad.y],
+                  shape.border_radius, shape.border_radius, line_end::cap,
+                  line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[quad.y], shape.positions[quad.z],
+                  shape.border_radius, shape.border_radius, line_end::cap,
+                  line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[quad.z], shape.positions[quad.w],
+                  shape.border_radius, shape.border_radius, line_end::cap,
+                  line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[quad.w], shape.positions[quad.x],
+                  shape.border_radius, shape.border_radius, line_end::cap,
+                  line_end::cap));
+        }
       }
     }
 
@@ -389,30 +423,66 @@ namespace yocto {
     auto bboxes = vector<bbox3f>{};
     if (!shape.points.empty()) {
       bboxes = vector<bbox3f>(shape.points.size());
-      for (auto idx = 0; idx < bboxes.size(); idx++) {
-        auto& p     = shape.points[idx];
-        bboxes[idx] = point_bounds(shape.positions[p], shape.radius[p]);
+      for (auto idx = 0; idx < shape.points.size(); idx++) {
+        auto& point = shape.points[idx];
+        bboxes[idx] = point_bounds(shape.positions[point], shape.radius[point]);
       }
     } else if (!shape.lines.empty()) {
       bboxes = vector<bbox3f>(shape.lines.size());
-      for (auto idx = 0; idx < bboxes.size(); idx++) {
-        auto& l     = shape.lines[idx];
-        bboxes[idx] = line_bounds(shape.positions[l.x], shape.positions[l.y],
-            shape.radius[l.x], shape.radius[l.y]);
+      for (auto idx = 0; idx < shape.lines.size(); idx++) {
+        auto& line  = shape.lines[idx];
+        bboxes[idx] = line_bounds(shape.positions[line.x],
+            shape.positions[line.y], shape.radius[line.x], shape.radius[line.y],
+            shape.ends[line.x], shape.ends[line.y]);
       }
     } else if (!shape.triangles.empty()) {
       bboxes = vector<bbox3f>(shape.triangles.size());
-      for (auto idx = 0; idx < bboxes.size(); idx++) {
-        auto& t     = shape.triangles[idx];
-        bboxes[idx] = triangle_bounds(
-            shape.positions[t.x], shape.positions[t.y], shape.positions[t.z]);
+      for (auto idx = 0; idx < shape.triangles.size(); idx++) {
+        auto& triangle = shape.triangles[idx];
+        bboxes[idx]    = triangle_bounds(shape.positions[triangle.x],
+               shape.positions[triangle.y], shape.positions[triangle.z]);
+
+        if (shape.border_radius > 0) {
+          expand(bboxes[idx],
+              line_bounds(shape.positions[triangle.x],
+                  shape.positions[triangle.y], shape.border_radius,
+                  shape.border_radius, line_end::cap, line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[triangle.y],
+                  shape.positions[triangle.z], shape.border_radius,
+                  shape.border_radius, line_end::cap, line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[triangle.z],
+                  shape.positions[triangle.x], shape.border_radius,
+                  shape.border_radius, line_end::cap, line_end::cap));
+        }
       }
     } else if (!shape.quads.empty()) {
       bboxes = vector<bbox3f>(shape.quads.size());
-      for (auto idx = 0; idx < bboxes.size(); idx++) {
-        auto& q     = shape.quads[idx];
-        bboxes[idx] = quad_bounds(shape.positions[q.x], shape.positions[q.y],
-            shape.positions[q.z], shape.positions[q.w]);
+      for (auto idx = 0; idx < shape.quads.size(); idx++) {
+        auto& quad  = shape.quads[idx];
+        bboxes[idx] = quad_bounds(shape.positions[quad.x],
+            shape.positions[quad.y], shape.positions[quad.z],
+            shape.positions[quad.w]);
+
+        if (shape.border_radius > 0) {
+          expand(bboxes[idx],
+              line_bounds(shape.positions[quad.x], shape.positions[quad.y],
+                  shape.border_radius, shape.border_radius, line_end::cap,
+                  line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[quad.y], shape.positions[quad.z],
+                  shape.border_radius, shape.border_radius, line_end::cap,
+                  line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[quad.z], shape.positions[quad.w],
+                  shape.border_radius, shape.border_radius, line_end::cap,
+                  line_end::cap));
+          expand(bboxes[idx],
+              line_bounds(shape.positions[quad.w], shape.positions[quad.x],
+                  shape.border_radius, shape.border_radius, line_end::cap,
+                  line_end::cap));
+        }
       }
     }
 
@@ -460,7 +530,7 @@ namespace yocto {
   // Intersect ray with a bvh.
   static bool intersect_bvh(const shape_bvh& bvh, const shape_data& shape,
       const ray3f& ray_, int& element, vec2f& uv, float& distance, vec3f& pos,
-      vec3f& norm, bool find_any) {
+      vec3f& norm, bool find_any, bool& border) {
     // check empty
     if (bvh.nodes.empty()) return false;
 
@@ -509,6 +579,7 @@ namespace yocto {
             hit      = true;
             element  = bvh.primitives[idx];
             ray.tmax = distance;
+            border   = false;
           }
         }
       } else if (!shape.lines.empty()) {
@@ -520,6 +591,7 @@ namespace yocto {
             hit      = true;
             element  = bvh.primitives[idx];
             ray.tmax = distance;
+            border   = false;
           }
         }
       } else if (!shape.triangles.empty()) {
@@ -531,6 +603,34 @@ namespace yocto {
             hit      = true;
             element  = bvh.primitives[idx];
             ray.tmax = distance;
+            border   = false;
+          }
+          if (shape.border_radius > 0) {
+            if (intersect_line(ray, shape.positions[t.x], shape.positions[t.y],
+                    shape.border_radius, shape.border_radius, line_end::cap,
+                    line_end::cap, uv, distance, pos, norm)) {
+              hit      = true;
+              element  = bvh.primitives[idx];
+              ray.tmax = distance;
+              border   = true;
+            }
+
+            if (intersect_line(ray, shape.positions[t.y], shape.positions[t.z],
+                    shape.border_radius, shape.border_radius, line_end::cap,
+                    line_end::cap, uv, distance, pos, norm)) {
+              hit      = true;
+              element  = bvh.primitives[idx];
+              ray.tmax = distance;
+              border   = true;
+            }
+            if (intersect_line(ray, shape.positions[t.z], shape.positions[t.x],
+                    shape.border_radius, shape.border_radius, line_end::cap,
+                    line_end::cap, uv, distance, pos, norm)) {
+              hit      = true;
+              element  = bvh.primitives[idx];
+              ray.tmax = distance;
+              border   = true;
+            }
           }
         }
       } else if (!shape.quads.empty()) {
@@ -542,6 +642,41 @@ namespace yocto {
             hit      = true;
             element  = bvh.primitives[idx];
             ray.tmax = distance;
+            border   = false;
+          }
+          if (shape.border_radius > 0) {
+            if (intersect_line(ray, shape.positions[q.x], shape.positions[q.y],
+                    shape.border_radius, shape.border_radius, line_end::cap,
+                    line_end::cap, uv, distance, pos, norm)) {
+              hit      = true;
+              element  = bvh.primitives[idx];
+              ray.tmax = distance;
+              border   = true;
+            }
+            if (intersect_line(ray, shape.positions[q.y], shape.positions[q.z],
+                    shape.border_radius, shape.border_radius, line_end::cap,
+                    line_end::cap, uv, distance, pos, norm)) {
+              hit      = true;
+              element  = bvh.primitives[idx];
+              ray.tmax = distance;
+              border   = true;
+            }
+            if (intersect_line(ray, shape.positions[q.z], shape.positions[q.w],
+                    shape.border_radius, shape.border_radius, line_end::cap,
+                    line_end::cap, uv, distance, pos, norm)) {
+              hit      = true;
+              element  = bvh.primitives[idx];
+              ray.tmax = distance;
+              border   = true;
+            }
+            if (intersect_line(ray, shape.positions[q.w], shape.positions[q.x],
+                    shape.border_radius, shape.border_radius, line_end::cap,
+                    line_end::cap, uv, distance, pos, norm)) {
+              hit      = true;
+              element  = bvh.primitives[idx];
+              ray.tmax = distance;
+              border   = true;
+            }
           }
         }
       }
@@ -556,7 +691,7 @@ namespace yocto {
   // Intersect ray with a bvh.
   static bool intersect_bvh(const scene_bvh& bvh, const scene_data& scene,
       const ray3f& ray_, int& instance, int& element, vec2f& uv,
-      float& distance, vec3f& pos, vec3f& norm, bool find_any) {
+      float& distance, vec3f& pos, vec3f& norm, bool find_any, bool& border) {
     // check empty
     if (bvh.nodes.empty()) return false;
 
@@ -603,7 +738,7 @@ namespace yocto {
           auto  inv_ray   = transform_ray(inverse(instance_.frame, true), ray);
           if (intersect_bvh(bvh.shapes[instance_.shape],
                   scene.shapes[instance_.shape], inv_ray, element, uv, distance,
-                  pos, norm, find_any)) {
+                  pos, norm, find_any, border)) {
             hit      = true;
             instance = bvh.primitives[idx];
             ray.tmax = distance;
@@ -621,12 +756,12 @@ namespace yocto {
   // Intersect ray with a bvh.
   static bool intersect_bvh(const scene_bvh& bvh, const scene_data& scene,
       int instance_, const ray3f& ray, int& element, vec2f& uv, float& distance,
-      vec3f& pos, vec3f& norm, bool find_any) {
+      vec3f& pos, vec3f& norm, bool find_any, bool& border) {
     auto& instance = scene.instances[instance_];
     auto  inv_ray  = transform_ray(inverse(instance.frame, true), ray);
     return intersect_bvh(bvh.shapes[instance.shape],
         scene.shapes[instance.shape], inv_ray, element, uv, distance, pos, norm,
-        find_any);
+        find_any, border);
   }
 
   shape_intersection intersect_shape(const shape_bvh& bvh,
@@ -634,7 +769,7 @@ namespace yocto {
     auto intersection = shape_intersection{};
     intersection.hit  = intersect_bvh(bvh, shape, ray, intersection.element,
          intersection.uv, intersection.distance, intersection.position,
-         intersection.normal, find_any);
+         intersection.normal, find_any, intersection.border);
     return intersection;
   }
   scene_intersection intersect_scene(const scene_bvh& bvh,
@@ -642,7 +777,8 @@ namespace yocto {
     auto intersection = scene_intersection{};
     intersection.hit  = intersect_bvh(bvh, scene, ray, intersection.instance,
          intersection.element, intersection.uv, intersection.distance,
-         intersection.position, intersection.normal, find_any);
+         intersection.position, intersection.normal, find_any,
+         intersection.border);
     return intersection;
   }
   scene_intersection intersect_instance(const scene_bvh& bvh,
@@ -650,7 +786,8 @@ namespace yocto {
     auto intersection     = scene_intersection{};
     intersection.hit      = intersect_bvh(bvh, scene, instance, ray,
              intersection.element, intersection.uv, intersection.distance,
-             intersection.position, intersection.normal, find_any);
+             intersection.position, intersection.normal, find_any,
+             intersection.border);
     intersection.instance = instance;
     return intersection;
   }
