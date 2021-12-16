@@ -3556,6 +3556,7 @@ namespace yocto {
     // filenames
     auto shape_types       = vector<string>{};
     auto shape_filenames   = vector<string>{};
+    auto shape_borders     = vector<float>{};
     auto texture_filenames = vector<string>{};
     auto subdiv_filenames  = vector<string>{};
 
@@ -3635,10 +3636,11 @@ namespace yocto {
         scene.shape_names.reserve(group.size());
         shape_filenames.reserve(group.size());
         for (auto& element : group) {
-          [[maybe_unused]] auto& shape = scene.shapes.emplace_back();
-          auto&                  name  = scene.shape_names.emplace_back();
-          auto&                  type  = shape_types.emplace_back();
-          auto&                  uri   = shape_filenames.emplace_back();
+          auto& shape  = scene.shapes.emplace_back();
+          auto& name   = scene.shape_names.emplace_back();
+          auto& type   = shape_types.emplace_back();
+          auto& uri    = shape_filenames.emplace_back();
+          auto& border = shape_borders.emplace_back();
           get_opt(element, "name", name);
           get_opt(element, "type", type);
           if (type == "point") {
@@ -3699,6 +3701,7 @@ namespace yocto {
           } else {
             type = "uri";
             get_opt(element, "uri", uri);
+            get_opt(element, "border_size", border);
           }
         }
       }
@@ -3763,10 +3766,12 @@ namespace yocto {
     if (noparallel) {
       // load shapes
       for (auto idx : range(scene.shapes.size())) {
-        if (shape_types[idx] == "uri" &&
-            !load_shape(path_join(dirname, shape_filenames[idx]),
-                scene.shapes[idx], error, true))
-          return dependent_error();
+        if (shape_types[idx] == "uri") {
+          if (!load_shape(path_join(dirname, shape_filenames[idx]),
+                  scene.shapes[idx], error, true))
+            return dependent_error();
+          scene.shapes[idx].border_radius = shape_borders[idx];
+        }
       }
       // load subdivs
       for (auto idx : range(scene.subdivs.size())) {
@@ -3784,10 +3789,13 @@ namespace yocto {
       // load shapes
       if (!parallel_for(
               scene.shapes.size(), error, [&](size_t idx, string& error) {
-                if (shape_types[idx] == "uri")
-                  return load_shape(path_join(dirname, shape_filenames[idx]),
-                      scene.shapes[idx], error, true);
-                else
+                if (shape_types[idx] == "uri") {
+                  if (!load_shape(path_join(dirname, shape_filenames[idx]),
+                          scene.shapes[idx], error, true))
+                    return false;
+                  scene.shapes[idx].border_radius = shape_borders[idx];
+                  return true;
+                } else
                   return true;
               }))
         return dependent_error();
