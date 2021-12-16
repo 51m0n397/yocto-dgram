@@ -177,8 +177,8 @@ namespace yocto {
                    interpolate_quad(shape.positions[q.x], shape.positions[q.y],
                        shape.positions[q.z], shape.positions[q.w], uv));
         }
-
-        back_isec = intersect_scene(bvh, scene, {ray.o, p - ray.o}, true);
+        auto dir = normalize(p - ray.o);
+        back_isec = intersect_scene(bvh, scene, {p-dir*1e-2f, dir}, true);
       }
       if (back_isec.instance == intersection.instance) intersection = back_isec;
     }
