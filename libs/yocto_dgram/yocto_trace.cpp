@@ -139,7 +139,69 @@ namespace yocto {
   static trace_result trace_color(const scene_data& scene, const scene_bvh& bvh,
       const trace_lights& lights, const ray3f& ray, rng_state& rng,
       const trace_params& params) {
-    auto intersection = intersect_scene(bvh, scene, ray);
+    auto intersection = intersect_scene(bvh, scene, ray, false);
+    if (!intersection.hit) return {eval_environment(scene, ray.d), false};
+
+    if (intersection.border) {
+      auto back_isec = intersect_scene(bvh, scene, ray, true);
+      if (back_isec.instance == intersection.instance &&
+          back_isec.element == intersection.element) {
+        auto uv  = vec2f{-1e-2f, back_isec.uv.y};
+        auto min = back_isec.uv.x;
+        if ((1 - back_isec.uv.x) < min) {
+          min = 1 - back_isec.uv.x;
+          uv  = vec2f{1 + 1e-2f, back_isec.uv.y};
+        }
+        if (back_isec.uv.y < min) {
+          min = back_isec.uv.y;
+          uv  = vec2f{back_isec.uv.x, -1e-2f};
+        }
+        if ((1 - back_isec.uv.y) < min) {
+          min = 1 - back_isec.uv.y;
+          uv  = vec2f{back_isec.uv.x, 1 + 1e-2f};
+        }
+        auto  instance = scene.instances[intersection.instance];
+        auto  element  = intersection.element;
+        auto& shape    = scene.shapes[instance.shape];
+
+        auto p = vec3f{0, 0, 0};
+
+        if (!shape.triangles.empty()) {
+          auto t = shape.triangles[element];
+          p      = transform_point(instance.frame,
+                   interpolate_triangle(shape.positions[t.x], shape.positions[t.y],
+                       shape.positions[t.z], uv));
+        } else if (!shape.quads.empty()) {
+          auto q = shape.quads[element];
+          p      = transform_point(instance.frame,
+                   interpolate_quad(shape.positions[q.x], shape.positions[q.y],
+                       shape.positions[q.z], shape.positions[q.w], uv));
+        }
+
+        back_isec = intersect_scene(bvh, scene, {ray.o, p - ray.o}, true);
+      }
+      if (back_isec.instance == intersection.instance) intersection = back_isec;
+    }
+
+    auto position = eval_position(scene, intersection);
+    auto material = eval_material(scene, intersection);
+
+    if (material.opacity < 1) {
+      auto back_color  = rgb_to_rgba(trace_color(
+           scene, bvh, lights, {position + ray.d * 1e-2f, ray.d}, rng, params)
+                                         .radiance);
+      auto front_color = rgb_to_rgba(material.color);
+      front_color.w    = material.opacity;
+      return {rgba_to_rgb(composite(front_color, back_color)), true};
+    }
+
+    return {material.color, true};
+  }
+
+  static trace_result trace_color_wireframe(const scene_data& scene,
+      const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
+      rng_state& rng, const trace_params& params) {
+    auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
     auto position = eval_position(scene, intersection);
@@ -160,7 +222,7 @@ namespace yocto {
   static trace_result trace_normal(const scene_data& scene,
       const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
       rng_state& rng, const trace_params& params) {
-    auto intersection = intersect_scene(bvh, scene, ray);
+    auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
     return {eval_normal(scene, intersection), true};
@@ -170,7 +232,7 @@ namespace yocto {
   static trace_result trace_eyelight(const scene_data& scene,
       const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
       rng_state& rng, const trace_params& params) {
-    auto intersection = intersect_scene(bvh, scene, ray);
+    auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
     auto normal   = eval_normal(scene, intersection);
@@ -197,6 +259,8 @@ namespace yocto {
   static sampler_func get_trace_sampler_func(const trace_params& params) {
     switch (params.sampler) {
       case trace_sampler_type::color: return trace_color;
+
+      case trace_sampler_type::color_wireframe: return trace_color_wireframe;
       case trace_sampler_type::normal: return trace_normal;
       case trace_sampler_type::eyelight: return trace_eyelight;
       default: {
@@ -210,6 +274,7 @@ namespace yocto {
   bool is_sampler_lit(const trace_params& params) {
     switch (params.sampler) {
       case trace_sampler_type::color: return false;
+      case trace_sampler_type::color_wireframe: return false;
       case trace_sampler_type::normal: return false;
       case trace_sampler_type::eyelight: return false;
       default: {

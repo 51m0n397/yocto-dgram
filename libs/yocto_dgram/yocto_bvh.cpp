@@ -530,7 +530,7 @@ namespace yocto {
   // Intersect ray with a bvh.
   static bool intersect_bvh(const shape_bvh& bvh, const shape_data& shape,
       const ray3f& ray_, int& element, vec2f& uv, float& distance, vec3f& pos,
-      vec3f& norm, bool find_any, bool& border) {
+      vec3f& norm, bool ignore_borders, bool find_any, bool& border) {
     // check empty
     if (bvh.nodes.empty()) return false;
 
@@ -605,7 +605,7 @@ namespace yocto {
             ray.tmax = distance;
             border   = false;
           }
-          if (shape.border_radius > 0) {
+          if (shape.border_radius > 0 && !ignore_borders) {
             if (intersect_line(ray, shape.positions[t.x], shape.positions[t.y],
                     shape.border_radius, shape.border_radius, line_end::cap,
                     line_end::cap, uv, distance, pos, norm)) {
@@ -644,7 +644,7 @@ namespace yocto {
             ray.tmax = distance;
             border   = false;
           }
-          if (shape.border_radius > 0) {
+          if (shape.border_radius > 0 && !ignore_borders) {
             if (intersect_line(ray, shape.positions[q.x], shape.positions[q.y],
                     shape.border_radius, shape.border_radius, line_end::cap,
                     line_end::cap, uv, distance, pos, norm)) {
@@ -691,7 +691,8 @@ namespace yocto {
   // Intersect ray with a bvh.
   static bool intersect_bvh(const scene_bvh& bvh, const scene_data& scene,
       const ray3f& ray_, int& instance, int& element, vec2f& uv,
-      float& distance, vec3f& pos, vec3f& norm, bool find_any, bool& border) {
+      float& distance, vec3f& pos, vec3f& norm, bool ignore_borders,
+      bool find_any, bool& border) {
     // check empty
     if (bvh.nodes.empty()) return false;
 
@@ -738,7 +739,7 @@ namespace yocto {
           auto  inv_ray   = transform_ray(inverse(instance_.frame, true), ray);
           if (intersect_bvh(bvh.shapes[instance_.shape],
                   scene.shapes[instance_.shape], inv_ray, element, uv, distance,
-                  pos, norm, find_any, border)) {
+                  pos, norm, ignore_borders, find_any, border)) {
             hit      = true;
             instance = bvh.primitives[idx];
             ray.tmax = distance;
@@ -756,37 +757,41 @@ namespace yocto {
   // Intersect ray with a bvh.
   static bool intersect_bvh(const scene_bvh& bvh, const scene_data& scene,
       int instance_, const ray3f& ray, int& element, vec2f& uv, float& distance,
-      vec3f& pos, vec3f& norm, bool find_any, bool& border) {
+      vec3f& pos, vec3f& norm, bool ignore_borders, bool find_any,
+      bool& border) {
     auto& instance = scene.instances[instance_];
     auto  inv_ray  = transform_ray(inverse(instance.frame, true), ray);
     return intersect_bvh(bvh.shapes[instance.shape],
         scene.shapes[instance.shape], inv_ray, element, uv, distance, pos, norm,
-        find_any, border);
+        ignore_borders, find_any, border);
   }
 
   shape_intersection intersect_shape(const shape_bvh& bvh,
-      const shape_data& shape, const ray3f& ray, bool find_any) {
+      const shape_data& shape, const ray3f& ray, bool ignore_borders,
+      bool find_any) {
     auto intersection = shape_intersection{};
     intersection.hit  = intersect_bvh(bvh, shape, ray, intersection.element,
          intersection.uv, intersection.distance, intersection.position,
-         intersection.normal, find_any, intersection.border);
+         intersection.normal, ignore_borders, find_any, intersection.border);
     return intersection;
   }
   scene_intersection intersect_scene(const scene_bvh& bvh,
-      const scene_data& scene, const ray3f& ray, bool find_any) {
+      const scene_data& scene, const ray3f& ray, bool ignore_borders,
+      bool find_any) {
     auto intersection = scene_intersection{};
     intersection.hit  = intersect_bvh(bvh, scene, ray, intersection.instance,
          intersection.element, intersection.uv, intersection.distance,
-         intersection.position, intersection.normal, find_any,
+         intersection.position, intersection.normal, ignore_borders, find_any,
          intersection.border);
     return intersection;
   }
   scene_intersection intersect_instance(const scene_bvh& bvh,
-      const scene_data& scene, int instance, const ray3f& ray, bool find_any) {
+      const scene_data& scene, int instance, const ray3f& ray,
+      bool ignore_borders, bool find_any) {
     auto intersection     = scene_intersection{};
     intersection.hit      = intersect_bvh(bvh, scene, instance, ray,
              intersection.element, intersection.uv, intersection.distance,
-             intersection.position, intersection.normal, find_any,
+             intersection.position, intersection.normal, ignore_borders, find_any,
              intersection.border);
     intersection.instance = instance;
     return intersection;

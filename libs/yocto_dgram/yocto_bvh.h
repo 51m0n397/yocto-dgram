@@ -131,12 +131,14 @@ namespace yocto {
   // depending on `find_any`. Returns the ray distance , the instance id,
   // the shape element index and the element barycentric coordinates.
   shape_intersection intersect_shape(const shape_bvh& bvh,
-      const shape_data& shape, const ray3f& ray, bool find_any = false);
+      const shape_data& shape, const ray3f& ray, bool ignore_borders,
+      bool find_any = false);
   scene_intersection intersect_scene(const scene_bvh& bvh,
-      const scene_data& scene, const ray3f& ray, bool find_any = false);
+      const scene_data& scene, const ray3f& ray, bool ignore_borders,
+      bool find_any = false);
   scene_intersection intersect_instance(const scene_bvh& bvh,
       const scene_data& scene, int instance, const ray3f& ray,
-      bool find_any = false);
+      bool ignore_borders, bool find_any = false);
 
   // Find a shape element that overlaps a point within a given distance
   // max distance, returning either the closest or any overlap depending on
