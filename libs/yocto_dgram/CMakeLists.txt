@@ -12,7 +12,8 @@ add_library(yocto_dgram STATIC
   yocto_gui.h yocto_gui.cpp
   yocto_parallel.h yocto_cli.h
   ext/stb_image.h ext/stb_image_resize.h ext/stb_image_write.h ext/stb_image.cpp
-  ext/tinyexr.h ext/tinyexr.cpp ext/json.hpp ext/fast_float.h
+  ext/tinyexr.h ext/tinyexr.cpp ext/json.hpp ext/fast_float.h ext/base64.h ext/base64.cpp
+  ext/HTTPRequest.hpp
 )
 
 set_target_properties(yocto_dgram PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED YES)
