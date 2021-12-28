@@ -1,0 +1,550 @@
+{
+  "size": [
+    720.0,
+    200.0
+  ],
+  "scenes": [
+    {
+      "offset": [
+        -1.0,
+        0.0
+      ],
+      "cameras": [
+        {}
+      ],
+      "objects": [
+        {
+          "shape": 0,
+          "labels": 0,
+          "material": 0
+        },
+        {
+          "shape": 1,
+          "labels": 1,
+          "material": 1
+        }
+      ],
+      "materials": [
+        {
+          "stroke": [
+            0.0,
+            0.800000011920929,
+            0.800000011920929,
+            0.5
+          ],
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ],
+          "thickness": 8.0
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "positions": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "points": [
+            0
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "points": [
+            0
+          ]
+        }
+      ],
+      "labels": [
+        {},
+        {
+          "positions": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\mathbf{p}_1$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "p",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "cameras": [
+        {}
+      ],
+      "objects": [
+        {
+          "shape": 0,
+          "labels": 0,
+          "material": 0
+        },
+        {
+          "shape": 1,
+          "labels": 1,
+          "material": 1
+        }
+      ],
+      "materials": [
+        {
+          "stroke": [
+            0.0,
+            0.800000011920929,
+            0.800000011920929,
+            0.5
+          ],
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ],
+          "thickness": 16.0
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "positions": [
+            [
+              -0.5,
+              -1.0,
+              0.0
+            ],
+            [
+              0.5,
+              1.0,
+              0.0
+            ]
+          ],
+          "lines": [
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -0.5,
+              -1.0,
+              0.0
+            ],
+            [
+              0.5,
+              1.0,
+              0.0
+            ]
+          ],
+          "lines": [
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      ],
+      "labels": [
+        {},
+        {
+          "positions": [
+            [
+              -0.5,
+              -1.0,
+              0.0
+            ],
+            [
+              0.5,
+              1.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\mathbf{p}_1$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "p",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{p}_2$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "p",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "offset": [
+        1.0,
+        0.0
+      ],
+      "cameras": [
+        {}
+      ],
+      "objects": [
+        {
+          "shape": 0,
+          "labels": 0,
+          "material": 0
+        }
+      ],
+      "materials": [
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "positions": [
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "triangles": [
+            [
+              0,
+              1,
+              2
+            ]
+          ]
+        }
+      ],
+      "labels": [
+        {
+          "positions": [
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\mathbf{p}_1$!!l",
+              "spans": [
+                {},
+                {
+                  "text": "p",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                -6.0,
+                4.0
+              ],
+              "alignment": [
+                1.0,
+                0.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{p}_2$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "p",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{p}_3$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "p",
+                  "bold": true
+                },
+                {
+                  "text": "3",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

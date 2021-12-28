@@ -1,0 +1,1554 @@
+{
+  "size": [
+    720.0,
+    200.0
+  ],
+  "scenes": [
+    {
+      "offset": [
+        -1.649999976158142,
+        0.0
+      ],
+      "cameras": [
+        {}
+      ],
+      "objects": [
+        {
+          "shape": 0,
+          "labels": 0,
+          "material": 0
+        },
+        {
+          "shape": 1,
+          "labels": 1,
+          "material": 1
+        },
+        {
+          "shape": 2,
+          "labels": 2,
+          "material": 2
+        },
+        {
+          "shape": 3,
+          "labels": 3,
+          "material": 3
+        },
+        {
+          "shape": 4,
+          "labels": 4,
+          "material": 4
+        }
+      ],
+      "materials": [
+        {
+          "fill": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "positions": [
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -1.0,
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              -0.20000000298023224,
+              0.0
+            ],
+            [
+              -1.0,
+              0.20000000298023224,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              0.5,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              -0.5,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "labels": [
+        {},
+        {},
+        {
+          "positions": [
+            [
+              0.0,
+              0.5,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\alpha_A$",
+              "spans": [
+                {},
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "A",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              -0.5,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$1 - \\alpha_A$",
+              "spans": [
+                {},
+                {
+                  "text": "1"
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " − "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "A",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$A$!!t",
+              "spans": [
+                {},
+                {
+                  "text": "A",
+                  "italic": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                }
+              ],
+              "offset": [
+                0.0,
+                -8.0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "offset": [
+        -0.6000000238418579,
+        0.0
+      ],
+      "cameras": [
+        {}
+      ],
+      "objects": [
+        {
+          "shape": 0,
+          "labels": 0,
+          "material": 0
+        },
+        {
+          "shape": 1,
+          "labels": 1,
+          "material": 1
+        },
+        {
+          "shape": 2,
+          "labels": 2,
+          "material": 2
+        },
+        {
+          "shape": 3,
+          "labels": 3,
+          "material": 3
+        },
+        {
+          "shape": 4,
+          "labels": 4,
+          "material": 4
+        }
+      ],
+      "materials": [
+        {
+          "fill": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.75,
+            0.8999999761581421,
+            0.75,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "positions": [
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -1.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.20000000298023224,
+              1.0,
+              0.0
+            ],
+            [
+              -0.30000001192092896,
+              -1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -0.5,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.5,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "labels": [
+        {},
+        {},
+        {
+          "positions": [
+            [
+              -0.5,
+              0.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\alpha_B$",
+              "spans": [
+                {},
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "B",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.5,
+              0.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$1 - \\alpha_B$",
+              "spans": [
+                {},
+                {
+                  "text": "1"
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " − "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "B",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$B$!!t",
+              "spans": [
+                {},
+                {
+                  "text": "B",
+                  "italic": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                }
+              ],
+              "offset": [
+                0.0,
+                -8.0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "offset": [
+        0.44999998807907104,
+        0.0
+      ],
+      "cameras": [
+        {}
+      ],
+      "objects": [
+        {
+          "shape": 0,
+          "labels": 0,
+          "material": 0
+        },
+        {
+          "shape": 1,
+          "labels": 1,
+          "material": 1
+        },
+        {
+          "shape": 2,
+          "labels": 2,
+          "material": 2
+        },
+        {
+          "shape": 3,
+          "labels": 3,
+          "material": 3
+        },
+        {
+          "shape": 4,
+          "labels": 4,
+          "material": 4
+        },
+        {
+          "shape": 5,
+          "labels": 5,
+          "material": 5
+        },
+        {
+          "shape": 6,
+          "labels": 6,
+          "material": 6
+        },
+        {
+          "shape": 7,
+          "labels": 7,
+          "material": 7
+        },
+        {
+          "shape": 8,
+          "labels": 8,
+          "material": 8
+        }
+      ],
+      "materials": [
+        {
+          "fill": [
+            0.8999999761581421,
+            0.75,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.75,
+            0.8999999761581421,
+            0.75,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "positions": [
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -1.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.20000000298023224,
+              1.0,
+              0.0
+            ],
+            [
+              -0.30000001192092896,
+              -1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -1.0,
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              -0.20000000298023224,
+              0.0
+            ],
+            [
+              -1.0,
+              0.20000000298023224,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              0.5,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -0.550000011920929,
+              -0.30000001192092896,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -0.550000011920929,
+              -0.5,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.44999998807907104,
+              -0.4000000059604645,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.44999998807907104,
+              -0.6000000238418579,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "labels": [
+        {},
+        {},
+        {},
+        {
+          "positions": [
+            [
+              0.0,
+              0.5,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\alpha_A$",
+              "spans": [
+                {},
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "A",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              -0.550000011920929,
+              -0.30000001192092896,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\alpha_A \\cross$",
+              "spans": [
+                {},
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "A",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "×",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              -0.550000011920929,
+              -0.5,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$(1 - \\alpha_A)$",
+              "spans": [
+                {},
+                {
+                  "text": "("
+                },
+                {
+                  "text": "1"
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " − "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "A",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": ")",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.44999998807907104,
+              -0.4000000059604645,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$(1 - \\alpha_B) \\cross$",
+              "spans": [
+                {},
+                {
+                  "text": "("
+                },
+                {
+                  "text": "1"
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " − "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "B",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": ")",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "×",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.44999998807907104,
+              -0.6000000238418579,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$(1 - \\alpha_A)$",
+              "spans": [
+                {},
+                {
+                  "text": "("
+                },
+                {
+                  "text": "1"
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " − "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "α"
+                },
+                {
+                  "text": "A",
+                  "italic": true,
+                  "subscript": true
+                },
+                {
+                  "text": ")",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                4.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$A \\mathrm{over} B \\mathrm{over} C$!!t",
+              "spans": [
+                {},
+                {
+                  "text": "A",
+                  "italic": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "over"
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "B",
+                  "italic": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "over"
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": "C",
+                  "italic": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                }
+              ],
+              "offset": [
+                0.0,
+                -8.0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "offset": [
+        1.600000023841858,
+        0.0
+      ],
+      "cameras": [
+        {
+          "center": [
+            0.10000000149011612,
+            0.0
+          ],
+          "from": [
+            6.0,
+            3.0,
+            5.0
+          ],
+          "lens": 0.30000001192092896
+        }
+      ],
+      "objects": [
+        {
+          "frame": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            -0.3499999940395355
+          ],
+          "shape": 0,
+          "labels": 0,
+          "material": 0
+        },
+        {
+          "shape": 1,
+          "labels": 1,
+          "material": 1
+        },
+        {
+          "shape": 2,
+          "labels": 2,
+          "material": 2
+        }
+      ],
+      "materials": [
+        {
+          "fill": [
+            0.8999999761581421,
+            0.75,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.75,
+            0.8999999761581421,
+            0.75,
+            1.0
+          ]
+        },
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "positions": [
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -1.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.20000000298023224,
+              1.0,
+              0.0
+            ],
+            [
+              -0.30000001192092896,
+              -1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              -1.0,
+              0.0
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              -1.0,
+              1.0,
+              0.3499999940395355
+            ],
+            [
+              1.0,
+              1.0,
+              0.3499999940395355
+            ],
+            [
+              1.0,
+              -0.20000000298023224,
+              0.3499999940395355
+            ],
+            [
+              -1.0,
+              0.20000000298023224,
+              0.3499999940395355
+            ]
+          ],
+          "quads": [
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ]
+        }
+      ],
+      "labels": [
+        {},
+        {},
+        {}
+      ]
+    }
+  ]
+}

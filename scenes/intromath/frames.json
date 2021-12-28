@@ -1,0 +1,1135 @@
+{
+  "size": [
+    720.0,
+    180.0
+  ],
+  "scenes": [
+    {
+      "cameras": [
+        {
+          "center": [
+            0.0,
+            0.4000000059604645
+          ],
+          "from": [
+            6.0,
+            3.0,
+            5.0
+          ],
+          "lens": 0.30000001192092896
+        }
+      ],
+      "objects": [
+        {
+          "shape": 0,
+          "labels": 0,
+          "material": 0
+        },
+        {
+          "frame": [
+            0.9027010798454285,
+            0.1829865723848343,
+            -0.3894183337688446,
+            -0.19866932928562164,
+            0.9800665974617004,
+            0.0,
+            0.38165590167045593,
+            0.07736548036336899,
+            0.9210609793663025,
+            1.25,
+            0.20000000298023224,
+            -1.5
+          ],
+          "shape": 1,
+          "labels": 1,
+          "material": 1
+        },
+        {
+          "frame": [
+            0.9027010798454285,
+            0.1829865723848343,
+            -0.3894183337688446,
+            -0.19866932928562164,
+            0.9800665974617004,
+            0.0,
+            0.38165590167045593,
+            0.07736548036336899,
+            0.9210609793663025,
+            1.25,
+            0.20000000298023224,
+            -1.5
+          ],
+          "shape": 2,
+          "labels": 2,
+          "material": 2
+        },
+        {
+          "frame": [
+            -0.12820085883140564,
+            -0.01286299154162407,
+            0.9916648268699646,
+            -0.0998334139585495,
+            0.9950041174888611,
+            0.0,
+            -0.9867106676101685,
+            -0.09900129586458206,
+            -0.12884454429149628,
+            -1.5,
+            0.0,
+            1.0
+          ],
+          "shape": 3,
+          "labels": 3,
+          "material": 3
+        },
+        {
+          "frame": [
+            -0.12820085883140564,
+            -0.01286299154162407,
+            0.9916648268699646,
+            -0.0998334139585495,
+            0.9950041174888611,
+            0.0,
+            -0.9867106676101685,
+            -0.09900129586458206,
+            -0.12884454429149628,
+            -1.5,
+            0.0,
+            1.0
+          ],
+          "shape": 4,
+          "labels": 4,
+          "material": 4
+        }
+      ],
+      "materials": [
+        {
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "stroke": [
+            0.0,
+            0.800000011920929,
+            0.800000011920929,
+            1.0
+          ],
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "stroke": [
+            0.0,
+            0.800000011920929,
+            0.800000011920929,
+            1.0
+          ],
+          "fill": [
+            0.0,
+            0.8999999761581421,
+            0.8999999761581421,
+            1.0
+          ]
+        },
+        {
+          "stroke": [
+            0.5,
+            0.800000011920929,
+            0.5,
+            1.0
+          ],
+          "fill": [
+            0.75,
+            0.8999999761581421,
+            0.75,
+            1.0
+          ]
+        },
+        {
+          "stroke": [
+            0.800000011920929,
+            0.5,
+            0.0,
+            1.0
+          ],
+          "fill": [
+            0.8999999761581421,
+            0.75,
+            0.0,
+            1.0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "positions": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "arrows": [
+            [
+              3,
+              0
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "points": [
+            3
+          ],
+          "arrows": [
+            [
+              3,
+              0
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.5,
+              0.5,
+              0.0
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "points": [
+            3
+          ],
+          "arrows": [
+            [
+              3,
+              0
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.5,
+              0.5,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "labels": [
+        {
+          "positions": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\mathbf{x}$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "x",
+                  "bold": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{y}$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "y",
+                  "bold": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{z}$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "z",
+                  "bold": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{o}$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "o",
+                  "bold": true
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                },
+                {
+                  "text": " "
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\mathbf{x}_1$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "x",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{y}_1$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "y",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{z}_1$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "z",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{o}_1$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "o",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.5,
+              0.5,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\mathbf{F}_1 = (\\mathbf{x}_1, \\mathbf{y}_1, \\mathbf{z}_1, \\mathbf{o}_1)$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "F",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " = ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "(",
+                  "subscript": true
+                },
+                {
+                  "text": "x",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": ",",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "y",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": ",",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "z",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": ",",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "o",
+                  "bold": true
+                },
+                {
+                  "text": "1",
+                  "subscript": true
+                },
+                {
+                  "text": ")",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\mathbf{x}_2$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "x",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{y}_2$!!r",
+              "spans": [
+                {},
+                {
+                  "text": "y",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                6.0,
+                4.0
+              ],
+              "alignment": [
+                -1.0,
+                0.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{z}_2$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "z",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            },
+            {
+              "unprocessed": "$\\mathbf{o}_2$!!b",
+              "spans": [
+                {},
+                {
+                  "text": "o",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                0.0,
+                16.0
+              ]
+            }
+          ]
+        },
+        {
+          "positions": [
+            [
+              0.5,
+              0.5,
+              0.0
+            ]
+          ],
+          "labels": [
+            {
+              "unprocessed": "$\\mathbf{F}_2 = (\\mathbf{x}_2, \\mathbf{y}_2, \\mathbf{z}_2, \\mathbf{o}_2)$!!l",
+              "spans": [
+                {},
+                {
+                  "text": "F",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " = ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "(",
+                  "subscript": true
+                },
+                {
+                  "text": "x",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": ",",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "y",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": ",",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "z",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": ",",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": "o",
+                  "bold": true
+                },
+                {
+                  "text": "2",
+                  "subscript": true
+                },
+                {
+                  "text": ")",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                },
+                {
+                  "text": " ",
+                  "subscript": true
+                }
+              ],
+              "offset": [
+                -6.0,
+                4.0
+              ],
+              "alignment": [
+                1.0,
+                0.0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
