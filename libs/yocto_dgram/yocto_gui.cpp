@@ -604,9 +604,6 @@ namespace yocto {
     // build bvh
     auto bvh = make_bvh(scene, params);
 
-    // init renderer
-    auto lights = make_lights(scene, params);
-
     // init state
     auto state   = make_state(scene, params);
     auto image   = make_image(state.width, state.height, true);
@@ -653,7 +650,7 @@ namespace yocto {
       pparams.resolution /= params.pratio;
       pparams.samples = 1;
       auto pstate     = make_state(scene, pparams);
-      trace_samples(pstate, scene, bvh, lights, pparams);
+      trace_samples(pstate, scene, bvh, pparams);
       auto preview = get_render(pstate);
       for (auto idx = 0; idx < state.width * state.height; idx++) {
         auto i = idx % render.width, j = idx / render.width;
@@ -666,7 +663,7 @@ namespace yocto {
         auto lock      = std::lock_guard{render_mutex};
         render_current = 0;
         image          = render;
-        tonemap_image_mt(display, image, params.exposure, params.filmic);
+        tonemap_image_mt(display, image, params.exposure);
         render_update = true;
       }
 
@@ -677,7 +674,7 @@ namespace yocto {
           parallel_for(state.width, state.height, [&](int i, int j) {
             for (auto s = 0; s < params.batch; s++) {
               if (render_stop) return;
-              trace_sample(state, scene, bvh, lights, i, j, params);
+              trace_sample(state, scene, bvh, i, j, params);
             }
            });
           state.samples += params.batch;
@@ -686,7 +683,7 @@ namespace yocto {
             render_current = state.samples;
             get_render(render, state);
             image = render;
-            tonemap_image_mt(display, image, params.exposure, params.filmic);
+            tonemap_image_mt(display, image, params.exposure);
             render_update = true;
           }
         }
@@ -753,10 +750,9 @@ namespace yocto {
       }
       if (draw_gui_header("tonemap")) {
         edited += draw_gui_slider("exposure", params.exposure, -5, 5);
-        edited += draw_gui_checkbox("filmic", params.filmic);
         end_gui_header();
         if (edited) {
-          tonemap_image_mt(display, image, params.exposure, params.filmic);
+          tonemap_image_mt(display, image, params.exposure);
           set_image(glimage, display);
         }
       }

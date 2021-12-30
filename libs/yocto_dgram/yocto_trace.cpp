@@ -137,8 +137,7 @@ namespace yocto {
   };
 
   static trace_result trace_color(const scene_data& scene, const scene_bvh& bvh,
-      const trace_lights& lights, const ray3f& ray, rng_state& rng,
-      const trace_params& params) {
+      const ray3f& ray, rng_state& rng, const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
@@ -177,8 +176,8 @@ namespace yocto {
                    interpolate_quad(shape.positions[q.x], shape.positions[q.y],
                        shape.positions[q.z], shape.positions[q.w], uv));
         }
-        auto dir = normalize(p - ray.o);
-        back_isec = intersect_scene(bvh, scene, {p-dir*1e-2f, dir}, true);
+        auto dir  = normalize(p - ray.o);
+        back_isec = intersect_scene(bvh, scene, {p - dir * 1e-2f, dir}, true);
       }
       if (back_isec.instance == intersection.instance) intersection = back_isec;
     }
@@ -188,7 +187,7 @@ namespace yocto {
 
     if (material.opacity < 1) {
       auto back_color  = rgb_to_rgba(trace_color(
-           scene, bvh, lights, {position + ray.d * 1e-2f, ray.d}, rng, params)
+           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params)
                                          .radiance);
       auto front_color = rgb_to_rgba(material.color);
       front_color.w    = material.opacity;
@@ -199,8 +198,8 @@ namespace yocto {
   }
 
   static trace_result trace_color_wireframe(const scene_data& scene,
-      const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
-      rng_state& rng, const trace_params& params) {
+      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
+      const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
@@ -209,7 +208,7 @@ namespace yocto {
 
     if (material.opacity < 1) {
       auto back_color  = rgb_to_rgba(trace_color(
-           scene, bvh, lights, {position + ray.d * 1e-2f, ray.d}, rng, params)
+           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params)
                                          .radiance);
       auto front_color = rgb_to_rgba(material.color);
       front_color.w    = material.opacity;
@@ -220,8 +219,8 @@ namespace yocto {
   }
 
   static trace_result trace_normal(const scene_data& scene,
-      const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
-      rng_state& rng, const trace_params& params) {
+      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
+      const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
@@ -230,8 +229,8 @@ namespace yocto {
 
   // Eyelight for quick previewing.
   static trace_result trace_eyelight(const scene_data& scene,
-      const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
-      rng_state& rng, const trace_params& params) {
+      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
+      const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit) return {eval_environment(scene, ray.d), false};
 
@@ -242,7 +241,7 @@ namespace yocto {
 
     if (material.opacity < 1) {
       auto back_color  = rgb_to_rgba(trace_eyelight(
-           scene, bvh, lights, {position + ray.d * 1e-2f, ray.d}, rng, params)
+           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params)
                                          .radiance);
       auto front_color = rgb_to_rgba(color);
       front_color.w    = material.opacity;
@@ -254,8 +253,8 @@ namespace yocto {
 
   // Trace a single ray from the camera using the given algorithm.
   using sampler_func = trace_result (*)(const scene_data& scene,
-      const scene_bvh& bvh, const trace_lights& lights, const ray3f& ray,
-      rng_state& rng, const trace_params& params);
+      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
+      const trace_params& params);
   static sampler_func get_trace_sampler_func(const trace_params& params) {
     switch (params.sampler) {
       case trace_sampler_type::color: return trace_color;
@@ -270,31 +269,15 @@ namespace yocto {
     }
   }
 
-  // Check is a sampler requires lights
-  bool is_sampler_lit(const trace_params& params) {
-    switch (params.sampler) {
-      case trace_sampler_type::color: return false;
-      case trace_sampler_type::color_wireframe: return false;
-      case trace_sampler_type::normal: return false;
-      case trace_sampler_type::eyelight: return false;
-      default: {
-        throw std::runtime_error("sampler unknown");
-        return false;
-      }
-    }
-  }
-
   // Trace a block of samples
   void trace_sample(trace_state& state, const scene_data& scene,
-      const scene_bvh& bvh, const trace_lights& lights, int i, int j,
-      const trace_params& params) {
+      const scene_bvh& bvh, int i, int j, const trace_params& params) {
     auto& camera  = scene.cameras[params.camera];
     auto  sampler = get_trace_sampler_func(params);
     auto  idx     = state.width * j + i;
     auto  ray     = sample_camera(camera, {i, j}, {state.width, state.height},
              rand2f(state.rngs[idx]), rand2f(state.rngs[idx]), params.tentfilter);
-    auto [radiance, hit] = sampler(
-        scene, bvh, lights, ray, state.rngs[idx], params);
+    auto [radiance, hit] = sampler(scene, bvh, ray, state.rngs[idx], params);
     if (!isfinite(radiance)) radiance = {0, 0, 0};
     if (max(radiance) > params.clamp)
       radiance = radiance * (params.clamp / max(radiance));
@@ -329,93 +312,19 @@ namespace yocto {
     return state;
   }
 
-  // Forward declaration
-  static trace_light& add_light(trace_lights& lights) {
-    return lights.lights.emplace_back();
-  }
-
-  // Init trace lights
-  trace_lights make_lights(
-      const scene_data& scene, const trace_params& params) {
-    auto lights = trace_lights{};
-
-    for (auto handle = 0; handle < scene.instances.size(); handle++) {
-      auto& instance = scene.instances[handle];
-      auto& material = scene.materials[instance.material];
-      if (material.emission == vec3f{0, 0, 0}) continue;
-      auto& shape = scene.shapes[instance.shape];
-      if (shape.triangles.empty() && shape.quads.empty()) continue;
-      auto& light       = add_light(lights);
-      light.instance    = handle;
-      light.environment = invalidid;
-      if (!shape.triangles.empty()) {
-        light.elements_cdf = vector<float>(shape.triangles.size());
-        for (auto idx = 0; idx < light.elements_cdf.size(); idx++) {
-          auto& t                 = shape.triangles[idx];
-          light.elements_cdf[idx] = triangle_area(
-              shape.positions[t.x], shape.positions[t.y], shape.positions[t.z]);
-          if (idx != 0) light.elements_cdf[idx] += light.elements_cdf[idx - 1];
-        }
-      }
-      if (!shape.quads.empty()) {
-        light.elements_cdf = vector<float>(shape.quads.size());
-        for (auto idx = 0; idx < light.elements_cdf.size(); idx++) {
-          auto& t                 = shape.quads[idx];
-          light.elements_cdf[idx] = quad_area(shape.positions[t.x],
-              shape.positions[t.y], shape.positions[t.z], shape.positions[t.w]);
-          if (idx != 0) light.elements_cdf[idx] += light.elements_cdf[idx - 1];
-        }
-      }
-    }
-    for (auto handle = 0; handle < scene.environments.size(); handle++) {
-      auto& environment = scene.environments[handle];
-      if (environment.emission == vec3f{0, 0, 0}) continue;
-      auto& light       = add_light(lights);
-      light.instance    = invalidid;
-      light.environment = handle;
-      if (environment.emission_tex != invalidid) {
-        auto& texture      = scene.textures[environment.emission_tex];
-        light.elements_cdf = vector<float>(texture.width * texture.height);
-        for (auto idx = 0; idx < light.elements_cdf.size(); idx++) {
-          auto ij    = vec2i{idx % texture.width, idx / texture.width};
-          auto th    = (ij.y + 0.5f) * pif / texture.height;
-          auto value = lookup_texture(texture, ij.x, ij.y);
-          light.elements_cdf[idx] = max(value) * sin(th);
-          if (idx != 0) light.elements_cdf[idx] += light.elements_cdf[idx - 1];
-        }
-      }
-    }
-
-    // handle progress
-    return lights;
-  }
-
-  // Progressively computes an image.
-  image_data trace_image(const scene_data& scene, const trace_params& params) {
-    auto bvh    = make_bvh(scene, params);
-    auto lights = make_lights(scene, params);
-    auto state  = make_state(scene, params);
-    for (auto sample = 0; sample < params.samples; sample++) {
-      trace_samples(state, scene, bvh, lights, params);
-    }
-    return get_render(state);
-  }
-
   // Progressively compute an image by calling trace_samples multiple times.
   void trace_samples(trace_state& state, const scene_data& scene,
-      const scene_bvh& bvh, const trace_lights& lights,
-      const trace_params& params) {
+      const scene_bvh& bvh, const trace_params& params) {
     if (state.samples >= params.samples) return;
     if (params.noparallel) {
       for (auto j = 0; j < state.height; j++) {
         for (auto i = 0; i < state.width; i++) {
-          trace_sample(state, scene, bvh, lights, i, j, params);
+          trace_sample(state, scene, bvh, i, j, params);
         }
       }
     } else {
-      parallel_for(state.width, state.height, [&](int i, int j) {
-        trace_sample(state, scene, bvh, lights, i, j, params);
-      });
+      parallel_for(state.width, state.height,
+          [&](int i, int j) { trace_sample(state, scene, bvh, i, j, params); });
     }
     state.samples += 1;
   }

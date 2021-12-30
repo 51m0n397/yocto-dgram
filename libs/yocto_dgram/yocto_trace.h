@@ -79,7 +79,6 @@ namespace yocto {
     int                samples        = 8;
     int                bounces        = 8;
     float              clamp          = 10;
-    bool               nocaustics     = false;
     bool               envhidden      = false;
     bool               tentfilter     = false;
     uint64_t           seed           = trace_default_seed;
@@ -87,12 +86,8 @@ namespace yocto {
     bool               noparallel     = false;
     int                pratio         = 8;
     float              exposure       = 0;
-    bool               filmic         = false;
     int                batch          = 1;
   };
-
-  // Progressively computes an image.
-  image_data trace_image(const scene_data& scene, const trace_params& params);
 
 }  // namespace yocto
 
@@ -101,29 +96,12 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Scene lights used during rendering. These are created automatically.
-  struct trace_light {
-    int           instance     = invalidid;
-    int           environment  = invalidid;
-    vector<float> elements_cdf = {};
-  };
-
-  // Scene lights
-  struct trace_lights {
-    vector<trace_light> lights = {};
-  };
-
-  // Check is a sampler requires lights
-  bool is_sampler_lit(const trace_params& params);
-
   // Trace state
   struct trace_state {
     int               width   = 0;
     int               height  = 0;
     int               samples = 0;
     vector<vec4f>     image   = {};
-    vector<vec3f>     albedo  = {};
-    vector<vec3f>     normal  = {};
     vector<int>       hits    = {};
     vector<rng_state> rngs    = {};
   };
@@ -131,19 +109,14 @@ namespace yocto {
   // Initialize state.
   trace_state make_state(const scene_data& scene, const trace_params& params);
 
-  // Initialize lights.
-  trace_lights make_lights(const scene_data& scene, const trace_params& params);
-
   // Build the bvh acceleration structure.
   scene_bvh make_bvh(const scene_data& scene, const trace_params& params);
 
   // Progressively computes an image.
   void trace_samples(trace_state& state, const scene_data& scene,
-      const scene_bvh& bvh, const trace_lights& lights,
-      const trace_params& params);
+      const scene_bvh& bvh, const trace_params& params);
   void trace_sample(trace_state& state, const scene_data& scene,
-      const scene_bvh& bvh, const trace_lights& lights, int i, int j,
-      const trace_params& params);
+      const scene_bvh& bvh, int i, int j, const trace_params& params);
 
   // Get resulting render
   image_data get_render(const trace_state& state);

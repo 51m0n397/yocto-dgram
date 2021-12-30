@@ -156,12 +156,10 @@ void add_options(cli_command& cli, render_params& params) {
   add_option(cli, "bounces", params.bounces, "number of bounces");
   add_option(cli, "batch", params.batch, "sample batch");
   add_option(cli, "clamp", params.clamp, "clamp params");
-  add_option(cli, "nocaustics", params.nocaustics, "disable caustics");
   add_option(cli, "envhidden", params.envhidden, "hide environment");
   add_option(cli, "tentfilter", params.tentfilter, "filter image");
   add_option(cli, "highqualitybvh", params.highqualitybvh, "high quality bvh");
   add_option(cli, "exposure", params.exposure, "exposure value");
-  add_option(cli, "filmic", params.filmic, "filmic tone mapping");
   add_option(cli, "noparallel", params.noparallel, "disable threading");
 }
 
@@ -197,9 +195,6 @@ void run_render(const render_params& params_) {
   // build bvh
   auto bvh = make_bvh(scene, params);
 
-  // init renderer
-  auto lights = make_lights(scene, params);
-
   // state
   auto state = make_state(scene, params);
 
@@ -207,7 +202,7 @@ void run_render(const render_params& params_) {
   timer = simple_timer{};
   for (auto sample = 0; sample < params.samples; sample++) {
     auto sample_timer = simple_timer{};
-    trace_samples(state, scene, bvh, lights, params);
+    trace_samples(state, scene, bvh, params);
     print_info("render sample {}/{}: {}", sample, params.samples,
         elapsed_formatted(sample_timer));
     if (params.savebatch && state.samples % params.batch == 0) {
@@ -218,7 +213,7 @@ void run_render(const render_params& params_) {
                                  fs::path(params.output).extension().string())
                              .string();
       if (!is_hdr_filename(params.output))
-        image = tonemap_image(image, params.exposure, params.filmic);
+        image = tonemap_image(image, params.exposure);
       save_image(outfilename, image);
     }
   }
@@ -228,7 +223,7 @@ void run_render(const render_params& params_) {
   timer      = simple_timer{};
   auto image = get_render(state);
   if (!is_hdr_filename(params.output))
-    image = tonemap_image(image, params.exposure, params.filmic);
+    image = tonemap_image(image, params.exposure);
   save_image(params.output, image);
   print_info("save image: {}", elapsed_formatted(timer));
 }
@@ -256,13 +251,11 @@ void add_options(cli_command& cli, view_params& params) {
   add_option(cli, "bounces", params.bounces, "number of bounces");
   add_option(cli, "batch", params.batch, "sample batch");
   add_option(cli, "clamp", params.clamp, "clamp params");
-  add_option(cli, "nocaustics", params.nocaustics, "disable caustics");
   add_option(cli, "envhidden", params.envhidden, "hide environment");
   add_option(cli, "tentfilter", params.tentfilter, "filter image");
   add_option(
       cli, "--highqualitybvh", params.highqualitybvh, "use high quality BVH");
   add_option(cli, "exposure", params.exposure, "exposure value");
-  add_option(cli, "filmic", params.filmic, "filmic tone mapping");
   add_option(cli, "noparallel", params.noparallel, "disable threading");
 }
 
