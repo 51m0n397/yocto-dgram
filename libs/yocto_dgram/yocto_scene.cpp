@@ -186,87 +186,20 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // constant values
-  static const auto min_roughness = 0.03f * 0.03f;
-
   // Evaluate material
   material_point eval_material(const scene_data& scene,
-      const material_data& material, const vec2f& texcoord,
-      const vec4f& color_shp) {
+      const material_data& material, const vec2f& texcoord) {
     // evaluate textures
-    auto emission_tex = eval_texture(
-        scene, material.emission_tex, texcoord, true);
-    auto color_tex = eval_texture(scene, material.color_tex, texcoord, true);
-    auto roughness_tex = eval_texture(
-        scene, material.roughness_tex, texcoord, false);
-    auto scattering_tex = eval_texture(
-        scene, material.scattering_tex, texcoord, true);
+    auto fill_tex   = eval_texture(scene, material.fill_tex, texcoord, true);
+    auto stroke_tex = eval_texture(scene, material.stroke_tex, texcoord, true);
 
     // material point
-    auto point         = material_point{};
-    point.type         = material.type;
-    point.emission     = material.emission * xyz(emission_tex);
-    point.color        = material.color * xyz(color_tex) * xyz(color_shp);
-    point.opacity      = material.opacity * color_tex.w * color_shp.w;
-    point.metallic     = material.metallic * roughness_tex.z;
-    point.roughness    = material.roughness * roughness_tex.y;
-    point.roughness    = point.roughness * point.roughness;
-    point.ior          = material.ior;
-    point.scattering   = material.scattering * xyz(scattering_tex);
-    point.scanisotropy = material.scanisotropy;
-    point.trdepth      = material.trdepth;
-
-    // volume density
-    if (material.type == material_type::refractive ||
-        material.type == material_type::volumetric ||
-        material.type == material_type::subsurface) {
-      point.density = -log(clamp(point.color, 0.0001f, 1.0f)) / point.trdepth;
-    } else {
-      point.density = {0, 0, 0};
-    }
-
-    // fix roughness
-    if (point.type == material_type::matte ||
-        point.type == material_type::gltfpbr ||
-        point.type == material_type::glossy) {
-      point.roughness = clamp(point.roughness, min_roughness, 1.0f);
-    }
+    auto point   = material_point{};
+    point.fill   = material.fill * fill_tex;
+    point.stroke = material.stroke * stroke_tex;
 
     return point;
   }
-
-  // check if a material is a delta or volumetric
-  bool is_delta(const material_data& material) {
-    return (material.type == material_type::reflective &&
-               material.roughness == 0) ||
-           (material.type == material_type::refractive &&
-               material.roughness == 0) ||
-           (material.type == material_type::transparent &&
-               material.roughness == 0) ||
-           (material.type == material_type::volumetric);
-  }
-  bool is_volumetric(const material_data& material) {
-    return material.type == material_type::refractive ||
-           material.type == material_type::volumetric ||
-           material.type == material_type::subsurface;
-  }
-
-  // check if a brdf is a delta
-  bool is_delta(const material_point& material) {
-    return (material.type == material_type::reflective &&
-               material.roughness == 0) ||
-           (material.type == material_type::refractive &&
-               material.roughness == 0) ||
-           (material.type == material_type::transparent &&
-               material.roughness == 0) ||
-           (material.type == material_type::volumetric);
-  }
-  bool has_volume(const material_point& material) {
-    return material.type == material_type::refractive ||
-           material.type == material_type::volumetric ||
-           material.type == material_type::subsurface;
-  }
-
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
@@ -433,28 +366,6 @@ static pair<vec3f, vec3f> eval_tangents(
     }
   }
 
-  vec3f eval_normalmap(const scene_data& scene, const instance_data& instance,
-      int element, const vec2f& uv) {
-    auto& shape    = scene.shapes[instance.shape];
-    auto& material = scene.materials[instance.material];
-    // apply normal mapping
-    auto normal   = eval_normal(scene, instance, element, uv);
-    auto texcoord = eval_texcoord(scene, instance, element, uv);
-    if (material.normal_tex != invalidid &&
-        (!shape.triangles.empty() || !shape.quads.empty())) {
-      auto& normal_tex = scene.textures[material.normal_tex];
-      auto  normalmap = -1 + 2 * xyz(eval_texture(normal_tex, texcoord, false));
-      auto [tu, tv]   = eval_element_tangents(scene, instance, element);
-      auto frame      = frame3f{tu, tv, normal, {0, 0, 0}};
-      frame.x         = orthonormalize(frame.x, frame.z);
-      frame.y         = normalize(cross(frame.z, frame.x));
-      auto flip_v     = dot(frame.y, tv) < 0;
-      normalmap.y *= flip_v ? 1 : -1;  // flip vertical axis
-      normal = transform_normal(frame, normalmap);
-    }
-    return normal;
-  }
-
   // Eval shading position
   vec3f eval_shading_position(const scene_data& scene,
       const instance_data& instance, int element, const vec2f& uv,
@@ -475,14 +386,9 @@ static pair<vec3f, vec3f> eval_tangents(
   vec3f eval_shading_normal(const scene_data& scene,
       const instance_data& instance, int element, const vec2f& uv,
       const vec3f& outgoing) {
-    auto& shape    = scene.shapes[instance.shape];
-    auto& material = scene.materials[instance.material];
+    auto& shape = scene.shapes[instance.shape];
     if (!shape.triangles.empty() || !shape.quads.empty()) {
       auto normal = eval_normal(scene, instance, element, uv);
-      if (material.normal_tex != invalidid) {
-        normal = eval_normalmap(scene, instance, element, uv);
-      }
-      if (material.type == material_type::refractive) return normal;
       return dot(normal, outgoing) >= 0 ? normal : -normal;
     } else if (!shape.lines.empty()) {
       auto normal = eval_normal(scene, instance, element, uv);
@@ -519,62 +425,20 @@ static pair<vec3f, vec3f> eval_tangents(
 
   // Evaluate material
   material_point eval_material(const scene_data& scene,
-      const instance_data& instance, int element, const vec2f& uv,
-      const bool border) {
-    auto& material = border ? scene.materials[instance.border_material]
-                            : scene.materials[instance.material];
+      const instance_data& instance, int element, const vec2f& uv) {
+    auto& material = scene.materials[instance.material];
     auto  texcoord = eval_texcoord(scene, instance, element, uv);
 
     // evaluate textures
-    auto emission_tex = eval_texture(
-        scene, material.emission_tex, texcoord, true);
-    auto color_shp = eval_color(scene, instance, element, uv);
-    auto color_tex = eval_texture(scene, material.color_tex, texcoord, true);
-    auto roughness_tex = eval_texture(
-        scene, material.roughness_tex, texcoord, false);
-    auto scattering_tex = eval_texture(
-        scene, material.scattering_tex, texcoord, true);
+    auto fill_tex   = eval_texture(scene, material.fill_tex, texcoord, true);
+    auto stroke_tex = eval_texture(scene, material.stroke_tex, texcoord, true);
 
     // material point
-    auto point         = material_point{};
-    point.type         = material.type;
-    point.emission     = material.emission * xyz(emission_tex);
-    point.color        = material.color * xyz(color_tex) * xyz(color_shp);
-    point.opacity      = material.opacity * color_tex.w * color_shp.w;
-    point.metallic     = material.metallic * roughness_tex.z;
-    point.roughness    = material.roughness * roughness_tex.y;
-    point.roughness    = point.roughness * point.roughness;
-    point.ior          = material.ior;
-    point.scattering   = material.scattering * xyz(scattering_tex);
-    point.scanisotropy = material.scanisotropy;
-    point.trdepth      = material.trdepth;
-
-    // volume density
-    if (material.type == material_type::refractive ||
-        material.type == material_type::volumetric ||
-        material.type == material_type::subsurface) {
-      point.density = -log(clamp(point.color, 0.0001f, 1.0f)) / point.trdepth;
-    } else {
-      point.density = {0, 0, 0};
-    }
-
-    // fix roughness
-    if (point.type == material_type::matte ||
-        point.type == material_type::gltfpbr ||
-        point.type == material_type::glossy) {
-      point.roughness = clamp(point.roughness, min_roughness, 1.0f);
-    } else if (material.type == material_type::volumetric) {
-      point.roughness = 0;
-    } else {
-      if (point.roughness < min_roughness) point.roughness = 0;
-    }
+    auto point   = material_point{};
+    point.fill   = material.fill * fill_tex;
+    point.stroke = material.stroke * stroke_tex;
 
     return point;
-  }
-
-  // check if an instance is volumetric
-  bool is_volumetric(const scene_data& scene, const instance_data& instance) {
-    return is_volumetric(scene.materials[instance.material]);
   }
 
 }  // namespace yocto
@@ -638,10 +502,8 @@ namespace yocto {
     scene.shapes.push_back(shape);
     // material
     scene.material_names.emplace_back("material");
-    auto& shape_material     = scene.materials.emplace_back();
-    shape_material.type      = material_type::glossy;
-    shape_material.color     = {0.5f, 1.0f, 0.5f};
-    shape_material.roughness = 0.2f;
+    auto& shape_material = scene.materials.emplace_back();
+    shape_material.fill  = {0.5f, 1.0f, 0.5f, 1.0f};
     // instance
     scene.instance_names.emplace_back("instance");
     auto& shape_instance    = scene.instances.emplace_back();

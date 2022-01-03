@@ -308,11 +308,11 @@ namespace yocto {
   }
 
   struct scene_selection {
-    int camera      = 0;
-    int instance    = 0;
-    int shape       = 0;
-    int texture     = 0;
-    int material    = 0;
+    int camera   = 0;
+    int instance = 0;
+    int shape    = 0;
+    int texture  = 0;
+    int material = 0;
   };
 
   static bool draw_scene_editor(scene_data& scene, scene_selection& selection,
@@ -350,17 +350,12 @@ namespace yocto {
     if (draw_gui_header("materials")) {
       draw_gui_combobox("material", selection.material, scene.material_names);
       auto material = scene.materials.at(selection.material);
-      edited += draw_gui_coloredithdr("emission", material.emission);
+      edited += draw_gui_coloredithdr("fill", material.fill);
       edited += draw_gui_combobox(
-          "emission_tex", material.emission_tex, scene.texture_names, true);
-      edited += draw_gui_coloredithdr("color", material.color);
+          "fill_tex", material.fill_tex, scene.texture_names, true);
+      edited += draw_gui_coloredithdr("stroke", material.stroke);
       edited += draw_gui_combobox(
-          "color_tex", material.color_tex, scene.texture_names, true);
-      edited += draw_gui_slider("roughness", material.roughness, 0, 1);
-      edited += draw_gui_combobox(
-          "roughness_tex", material.roughness_tex, scene.texture_names, true);
-      edited += draw_gui_slider("metallic", material.metallic, 0, 1);
-      edited += draw_gui_slider("ior", material.ior, 0.1f, 5);
+          "stroke_tex", material.stroke_tex, scene.texture_names, true);
       if (edited) {
         if (before_edit) before_edit();
         scene.materials.at(selection.material) = material;
@@ -709,7 +704,8 @@ namespace yocto {
         edited += draw_gui_slider("bounces", tparams.bounces, 1, 128);
         edited += draw_gui_slider("batch", tparams.batch, 1, 16);
         edited += draw_gui_slider("clamp", tparams.clamp, 10, 1000);
-        edited += draw_gui_checkbox("transparent background", tparams.transparent_background);
+        edited += draw_gui_checkbox(
+            "transparent background", tparams.transparent_background);
         continue_gui_line();
         edited += draw_gui_checkbox("filter", tparams.tentfilter);
         edited += draw_gui_slider("pratio", tparams.pratio, 1, 64);
@@ -1693,33 +1689,18 @@ void main() {
 
       glUniform1i(glGetUniformLocation(program, "unlit"), 0);
       glUniform3f(glGetUniformLocation(program, "emission"),
-          material.emission.x, material.emission.y, material.emission.z);
-      glUniform3f(glGetUniformLocation(program, "color"), material.color.x,
-          material.color.y, material.color.z);
+          0, 0, 0);
+      glUniform3f(glGetUniformLocation(program, "color"), material.fill.x,
+          material.fill.y, material.fill.z);
       glUniform1f(glGetUniformLocation(program, "specular"), 1);
-      glUniform1f(glGetUniformLocation(program, "metallic"), material.metallic);
+      glUniform1f(glGetUniformLocation(program, "metallic"), 0);
       glUniform1f(
-          glGetUniformLocation(program, "roughness"), material.roughness);
-      glUniform1f(glGetUniformLocation(program, "opacity"), material.opacity);
-      if (material.type == material_type::matte ||
-          material.type == material_type::transparent ||
-          material.type == material_type::refractive ||
-          material.type == material_type::subsurface ||
-          material.type == material_type::volumetric) {
-        glUniform1f(glGetUniformLocation(program, "specular"), 0);
-      }
-      if (material.type == material_type::reflective) {
-        glUniform1f(glGetUniformLocation(program, "metallic"), 1);
-      }
+          glGetUniformLocation(program, "roughness"), 0);
+      glUniform1f(glGetUniformLocation(program, "opacity"), material.fill.w);
+      glUniform1f(glGetUniformLocation(program, "specular"), 0);
       glUniform1f(glGetUniformLocation(program, "double_sided"),
           params.double_sided ? 1 : 0);
-      set_texture(
-          program, "emission_tex", "emission_tex_on", material.emission_tex, 0);
-      set_texture(program, "color_tex", "color_tex_on", material.color_tex, 1);
-      set_texture(program, "roughness_tex", "roughness_tex_on",
-          material.roughness_tex, 3);
-      set_texture(
-          program, "normalmap_tex", "normalmap_tex_on", material.normal_tex, 5);
+      set_texture(program, "color_tex", "color_tex_on", material.fill_tex, 1);
       assert_glerror();
 
       if (glshape.points)

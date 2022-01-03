@@ -95,7 +95,7 @@ namespace yocto {
   static material_point eval_material(
       const scene_data& scene, const scene_intersection& intersection) {
     return eval_material(scene, scene.instances[intersection.instance],
-        intersection.element, intersection.uv, intersection.border);
+        intersection.element, intersection.uv);
   }
   static vec3f eval_position(
       const scene_data& scene, const scene_intersection& intersection) {
@@ -181,16 +181,15 @@ namespace yocto {
 
     auto position = eval_position(scene, intersection);
     auto material = eval_material(scene, intersection);
+    auto color    = intersection.border ? material.stroke : material.fill;
 
-    if (material.opacity < 1) {
+    if (color.w < 1) {
       auto back_color = trace_color(
           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
-      auto front_color = rgb_to_rgba(material.color);
-      front_color.w    = material.opacity;
-      return composite(front_color, back_color);
+      return composite(color, back_color);
     }
 
-    return rgb_to_rgba(material.color);
+    return color;
   }
 
   static vec4f trace_color_wireframe(const scene_data& scene,
@@ -203,21 +202,19 @@ namespace yocto {
 
     auto position = eval_position(scene, intersection);
     auto material = eval_material(scene, intersection);
+    auto color    = intersection.border ? material.stroke : material.fill;
 
-    if (material.opacity < 1) {
+    if (color.w < 1) {
       auto back_color = trace_color_wireframe(
           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
-      auto front_color = rgb_to_rgba(material.color);
-      front_color.w    = material.opacity;
-      return composite(front_color, back_color);
+      return composite(color, back_color);
     }
 
-    return rgb_to_rgba(material.color);
+    return color;
   }
 
-  static vec4f trace_normal(const scene_data& scene,
-      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
-      const trace_params& params) {
+  static vec4f trace_normal(const scene_data& scene, const scene_bvh& bvh,
+      const ray3f& ray, rng_state& rng, const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit)
       return params.transparent_background ? vec4f{0, 0, 0, 0}
@@ -227,9 +224,8 @@ namespace yocto {
   }
 
   // Eyelight for quick previewing.
-  static vec4f trace_eyelight(const scene_data& scene,
-      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
-      const trace_params& params) {
+  static vec4f trace_eyelight(const scene_data& scene, const scene_bvh& bvh,
+      const ray3f& ray, rng_state& rng, const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
     if (!intersection.hit)
       return params.transparent_background ? vec4f{0, 0, 0, 0}
@@ -238,23 +234,25 @@ namespace yocto {
     auto normal   = eval_normal(scene, intersection);
     auto position = eval_position(scene, intersection);
     auto material = eval_material(scene, intersection);
-    auto color    = material.color * dot(normal, -ray.d);
+    auto color    = intersection.border ? material.stroke : material.fill;
 
-    if (material.opacity < 1) {
+    auto rgb_color = rgba_to_rgb(color) * dot(normal, -ray.d);
+    color.x = rgb_color.x;
+    color.y = rgb_color.y;
+    color.z = rgb_color.z;
+
+    if (color.w < 1) {
       auto back_color = trace_eyelight(
           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
-      auto front_color = rgb_to_rgba(material.color);
-      front_color.w    = material.opacity;
-      return composite(front_color, back_color);
+      return composite(color, back_color);
     }
 
-    return rgb_to_rgba(color);
+    return color;
   }
 
   // Trace a single ray from the camera using the given algorithm.
-  using sampler_func = vec4f (*)(const scene_data& scene,
-      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
-      const trace_params& params);
+  using sampler_func = vec4f (*)(const scene_data& scene, const scene_bvh& bvh,
+      const ray3f& ray, rng_state& rng, const trace_params& params);
   static sampler_func get_trace_sampler_func(const trace_params& params) {
     switch (params.sampler) {
       case trace_sampler_type::color: return trace_color;
@@ -272,12 +270,12 @@ namespace yocto {
   // Trace a block of samples
   void trace_sample(trace_state& state, const scene_data& scene,
       const scene_bvh& bvh, int i, int j, const trace_params& params) {
-    auto& camera  = scene.cameras[params.camera];
-    auto  sampler = get_trace_sampler_func(params);
-    auto  idx     = state.width * j + i;
-    auto  ray     = sample_camera(camera, {i, j}, {state.width, state.height},
-             rand2f(state.rngs[idx]), rand2f(state.rngs[idx]), params.tentfilter);
-    auto radiance = sampler(scene, bvh, ray, state.rngs[idx], params);
+    auto& camera   = scene.cameras[params.camera];
+    auto  sampler  = get_trace_sampler_func(params);
+    auto  idx      = state.width * j + i;
+    auto  ray      = sample_camera(camera, {i, j}, {state.width, state.height},
+              rand2f(state.rngs[idx]), rand2f(state.rngs[idx]), params.tentfilter);
+    auto  radiance = sampler(scene, bvh, ray, state.rngs[idx], params);
     if (!isfinite(radiance)) radiance = {0, 0, 0};
     if (max(radiance) > params.clamp)
       radiance = radiance * (params.clamp / max(radiance));

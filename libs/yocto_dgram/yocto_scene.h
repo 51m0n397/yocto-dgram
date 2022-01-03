@@ -100,42 +100,15 @@ namespace yocto {
     vector<vec4b> pixelsb = {};
   };
 
-  // Material type
-  enum struct material_type {
-    // clang-format off
-  matte, glossy, reflective, transparent, refractive, subsurface, volumetric, 
-  gltfpbr
-    // clang-format on
-  };
-
-  // Enum labels
-  inline const auto material_type_names = std::vector<std::string>{"matte",
-      "glossy", "reflective", "transparent", "refractive", "subsurface",
-      "volumetric", "gltfpbr"};
-
   // Material for surfaces, lines and triangles.
-  // For surfaces, uses a microfacet model with thin sheet transmission.
-  // The model is based on OBJ, but contains glTF compatibility.
-  // For the documentation on the values, please see the OBJ format.
   struct material_data {
     // material
-    material_type type         = material_type::matte;
-    vec3f         emission     = {0, 0, 0};
-    vec3f         color        = {0, 0, 0};
-    float         roughness    = 0;
-    float         metallic     = 0;
-    float         ior          = 1.5f;
-    vec3f         scattering   = {0, 0, 0};
-    float         scanisotropy = 0;
-    float         trdepth      = 0.01f;
-    float         opacity      = 1;
+    vec4f fill   = {0, 0, 0, 1};
+    vec4f stroke = {0, 0, 0, 1};
 
     // textures
-    int emission_tex   = invalidid;
-    int color_tex      = invalidid;
-    int roughness_tex  = invalidid;
-    int scattering_tex = invalidid;
-    int normal_tex     = invalidid;
+    int fill_tex   = invalidid;
+    int stroke_tex = invalidid;
   };
 
   // Instance.
@@ -144,7 +117,6 @@ namespace yocto {
     frame3f frame           = identity3x4f;
     int     shape           = invalidid;
     int     material        = invalidid;
-    int     border_material = invalidid;
   };
 
   // Scene comprised an array of objects whose memory is owened by the scene.
@@ -216,32 +188,13 @@ namespace yocto {
 
   // Material parameters evaluated at a point on the surface
   struct material_point {
-    material_type type         = material_type::gltfpbr;
-    vec3f         emission     = {0, 0, 0};
-    vec3f         color        = {0, 0, 0};
-    float         opacity      = 1;
-    float         roughness    = 0;
-    float         metallic     = 0;
-    float         ior          = 1;
-    vec3f         density      = {0, 0, 0};
-    vec3f         scattering   = {0, 0, 0};
-    float         scanisotropy = 0;
-    float         trdepth      = 0.01f;
+    vec4f fill   = {0, 0, 0, 1};
+    vec4f stroke = {0, 0, 0, 1};
   };
 
   // Eval material to obtain emission, brdf and opacity.
   material_point eval_material(const scene_data& scene,
-      const material_data& material, const vec2f& texcoord,
-      const vec4f& shape_color = {1, 1, 1, 1});
-
-  // check if a material is a delta
-  bool is_delta(const material_data& material);
-  bool is_delta(const material_point& material);
-
-  // check if a material has a volume
-  bool is_volumetric(const material_data& material);
-  bool is_volumetric(const material_point& material);
-  bool is_volumetric(const scene_data& scene, const instance_data& instance);
+      const material_data& material, const vec2f& texcoord);
 
 }  // namespace yocto
 
@@ -274,10 +227,7 @@ namespace yocto {
 
   // Eval material to obtain emission, brdf and opacity.
   material_point eval_material(const scene_data& scene,
-      const instance_data& instance, int element, const vec2f& uv,
-      const bool border);
-  // check if a material has a volume
-  bool is_volumetric(const scene_data& scene, const instance_data& instance);
+      const instance_data& instance, int element, const vec2f& uv);
 
 }  // namespace yocto
 

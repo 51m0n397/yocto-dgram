@@ -1314,7 +1314,7 @@ namespace yocto {
       if (instance.material >= 0) continue;
       if (default_material == invalidid) {
         auto& material   = scene.materials.emplace_back();
-        material.color   = {0.8f, 0.8f, 0.8f};
+        material.fill    = {0.8f, 0.8f, 0.8f, 1.0f};
         default_material = (int)scene.materials.size() - 1;
       }
       instance.material = default_material;
@@ -1423,23 +1423,10 @@ namespace yocto {
 
 }  // namespace yocto
 
-
 // -----------------------------------------------------------------------------
 // JSON IO
 // -----------------------------------------------------------------------------
 namespace yocto {
-
-  NLOHMANN_JSON_SERIALIZE_ENUM(
-      material_type, {
-                         {material_type::matte, "matte"},
-                         {material_type::glossy, "glossy"},
-                         {material_type::reflective, "reflective"},
-                         {material_type::transparent, "transparent"},
-                         {material_type::refractive, "refractive"},
-                         {material_type::subsurface, "subsurface"},
-                         {material_type::volumetric, "volumetric"},
-                         {material_type::gltfpbr, "gltfpbr"},
-                     })
 
   // Load a scene in the builtin JSON format.
   static bool load_json_scene(const string& filename, scene_data& scene,
@@ -1517,21 +1504,14 @@ namespace yocto {
           auto& material = scene.materials.emplace_back();
           auto& name     = scene.material_names.emplace_back();
           get_opt(element, "name", name);
-          get_opt(element, "type", material.type);
-          get_opt(element, "emission", material.emission);
-          get_opt(element, "color", material.color);
-          get_opt(element, "metallic", material.metallic);
-          get_opt(element, "roughness", material.roughness);
-          get_opt(element, "ior", material.ior);
-          get_opt(element, "trdepth", material.trdepth);
-          get_opt(element, "scattering", material.scattering);
-          get_opt(element, "scanisotropy", material.scanisotropy);
-          get_opt(element, "opacity", material.opacity);
-          get_opt(element, "emission_tex", material.emission_tex);
-          get_opt(element, "color_tex", material.color_tex);
-          get_opt(element, "roughness_tex", material.roughness_tex);
-          get_opt(element, "scattering_tex", material.scattering_tex);
-          get_opt(element, "normal_tex", material.normal_tex);
+
+          auto color   = vec3f{0, 0, 0};
+          auto opacity = 1.0f;
+          get_opt(element, "color", color);
+          get_opt(element, "opacity", opacity);
+          material.fill = {color.x, color.y, color.z, opacity};
+
+          get_opt(element, "color_tex", material.fill_tex);
         }
       }
       if (json.contains("shapes")) {
@@ -1620,7 +1600,6 @@ namespace yocto {
           get_opt(element, "frame", instance.frame);
           get_opt(element, "shape", instance.shape);
           get_opt(element, "material", instance.material);
-          get_opt(element, "border_material", instance.border_material);
         }
       }
     } catch (...) {
@@ -1785,27 +1764,9 @@ namespace yocto {
       for (auto&& [idx, material] : enumerate(scene.materials)) {
         auto& element = append_object(group);
         set_val(element, "name", get_name(scene.material_names, idx), "");
-        set_val(element, "type", material.type, default_.type);
-        set_val(element, "emission", material.emission, default_.emission);
-        set_val(element, "color", material.color, default_.color);
-        set_val(element, "metallic", material.metallic, default_.metallic);
-        set_val(element, "roughness", material.roughness, default_.roughness);
-        set_val(element, "ior", material.ior, default_.ior);
-        set_val(element, "trdepth", material.trdepth, default_.trdepth);
-        set_val(
-            element, "scattering", material.scattering, default_.scattering);
-        set_val(element, "scanisotropy", material.scanisotropy,
-            default_.scanisotropy);
-        set_val(element, "opacity", material.opacity, default_.opacity);
-        set_val(element, "emission_tex", material.emission_tex,
-            default_.emission_tex);
-        set_val(element, "color_tex", material.color_tex, default_.color_tex);
-        set_val(element, "roughness_tex", material.roughness_tex,
-            default_.roughness_tex);
-        set_val(element, "scattering_tex", material.scattering_tex,
-            default_.scattering_tex);
-        set_val(
-            element, "normal_tex", material.normal_tex, default_.normal_tex);
+        set_val(element, "color", xyz(material.fill), xyz(default_.fill));
+        set_val(element, "opacity", material.fill.w, default_.fill.w);
+        set_val(element, "color_tex", material.fill_tex, default_.fill_tex);
       }
     }
 
