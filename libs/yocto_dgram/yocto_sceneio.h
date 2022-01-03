@@ -150,16 +150,6 @@ namespace yocto {
   void save_fvshape(const string& filename, const fvshape_data& shape,
       bool flip_texcoords = true, bool ascii = false);
 
-  // Make presets. Supported mostly in IO.
-  shape_data   make_shape_preset(const string& type);
-  fvshape_data make_fvshape_preset(const string& type);
-
-  // Make presets. Supported mostly in IO.
-  bool make_shape_preset(
-      const string& filname, shape_data& shape, string& error);
-  bool make_fvshape_preset(
-      const string& filname, fvshape_data& shape, string& error);
-
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
@@ -210,13 +200,6 @@ namespace yocto {
 
   // Make missing scene directories
   void make_scene_directories(const string& filename, const scene_data& scene);
-
-  // Scene presets used for testing.
-  scene_data make_scene_preset(const string& type);
-
-  // Scene presets used for testing.
-  bool make_scene_preset(
-      const string& filename, scene_data& scene, string& error);
 
 }  // namespace yocto
 
