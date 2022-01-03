@@ -386,6 +386,15 @@ namespace yocto {
   inline void from_json(const json_value& json, vec4f& value) {
     nlohmann::from_json(json, (array<float, 4>&)value);
   }
+  inline void from_json(const json_value& json, vec2i& value) {
+    nlohmann::from_json(json, (array<int, 2>&)value);
+  }
+  inline void from_json(const json_value& json, vec3i& value) {
+    nlohmann::from_json(json, (array<int, 3>&)value);
+  }
+  inline void from_json(const json_value& json, vec4i& value) {
+    nlohmann::from_json(json, (array<int, 4>&)value);
+  }
   inline void from_json(const json_value& json, frame2f& value) {
     nlohmann::from_json(json, (array<float, 6>&)value);
   }
@@ -1391,10 +1400,6 @@ namespace yocto {
     if (!load_scene(filename, scene, error, noparallel)) throw io_error{error};
     return scene;
   }
-  void load_scene(const string& filename, scene_data& scene, bool noparallel) {
-    auto error = string{};
-    if (!load_scene(filename, scene, error, noparallel)) throw io_error{error};
-  }
   void save_scene(
       const string& filename, const scene_data& scene, bool noparallel) {
     auto error = string{};
@@ -1428,18 +1433,8 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Load a scene in the builtin JSON format.
-  static bool load_json_scene(const string& filename, scene_data& scene,
-      string& error, bool noparallel) {
-    // open file
-    auto json = json_value{};
-    if (!load_json(filename, json, error)) return false;
-
-    // check version
-    if (!json.contains("asset") || !json.at("asset").contains("version") ||
-        json.at("asset").at("version") != "4.2")
-      return false;
-
+  static bool load_path_json_scene(const string& filename, json_value& json,
+      scene_data& scene, string& error, bool noparallel) {
     // parse json value
     auto get_opt = [](const json_value& json, const string& key, auto& value) {
       value = json.value(key, value);
@@ -1661,6 +1656,147 @@ namespace yocto {
 
     // done
     return true;
+  }
+
+  static bool load_dgram_json_scene(const string& filename, json_value& json,
+      scene_data& scene, string& error, bool noparallel) {
+    auto get_opt = [](const json_value& json, const string& key, auto& value) {
+      value = json.value(key, value);
+    };
+
+    // parsing values
+    try {
+      // hardcode selecting only first scene
+      auto& jscene = json.at("scenes")[0];
+      if (jscene.contains("shapes")) {
+        auto& group = jscene.at("shapes");
+        scene.shapes.reserve(group.size());
+        scene.shape_names.reserve(group.size());
+        for (auto& element : group) {
+          auto& shape = scene.shapes.emplace_back();
+          get_opt(element, "positions", shape.positions);
+
+          get_opt(element, "points", shape.points);
+
+          auto lines = vector<vec2i>{};
+          get_opt(element, "lines", lines);
+          auto arrows = vector<vec2i>{};
+          get_opt(element, "arrows", arrows);
+          lines.insert(lines.end(), arrows.begin(), arrows.end());
+          shape.lines = lines;
+
+          vector<line_end> ends(shape.positions.size(), line_end::cap);
+          for (auto arrow : arrows) {
+            ends[arrow.y] = line_end::arrow;
+          }
+          shape.ends = ends;
+
+          vector<float> rads(shape.positions.size(), 0.02f);
+          shape.radius = rads;
+
+          get_opt(element, "triangles", shape.triangles);
+          get_opt(element, "quads", shape.quads);
+
+          /*auto boundary = false;
+          get_opt(element, "boundary", boundary);
+          if (boundary) shape.border_radius = 0.001f;*/
+        }
+      }
+      if (jscene.contains("materials")) {
+        auto& group = jscene.at("materials");
+        scene.materials.reserve(group.size());
+        scene.material_names.reserve(group.size());
+        for (auto& element : group) {
+          auto& material = scene.materials.emplace_back();
+          auto& name     = scene.material_names.emplace_back();
+          get_opt(element, "fill", material.fill);
+          get_opt(element, "stroke", material.stroke);
+        }
+      }
+      if (jscene.contains("objects")) {
+        auto& group = jscene.at("objects");
+        scene.instances.reserve(group.size());
+        scene.instance_names.reserve(group.size());
+        for (auto& element : group) {
+          // auto& instance = scene.instances.emplace_back();
+          // auto& name     = scene.instance_names.emplace_back();
+          auto instance = instance_data{};
+          get_opt(element, "frame", instance.frame);
+          get_opt(element, "shape", instance.shape);
+          get_opt(element, "material", instance.material);
+          if (instance.shape != invalidid) {
+            scene.instances.push_back(instance);
+            auto& name = scene.instance_names.emplace_back();
+          }
+
+          /*if (scene.materials[instance.material].stroke.w > 0) {
+            scene.shapes[instance.shape].border_radius = 0.02f;
+          }*/
+        }
+      }
+      if (jscene.contains("cameras")) {
+        auto& group = jscene.at("cameras");
+        scene.cameras.reserve(group.size());
+        scene.camera_names.reserve(group.size());
+        for (auto& element : group) {
+          scene.camera_names.emplace_back("camera");
+          auto& camera        = scene.cameras.emplace_back();
+          camera.orthographic = false;
+          camera.film         = 0.036f;
+          camera.aspect       = (float)json.at("size")[0] /
+                          (float)json.at("size")[1];  //(float)16 / (float)9;
+          camera.aperture = 0;
+          camera.lens     = .050f;
+          get_opt(element, "lens", camera.lens);
+
+          auto bbox        = compute_bounds(scene);
+          auto center      = (bbox.max + bbox.min) / 2;
+          auto bbox_radius = length(bbox.max - bbox.min) / 2;
+          auto camera_dir  = vec3f{0, 0, 1};
+          auto camera_dist = bbox_radius * camera.lens /
+                             (camera.film / camera.aspect);
+          camera_dist *= 2.0f;  // correction for tracer camera implementation
+          auto from = camera_dir * camera_dist + center;
+          get_opt(element, "from", from);
+
+          auto fcenter = vec2f{0, 0};
+          get_opt(element, "center", fcenter);
+          auto to = vec3f{fcenter.x, fcenter.y, 0.0};
+
+          auto up      = vec3f{0, 1, 0};
+          camera.frame = lookat_frame(from, to, up);
+          camera.focus = length(from - to);
+        }
+      }
+
+    } catch (...) {
+      error = "cannot parse " + filename;
+      return false;
+    }
+
+    // fix scene
+    add_missing_camera(scene);
+    add_missing_radius(scene);
+    add_missing_caps(scene);
+    trim_memory(scene);
+
+    return true;
+  }
+
+  // Load a scene in the builtin JSON format.
+  static bool load_json_scene(const string& filename, scene_data& scene,
+      string& error, bool noparallel) {
+    // open file
+    auto json = json_value{};
+    if (!load_json(filename, json, error)) return false;
+
+    // check version
+    if (json.contains("scenes"))
+      return load_dgram_json_scene(filename, json, scene, error, noparallel);
+    if (json.contains("asset") && json.at("asset").contains("version") &&
+        json.at("asset").at("version") == "4.2")
+      return load_path_json_scene(filename, json, scene, error, noparallel);
+    return false;
   }
 
   // Save a scene in the builtin JSON format.

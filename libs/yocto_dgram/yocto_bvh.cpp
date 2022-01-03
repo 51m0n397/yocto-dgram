@@ -591,7 +591,7 @@ namespace yocto {
             hit      = true;
             element  = bvh.primitives[idx];
             ray.tmax = distance;
-            border   = false;
+            border   = true;
           }
         }
       } else if (!shape.triangles.empty()) {

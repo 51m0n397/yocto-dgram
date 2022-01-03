@@ -156,8 +156,6 @@ namespace yocto {
 
   // Load/save a scene in the supported formats.
   scene_data load_scene(const string& filename, bool noparallel = false);
-  void       load_scene(
-            const string& filename, scene_data& scene, bool noparallel = false);
   void save_scene(
       const string& filename, const scene_data& scene, bool noparallel = false);
 
