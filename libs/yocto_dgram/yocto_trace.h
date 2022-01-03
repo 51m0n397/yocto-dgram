@@ -73,20 +73,20 @@ namespace yocto {
 
   // Options for trace functions
   struct trace_params {
-    int                camera         = 0;
-    int                resolution     = 1280;
-    trace_sampler_type sampler        = trace_sampler_type::color;
-    int                samples        = 8;
-    int                bounces        = 8;
-    float              clamp          = 10;
-    bool               envhidden      = false;
-    bool               tentfilter     = false;
-    uint64_t           seed           = trace_default_seed;
-    bool               highqualitybvh = false;
-    bool               noparallel     = false;
-    int                pratio         = 8;
-    float              exposure       = 0;
-    int                batch          = 1;
+    int                camera                 = 0;
+    int                resolution             = 1280;
+    trace_sampler_type sampler                = trace_sampler_type::color;
+    int                samples                = 8;
+    int                bounces                = 8;
+    float              clamp                  = 10;
+    bool               transparent_background = false;
+    bool               tentfilter             = false;
+    uint64_t           seed                   = trace_default_seed;
+    bool               highqualitybvh         = false;
+    bool               noparallel             = false;
+    int                pratio                 = 8;
+    float              exposure               = 0;
+    int                batch                  = 1;
   };
 
 }  // namespace yocto

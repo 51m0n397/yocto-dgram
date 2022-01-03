@@ -154,19 +154,12 @@ namespace yocto {
   bool make_scene_directories(
       const string& filename, const scene_data& scene, string& error);
 
-  // Add environment
-  bool add_environment(
-      scene_data& scene, const string& filename, string& error);
-
   // Load/save a scene in the supported formats.
   scene_data load_scene(const string& filename, bool noparallel = false);
   void       load_scene(
             const string& filename, scene_data& scene, bool noparallel = false);
   void save_scene(
       const string& filename, const scene_data& scene, bool noparallel = false);
-
-  // Add environment
-  void add_environment(scene_data& scene, const string& filename);
 
   // Make missing scene directories
   void make_scene_directories(const string& filename, const scene_data& scene);

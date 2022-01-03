@@ -131,15 +131,12 @@ namespace yocto {
     }
   }
 
-  struct trace_result {
-    vec3f radiance = {0, 0, 0};
-    bool  hit      = false;
-  };
-
-  static trace_result trace_color(const scene_data& scene, const scene_bvh& bvh,
+  static vec4f trace_color(const scene_data& scene, const scene_bvh& bvh,
       const ray3f& ray, rng_state& rng, const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
-    if (!intersection.hit) return {eval_environment(scene, ray.d), false};
+    if (!intersection.hit)
+      return params.transparent_background ? vec4f{0, 0, 0, 0}
+                                           : scene.background_color;
 
     if (intersection.border) {
       auto back_isec = intersect_scene(bvh, scene, ray, true);
@@ -186,53 +183,57 @@ namespace yocto {
     auto material = eval_material(scene, intersection);
 
     if (material.opacity < 1) {
-      auto back_color  = rgb_to_rgba(trace_color(
-           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params)
-                                         .radiance);
+      auto back_color = trace_color(
+          scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
       auto front_color = rgb_to_rgba(material.color);
       front_color.w    = material.opacity;
-      return {rgba_to_rgb(composite(front_color, back_color)), true};
+      return composite(front_color, back_color);
     }
 
-    return {material.color, true};
+    return rgb_to_rgba(material.color);
   }
 
-  static trace_result trace_color_wireframe(const scene_data& scene,
+  static vec4f trace_color_wireframe(const scene_data& scene,
       const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
       const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
-    if (!intersection.hit) return {eval_environment(scene, ray.d), false};
+    if (!intersection.hit)
+      return params.transparent_background ? vec4f{0, 0, 0, 0}
+                                           : scene.background_color;
 
     auto position = eval_position(scene, intersection);
     auto material = eval_material(scene, intersection);
 
     if (material.opacity < 1) {
-      auto back_color  = rgb_to_rgba(trace_color(
-           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params)
-                                         .radiance);
+      auto back_color = trace_color_wireframe(
+          scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
       auto front_color = rgb_to_rgba(material.color);
       front_color.w    = material.opacity;
-      return {rgba_to_rgb(composite(front_color, back_color)), true};
+      return composite(front_color, back_color);
     }
 
-    return {material.color, true};
+    return rgb_to_rgba(material.color);
   }
 
-  static trace_result trace_normal(const scene_data& scene,
+  static vec4f trace_normal(const scene_data& scene,
       const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
       const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
-    if (!intersection.hit) return {eval_environment(scene, ray.d), false};
+    if (!intersection.hit)
+      return params.transparent_background ? vec4f{0, 0, 0, 0}
+                                           : vec4f{1, 1, 1, 1};
 
-    return {eval_normal(scene, intersection), true};
+    return rgb_to_rgba(eval_normal(scene, intersection));
   }
 
   // Eyelight for quick previewing.
-  static trace_result trace_eyelight(const scene_data& scene,
+  static vec4f trace_eyelight(const scene_data& scene,
       const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
       const trace_params& params) {
     auto intersection = intersect_scene(bvh, scene, ray, false);
-    if (!intersection.hit) return {eval_environment(scene, ray.d), false};
+    if (!intersection.hit)
+      return params.transparent_background ? vec4f{0, 0, 0, 0}
+                                           : scene.background_color;
 
     auto normal   = eval_normal(scene, intersection);
     auto position = eval_position(scene, intersection);
@@ -240,19 +241,18 @@ namespace yocto {
     auto color    = material.color * dot(normal, -ray.d);
 
     if (material.opacity < 1) {
-      auto back_color  = rgb_to_rgba(trace_eyelight(
-           scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params)
-                                         .radiance);
-      auto front_color = rgb_to_rgba(color);
+      auto back_color = trace_eyelight(
+          scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
+      auto front_color = rgb_to_rgba(material.color);
       front_color.w    = material.opacity;
-      return {rgba_to_rgb(composite(front_color, back_color)), true};
+      return composite(front_color, back_color);
     }
 
-    return {color, true};
+    return rgb_to_rgba(color);
   }
 
   // Trace a single ray from the camera using the given algorithm.
-  using sampler_func = trace_result (*)(const scene_data& scene,
+  using sampler_func = vec4f (*)(const scene_data& scene,
       const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
       const trace_params& params);
   static sampler_func get_trace_sampler_func(const trace_params& params) {
@@ -277,17 +277,12 @@ namespace yocto {
     auto  idx     = state.width * j + i;
     auto  ray     = sample_camera(camera, {i, j}, {state.width, state.height},
              rand2f(state.rngs[idx]), rand2f(state.rngs[idx]), params.tentfilter);
-    auto [radiance, hit] = sampler(scene, bvh, ray, state.rngs[idx], params);
+    auto radiance = sampler(scene, bvh, ray, state.rngs[idx], params);
     if (!isfinite(radiance)) radiance = {0, 0, 0};
     if (max(radiance) > params.clamp)
       radiance = radiance * (params.clamp / max(radiance));
-    if (hit) {
-      state.image[idx] += {radiance.x, radiance.y, radiance.z, 1};
-      state.hits[idx] += 1;
-    } else if (!params.envhidden && !scene.environments.empty()) {
-      state.image[idx] += {radiance.x, radiance.y, radiance.z, 1};
-      state.hits[idx] += 1;
-    }
+    state.image[idx] += radiance;
+    state.hits[idx] += 1;
   }
 
   // Init a sequence of random number generators.

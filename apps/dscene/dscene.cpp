@@ -129,8 +129,6 @@ struct render_params : trace_params {
   string scene     = "scene.json";
   string output    = "out.png";
   string camname   = "";
-  bool   addsky    = false;
-  string envname   = "";
   bool   savebatch = false;
 };
 
@@ -139,8 +137,6 @@ void add_options(cli_command& cli, render_params& params) {
   add_option(cli, "scene", params.scene, "scene filename");
   add_option(cli, "output", params.output, "output filename");
   add_option(cli, "camera", params.camname, "camera name");
-  add_option(cli, "addsky", params.addsky, "add sky");
-  add_option(cli, "envname", params.envname, "add environment");
   add_option(cli, "savebatch", params.savebatch, "save batch");
   add_option(cli, "resolution", params.resolution, "image resolution");
   add_option(
@@ -149,7 +145,8 @@ void add_options(cli_command& cli, render_params& params) {
   add_option(cli, "bounces", params.bounces, "number of bounces");
   add_option(cli, "batch", params.batch, "sample batch");
   add_option(cli, "clamp", params.clamp, "clamp params");
-  add_option(cli, "envhidden", params.envhidden, "hide environment");
+  add_option(cli, "transparent_background", params.transparent_background,
+      "hide environment");
   add_option(cli, "tentfilter", params.tentfilter, "filter image");
   add_option(cli, "highqualitybvh", params.highqualitybvh, "high quality bvh");
   add_option(cli, "exposure", params.exposure, "exposure value");
@@ -168,14 +165,6 @@ void run_render(const render_params& params_) {
   timer      = simple_timer{};
   auto scene = load_scene(params.scene);
   print_info("load scene: {}", elapsed_formatted(timer));
-
-  // add sky
-  if (params.addsky) add_sky(scene);
-
-  // add environment
-  if (!params.envname.empty()) {
-    add_environment(scene, params.envname);
-  }
 
   // camera
   params.camera = find_camera(scene, params.camname);
@@ -221,8 +210,6 @@ struct view_params : trace_params {
   string scene   = "scene.json";
   string output  = "out.png";
   string camname = "";
-  bool   addsky  = false;
-  string envname = "";
 };
 
 // Cli
@@ -230,8 +217,6 @@ void add_options(cli_command& cli, view_params& params) {
   add_option(cli, "scene", params.scene, "scene filename");
   add_option(cli, "output", params.output, "output filename");
   add_option(cli, "camera", params.camname, "camera name");
-  add_option(cli, "addsky", params.addsky, "add sky");
-  add_option(cli, "envname", params.envname, "add environment");
   add_option(cli, "resolution", params.resolution, "image resolution");
   add_option(
       cli, "sampler", params.sampler, "sampler type", trace_sampler_labels);
@@ -239,7 +224,8 @@ void add_options(cli_command& cli, view_params& params) {
   add_option(cli, "bounces", params.bounces, "number of bounces");
   add_option(cli, "batch", params.batch, "sample batch");
   add_option(cli, "clamp", params.clamp, "clamp params");
-  add_option(cli, "envhidden", params.envhidden, "hide environment");
+  add_option(cli, "transparent_background", params.transparent_background,
+      "hide environment");
   add_option(cli, "tentfilter", params.tentfilter, "filter image");
   add_option(
       cli, "--highqualitybvh", params.highqualitybvh, "use high quality BVH");
@@ -259,14 +245,6 @@ void run_view(const view_params& params_) {
   timer      = simple_timer{};
   auto scene = load_scene(params.scene);
   print_info("load scene: {}", elapsed_formatted(timer));
-
-  // add sky
-  if (params.addsky) add_sky(scene);
-
-  // add environment
-  if (!params.envname.empty()) {
-    add_environment(scene, params.envname);
-  }
 
   // find camera
   params.camera = find_camera(scene, params.camname);

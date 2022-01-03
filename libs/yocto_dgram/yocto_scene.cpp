@@ -580,33 +580,6 @@ static pair<vec3f, vec3f> eval_tangents(
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
-// ENVIRONMENT PROPERTIES
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-  // Evaluate environment color.
-  vec3f eval_environment(const scene_data& scene,
-      const environment_data& environment, const vec3f& direction) {
-    auto wl       = transform_direction(inverse(environment.frame), direction);
-    auto texcoord = vec2f{
-        atan2(wl.z, wl.x) / (2 * pif), acos(clamp(wl.y, -1.0f, 1.0f)) / pif};
-    if (texcoord.x < 0) texcoord.x += 1;
-    return environment.emission *
-           xyz(eval_texture(scene, environment.emission_tex, texcoord));
-  }
-
-  // Evaluate all environment color.
-  vec3f eval_environment(const scene_data& scene, const vec3f& direction) {
-    auto emission = vec3f{0, 0, 0};
-    for (auto& environment : scene.environments) {
-      emission += eval_environment(scene, environment, direction);
-    }
-    return emission;
-  }
-
-}  // namespace yocto
-
-// -----------------------------------------------------------------------------
 // SCENE UTILITIES
 // -----------------------------------------------------------------------------
 namespace yocto {
@@ -634,17 +607,6 @@ namespace yocto {
     camera.focus = length(from - to);
   }
 
-  // Add a sky environment
-  void add_sky(scene_data& scene, float sun_angle) {
-    scene.texture_names.emplace_back("sky");
-    auto& texture = scene.textures.emplace_back();
-    texture       = image_to_texture(make_sunsky(1024, 512, sun_angle));
-    scene.environment_names.emplace_back("sky");
-    auto& environment        = scene.environments.emplace_back();
-    environment.emission     = {1, 1, 1};
-    environment.emission_tex = (int)scene.textures.size() - 1;
-  }
-
   // get named camera or default if camera is empty
   int find_camera(const scene_data& scene, const string& name) {
     if (scene.cameras.empty()) return invalidid;
@@ -668,7 +630,7 @@ namespace yocto {
   }
 
   // create a scene from a shape
-  scene_data make_shape_scene(const shape_data& shape, bool addsky) {
+  scene_data make_shape_scene(const shape_data& shape) {
     // scene
     auto scene = scene_data{};
     // shape
@@ -687,8 +649,6 @@ namespace yocto {
     shape_instance.material = 0;
     // camera
     add_camera(scene);
-    // environment
-    if (addsky) add_sky(scene);
     // done
     return scene;
   }
@@ -727,13 +687,11 @@ namespace yocto {
     memory += vector_memory(scene.materials);
     memory += vector_memory(scene.shapes);
     memory += vector_memory(scene.textures);
-    memory += vector_memory(scene.environments);
     memory += vector_memory(scene.camera_names);
     memory += vector_memory(scene.instance_names);
     memory += vector_memory(scene.material_names);
     memory += vector_memory(scene.shape_names);
     memory += vector_memory(scene.texture_names);
-    memory += vector_memory(scene.environment_names);
     for (auto& shape : scene.shapes) {
       memory += vector_memory(shape.points);
       memory += vector_memory(shape.lines);
@@ -782,7 +740,6 @@ namespace yocto {
     stats.push_back("instances:    " + format(scene.instances.size()));
     stats.push_back("materials:    " + format(scene.materials.size()));
     stats.push_back("shapes:       " + format(scene.shapes.size()));
-    stats.push_back("environments: " + format(scene.environments.size()));
     stats.push_back("textures:     " + format(scene.textures.size()));
     stats.push_back("memory:       " + format(compute_memory(scene)));
     stats.push_back("points:       " +
@@ -839,7 +796,6 @@ namespace yocto {
     check_names(scene.material_names, "material");
     check_names(scene.instance_names, "instance");
     check_names(scene.texture_names, "texture");
-    check_names(scene.environment_names, "environment");
     if (!notextures) check_empty_textures(scene);
 
     return errs;

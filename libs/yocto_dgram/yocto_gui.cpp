@@ -310,7 +310,6 @@ namespace yocto {
   struct scene_selection {
     int camera      = 0;
     int instance    = 0;
-    int environment = 0;
     int shape       = 0;
     int texture     = 0;
     int material    = 0;
@@ -332,20 +331,6 @@ namespace yocto {
       if (edited) {
         if (before_edit) before_edit();
         scene.cameras.at(selection.camera) = camera;
-      }
-      end_gui_header();
-    }
-    if (draw_gui_header("environments")) {
-      draw_gui_combobox(
-          "environment", selection.environment, scene.environment_names);
-      auto environment = scene.environments.at(selection.environment);
-      edited += draw_gui_coloredithdr("emission", environment.emission);
-      edited += draw_gui_combobox(
-          "emission_tex", environment.emission_tex, scene.texture_names, true);
-      //   frame3f frame        = identity3x4f;
-      if (edited) {
-        if (before_edit) before_edit();
-        scene.environments.at(selection.environment) = environment;
       }
       end_gui_header();
     }
@@ -724,7 +709,7 @@ namespace yocto {
         edited += draw_gui_slider("bounces", tparams.bounces, 1, 128);
         edited += draw_gui_slider("batch", tparams.batch, 1, 16);
         edited += draw_gui_slider("clamp", tparams.clamp, 10, 1000);
-        edited += draw_gui_checkbox("envhidden", tparams.envhidden);
+        edited += draw_gui_checkbox("transparent background", tparams.transparent_background);
         continue_gui_line();
         edited += draw_gui_checkbox("filter", tparams.tentfilter);
         edited += draw_gui_slider("pratio", tparams.pratio, 1, 64);

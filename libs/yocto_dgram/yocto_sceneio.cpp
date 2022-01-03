@@ -1201,13 +1201,6 @@ namespace yocto {
       return get_element_name("camera", idx, scene.cameras.size());
     return scene.camera_names[idx];
   }
-  [[maybe_unused]] static string get_environment_name(
-      const scene_data& scene, int idx) {
-    if (idx < 0) return "";
-    if (scene.environment_names.empty())
-      return get_element_name("environment", idx, scene.environments.size());
-    return scene.environment_names[idx];
-  }
   [[maybe_unused]] static string get_shape_name(
       const scene_data& scene, int idx) {
     if (idx < 0) return "";
@@ -1240,11 +1233,6 @@ namespace yocto {
   [[maybe_unused]] static string get_camera_name(
       const scene_data& scene, const camera_data& camera) {
     return get_camera_name(scene, (int)(&camera - scene.cameras.data()));
-  }
-  [[maybe_unused]] static string get_environment_name(
-      const scene_data& scene, const environment_data& environment) {
-    return get_environment_name(
-        scene, (int)(&environment - scene.environments.data()));
   }
   [[maybe_unused]] static string get_shape_name(
       const scene_data& scene, const shape_data& shape) {
@@ -1357,7 +1345,6 @@ namespace yocto {
     scene.instances.shrink_to_fit();
     scene.materials.shrink_to_fit();
     scene.textures.shrink_to_fit();
-    scene.environments.shrink_to_fit();
   }
 
 }  // namespace yocto
@@ -1428,27 +1415,10 @@ namespace yocto {
     return true;
   }
 
-  // Add environment
-  bool add_environment(
-      scene_data& scene, const string& filename, string& error) {
-    auto texture = texture_data{};
-    if (!load_texture(filename, texture, error)) return false;
-    scene.textures.push_back(std::move(texture));
-    scene.environments.push_back(
-        {identity3x4f, {1, 1, 1}, (int)scene.textures.size() - 1});
-    return true;
-  }
-
   // Make missing scene directories
   void make_scene_directories(const string& filename, const scene_data& scene) {
     auto error = string{};
     if (!make_scene_directories(filename, scene, error)) throw io_error{error};
-  }
-
-  // Add environment
-  void add_environment(scene_data& scene, const string& filename) {
-    auto error = string{};
-    if (!add_environment(scene, filename, error)) throw io_error{error};
   }
 
 }  // namespace yocto
@@ -1651,19 +1621,6 @@ namespace yocto {
           get_opt(element, "shape", instance.shape);
           get_opt(element, "material", instance.material);
           get_opt(element, "border_material", instance.border_material);
-        }
-      }
-      if (json.contains("environments")) {
-        auto& group = json.at("environments");
-        scene.instances.reserve(group.size());
-        scene.instance_names.reserve(group.size());
-        for (auto& element : group) {
-          auto& environment = scene.environments.emplace_back();
-          auto& name        = scene.environment_names.emplace_back();
-          get_opt(element, "name", name);
-          get_opt(element, "frame", environment.frame);
-          get_opt(element, "emission", environment.emission);
-          get_opt(element, "emission_tex", environment.emission_tex);
         }
       }
     } catch (...) {
@@ -1872,20 +1829,6 @@ namespace yocto {
         set_val(element, "frame", instance.frame, default_.frame);
         set_val(element, "shape", instance.shape, default_.shape);
         set_val(element, "material", instance.material, default_.material);
-      }
-    }
-
-    if (!scene.environments.empty()) {
-      auto  default_ = environment_data{};
-      auto& group    = add_array(json, "environments");
-      reserve_values(group, scene.environments.size());
-      for (auto&& [idx, environment] : enumerate(scene.environments)) {
-        auto& element = append_object(group);
-        set_val(element, "name", get_name(scene.environment_names, idx), "");
-        set_val(element, "frame", environment.frame, default_.frame);
-        set_val(element, "emission", environment.emission, default_.emission);
-        set_val(element, "emission_tex", environment.emission_tex,
-            default_.emission_tex);
       }
     }
 

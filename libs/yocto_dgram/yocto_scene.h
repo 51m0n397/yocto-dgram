@@ -147,37 +147,28 @@ namespace yocto {
     int     border_material = invalidid;
   };
 
-  // Environment map.
-  struct environment_data {
-    // environment data
-    frame3f frame        = identity3x4f;
-    vec3f   emission     = {0, 0, 0};
-    int     emission_tex = invalidid;
-  };
-
   // Scene comprised an array of objects whose memory is owened by the scene.
-  // All members are optional,Scene objects (camera, instances, environments)
-  // have transforms defined internally. A scene can optionally contain a
-  // node hierarchy where each node might point to a camera, instance or
-  // environment. In that case, the element transforms are computed from
-  // the hierarchy. Animation is also optional, with keyframe data that
-  // updates node transformations only if defined.
+  // All members are optional,Scene objects (camera, instances) have transforms
+  // defined internally. A scene can optionally contain a node hierarchy where
+  // each node might point to a camera or instance, In that case, the element
+  // transforms are computed from the hierarchy. Animation is also optional,
+  // with keyframe data that updates node transformations only if defined.
   struct scene_data {
     // scene elements
-    vector<camera_data>      cameras      = {};
-    vector<instance_data>    instances    = {};
-    vector<environment_data> environments = {};
-    vector<shape_data>       shapes       = {};
-    vector<texture_data>     textures     = {};
-    vector<material_data>    materials    = {};
+    vector<camera_data>   cameras   = {};
+    vector<instance_data> instances = {};
+    vector<shape_data>    shapes    = {};
+    vector<texture_data>  textures  = {};
+    vector<material_data> materials = {};
 
     // names (this will be cleanup significantly later)
-    vector<string> camera_names      = {};
-    vector<string> texture_names     = {};
-    vector<string> material_names    = {};
-    vector<string> shape_names       = {};
-    vector<string> instance_names    = {};
-    vector<string> environment_names = {};
+    vector<string> camera_names   = {};
+    vector<string> texture_names  = {};
+    vector<string> material_names = {};
+    vector<string> shape_names    = {};
+    vector<string> instance_names = {};
+
+    vec4f background_color = {1, 1, 1, 1};
 
     // copyright info preserve in IO
     string copyright = "";
@@ -291,18 +282,6 @@ namespace yocto {
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
-// ENVIRONMENT PROPERTIES
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-  // Environment
-  vec3f eval_environment(const scene_data& scene,
-      const environment_data& environment, const vec3f& direction);
-  vec3f eval_environment(const scene_data& scene, const vec3f& direction);
-
-}  // namespace yocto
-
-// -----------------------------------------------------------------------------
 // SCENE UTILITIES
 // -----------------------------------------------------------------------------
 namespace yocto {
@@ -312,13 +291,12 @@ namespace yocto {
 
   // add missing elements
   void add_camera(scene_data& scene);
-  void add_sky(scene_data& scene, float sun_angle = pif / 4);
 
   // get named camera or default if name is empty
   int find_camera(const scene_data& scene, const string& name);
 
   // create a scene from a shape
-  scene_data make_shape_scene(const shape_data& shape, bool add_sky = false);
+  scene_data make_shape_scene(const shape_data& shape);
 
   // Return scene statistics as list of strings.
   vector<string> scene_stats(const scene_data& scene, bool verbose = false);
