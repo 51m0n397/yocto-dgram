@@ -127,6 +127,21 @@ namespace yocto {
     bool  border   = false;
   };
 
+  // Results of intersect_xxx and overlap_xxx functions that include hit flag,
+  // instance id, shape element id, shape element uv and intersection distance.
+  // The values are all set for scene intersection. Shape intersection does not
+  // set the instance id and element intersections do not set shape element id
+  // and the instance id. Results values are set only if hit is true.
+  struct shape_intersection {
+    int   element  = -1;
+    vec2f uv       = {0, 0};
+    float distance = 0;
+    vec3f position = {0, 0, 0};
+    vec3f normal   = {0, 0, 0};
+    bool  hit      = false;
+    bool  border   = false;
+  };
+
   // Intersect ray with a bvh returning either the first or any intersection
   // depending on `find_any`. Returns the ray distance , the instance id,
   // the shape element index and the element barycentric coordinates.
