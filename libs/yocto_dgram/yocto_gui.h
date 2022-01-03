@@ -61,18 +61,6 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Open a window and show an image
-  void show_image_gui(
-      const string& title, const string& name, const image_data& image);
-
-  // Open a window and show a set of images
-  void show_image_gui(const string& title, const vector<string>& names,
-      const vector<image_data>& images);
-
-  // Open a window and show an image for color grading
-  void show_colorgrade_gui(
-      const string& title, const string& name, const image_data& image);
-
   // Open a window and show an scene via path tracing
   void show_trace_gui(const string& title, const string& name,
       scene_data& scene, const trace_params& params = {}, bool print = true,
@@ -82,38 +70,6 @@ namespace yocto {
   struct gui_input;
   using glview_callback = std::function<void(const gui_input& input,
       vector<int>& updated_shapes, vector<int>& updated_textures)>;
-
-  // Shading type
-  enum struct shade_lighting { camlight, eyelight };
-
-  // Shading name
-  inline const auto shade_lighting_names = vector<string>{
-      "camlight", "eyelight"};
-
-  // Draw options
-  struct shade_params {
-    int            camera           = 0;
-    int            resolution       = 1280;
-    bool           wireframe        = false;
-    shade_lighting lighting         = shade_lighting::camlight;
-    float          exposure         = 0;
-    float          gamma            = 2.2f;
-    bool           faceted          = false;
-    bool           double_sided     = true;
-    bool           non_rigid_frames = true;
-    float          near             = 0.01f;
-    float          far              = 10000.0f;
-    bool           hide_environment = false;
-    vec4f          background       = vec4f{0.15f, 0.15f, 0.15f, 1.0f};
-  };
-
-  // Open a window and show an scene via OpenGL shading
-  struct shade_params;
-  void show_shade_gui(const string& title, const string& name,
-      scene_data& scene, const shade_params& params,
-      const glview_callback& widgets_callback  = {},
-      const glview_callback& uiupdate_callback = {},
-      const glview_callback& update_callback   = {});
 
 }  // namespace yocto
 

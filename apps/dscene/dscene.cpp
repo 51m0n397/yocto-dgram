@@ -253,41 +253,12 @@ void run_view(const view_params& params_) {
   show_trace_gui("dscene", params.scene, scene, params);
 }
 
-struct glview_params {
-  string scene   = "scene.json";
-  string camname = "";
-};
-
-// Cli
-void add_options(cli_command& cli, glview_params& params) {
-  add_option(cli, "scene", params.scene, "input scene");
-  add_option(cli, "camera", params.camname, "camera name");
-}
-
-void run_glview(const glview_params& params_) {
-  print_info("viewing {}", params_.scene);
-
-  // copy params
-  auto params = params_;
-
-  // loading scene
-  auto scene = load_scene(params.scene);
-
-  // camera
-  auto viewparams   = shade_params{};
-  viewparams.camera = find_camera(scene, params.camname);
-
-  // run viewer
-  show_shade_gui("dscene", params.scene, scene, viewparams);
-}
-
 struct app_params {
   string         command = "convert";
   convert_params convert = {};
   info_params    info    = {};
   render_params  render  = {};
   view_params    view    = {};
-  glview_params  glview  = {};
 };
 
 // Run
