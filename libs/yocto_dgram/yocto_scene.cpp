@@ -711,90 +711,6 @@ namespace yocto {
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
-// SCENE TESSELATION
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-  void tesselate_subdiv(
-      shape_data& shape, subdiv_data& subdiv_, const scene_data& scene) {
-    auto subdiv = subdiv_;
-
-    if (subdiv.subdivisions > 0) {
-      if (subdiv.catmullclark) {
-        for ([[maybe_unused]] auto subdivision : range(subdiv.subdivisions)) {
-          std::tie(subdiv.quadstexcoord, subdiv.texcoords) =
-              subdivide_catmullclark(
-                  subdiv.quadstexcoord, subdiv.texcoords, true);
-          std::tie(subdiv.quadsnorm, subdiv.normals) = subdivide_catmullclark(
-              subdiv.quadsnorm, subdiv.normals, true);
-          std::tie(subdiv.quadspos, subdiv.positions) = subdivide_catmullclark(
-              subdiv.quadspos, subdiv.positions);
-        }
-      } else {
-        for ([[maybe_unused]] auto subdivision : range(subdiv.subdivisions)) {
-          std::tie(subdiv.quadstexcoord, subdiv.texcoords) = subdivide_quads(
-              subdiv.quadstexcoord, subdiv.texcoords);
-          std::tie(subdiv.quadsnorm, subdiv.normals) = subdivide_quads(
-              subdiv.quadsnorm, subdiv.normals);
-          std::tie(subdiv.quadspos, subdiv.positions) = subdivide_quads(
-              subdiv.quadspos, subdiv.positions);
-        }
-      }
-      if (subdiv.smooth) {
-        subdiv.normals   = quads_normals(subdiv.quadspos, subdiv.positions);
-        subdiv.quadsnorm = subdiv.quadspos;
-      } else {
-        subdiv.normals   = {};
-        subdiv.quadsnorm = {};
-      }
-    }
-
-    if (subdiv.displacement != 0 && subdiv.displacement_tex != invalidid) {
-      if (subdiv.texcoords.empty())
-        throw std::runtime_error("missing texture coordinates");
-
-      // facevarying case
-      auto offset = vector<float>(subdiv.positions.size(), 0);
-      auto count  = vector<int>(subdiv.positions.size(), 0);
-      for (auto fid = 0; fid < subdiv.quadspos.size(); fid++) {
-        auto qpos = subdiv.quadspos[fid];
-        auto qtxt = subdiv.quadstexcoord[fid];
-        for (auto i = 0; i < 4; i++) {
-          auto& displacement_tex = scene.textures[subdiv.displacement_tex];
-          auto  disp             = mean(
-                           eval_texture(displacement_tex, subdiv.texcoords[qtxt[i]], false));
-          if (!displacement_tex.pixelsb.empty()) disp -= 0.5f;
-          offset[qpos[i]] += subdiv.displacement * disp;
-          count[qpos[i]] += 1;
-        }
-      }
-      auto normals = quads_normals(subdiv.quadspos, subdiv.positions);
-      for (auto vid = 0; vid < subdiv.positions.size(); vid++) {
-        subdiv.positions[vid] += normals[vid] * offset[vid] / (float)count[vid];
-      }
-      if (subdiv.smooth || !subdiv.normals.empty()) {
-        subdiv.quadsnorm = subdiv.quadspos;
-        subdiv.normals   = quads_normals(subdiv.quadspos, subdiv.positions);
-      }
-    }
-
-    shape = {};
-    split_facevarying(shape.quads, shape.positions, shape.normals,
-        shape.texcoords, subdiv.quadspos, subdiv.quadsnorm,
-        subdiv.quadstexcoord, subdiv.positions, subdiv.normals,
-        subdiv.texcoords);
-  }
-
-  void tesselate_subdivs(scene_data& scene) {
-    // tesselate shapes
-    for (auto& subdiv : scene.subdivs) {
-      tesselate_subdiv(scene.shapes[subdiv.shape], subdiv, scene);
-    }
-  }
-
-}  // namespace yocto
-
-// -----------------------------------------------------------------------------
 // SCENE STATS AND VALIDATION
 // -----------------------------------------------------------------------------
 namespace yocto {
@@ -828,14 +744,6 @@ namespace yocto {
       memory += vector_memory(shape.texcoords);
       memory += vector_memory(shape.colors);
       memory += vector_memory(shape.triangles);
-    }
-    for (auto& subdiv : scene.subdivs) {
-      memory += vector_memory(subdiv.quadspos);
-      memory += vector_memory(subdiv.quadsnorm);
-      memory += vector_memory(subdiv.quadstexcoord);
-      memory += vector_memory(subdiv.positions);
-      memory += vector_memory(subdiv.normals);
-      memory += vector_memory(subdiv.texcoords);
     }
     for (auto& texture : scene.textures) {
       memory += vector_memory(texture.pixelsb);
@@ -874,7 +782,6 @@ namespace yocto {
     stats.push_back("instances:    " + format(scene.instances.size()));
     stats.push_back("materials:    " + format(scene.materials.size()));
     stats.push_back("shapes:       " + format(scene.shapes.size()));
-    stats.push_back("subdivs:      " + format(scene.subdivs.size()));
     stats.push_back("environments: " + format(scene.environments.size()));
     stats.push_back("textures:     " + format(scene.textures.size()));
     stats.push_back("memory:       " + format(compute_memory(scene)));
@@ -890,9 +797,6 @@ namespace yocto {
     stats.push_back("quads:        " +
                     format(accumulate(scene.shapes,
                         [](auto& shape) { return shape.quads.size(); })));
-    stats.push_back("fvquads:      " +
-                    format(accumulate(scene.subdivs,
-                        [](auto& subdiv) { return subdiv.quadspos.size(); })));
     stats.push_back("texels4b:     " +
                     format(accumulate(scene.textures,
                         [](auto& texture) { return texture.pixelsb.size(); })));

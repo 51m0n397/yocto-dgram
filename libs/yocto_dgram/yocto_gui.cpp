@@ -314,7 +314,6 @@ namespace yocto {
     int shape       = 0;
     int texture     = 0;
     int material    = 0;
-    int subdiv      = 0;
   };
 
   static bool draw_scene_editor(scene_data& scene, scene_selection& selection,
@@ -405,17 +404,6 @@ namespace yocto {
       draw_gui_label("height", texture.height);
       draw_gui_label("linear", texture.linear);
       draw_gui_label("byte", !texture.pixelsb.empty());
-      end_gui_header();
-    }
-    if (draw_gui_header("subdivs")) {
-      draw_gui_combobox("subdiv", selection.subdiv, scene.subdiv_names);
-      auto& subdiv = scene.subdivs.at(selection.subdiv);
-      draw_gui_label("quadspos", (int)subdiv.quadspos.size());
-      draw_gui_label("quadsnorm", (int)subdiv.quadsnorm.size());
-      draw_gui_label("quadstexcoord", (int)subdiv.quadstexcoord.size());
-      draw_gui_label("positions", (int)subdiv.positions.size());
-      draw_gui_label("normals", (int)subdiv.normals.size());
-      draw_gui_label("texcoords", (int)subdiv.texcoords.size());
       end_gui_header();
     }
     return (bool)edited;

@@ -137,36 +137,6 @@ namespace yocto {
   void save_shape(const string& filename, const shape_data& shape,
       bool flip_texcoords = true, bool ascii = false);
 
-  // Load/save a subdiv
-  bool load_fvshape(const string& filename, fvshape_data& shape, string& error,
-      bool flip_texcoords = true);
-  bool save_fvshape(const string& filename, const fvshape_data& shape,
-      string& error, bool flip_texcoords = true, bool ascii = false);
-
-  // Load/save a subdiv
-  fvshape_data load_fvshape(const string& filename, bool flip_texcoords = true);
-  void         load_fvshape(
-              const string& filename, fvshape_data& shape, bool flip_texcoords = true);
-  void save_fvshape(const string& filename, const fvshape_data& shape,
-      bool flip_texcoords = true, bool ascii = false);
-
-}  // namespace yocto
-
-// -----------------------------------------------------------------------------
-// SUBDIV IO
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-  // Load/save a subdiv in the supported formats.
-  bool load_subdiv(const string& filename, subdiv_data& subdiv, string& error);
-  bool save_subdiv(
-      const string& filename, const subdiv_data& subdiv, string& error);
-
-  // Load/save a subdiv in the supported formats.
-  subdiv_data load_subdiv(const string& filename);
-  void        load_subdiv(const string& filename, subdiv_data& subdiv);
-  void        save_subdiv(const string& filename, const subdiv_data& subdiv);
-
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------

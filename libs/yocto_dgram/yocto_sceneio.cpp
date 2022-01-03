@@ -147,11 +147,6 @@ namespace yocto {
   static string path_join(const string& patha, const string& pathb) {
     return (make_path(patha) / make_path(pathb)).generic_u8string();
   }
-  static string path_join(
-      const string& patha, const string& pathb, const string& pathc) {
-    return (make_path(patha) / make_path(pathb) / make_path(pathc))
-        .generic_u8string();
-  }
 
   // Check if a file can be opened for reading.
   static bool path_exists(const string& filename) {
@@ -951,175 +946,6 @@ namespace yocto {
     }
   }
 
-  // Load face-varying mesh
-  bool load_fvshape(const string& filename, fvshape_data& shape, string& error,
-      bool flip_texcoord) {
-    auto shape_error = [&]() {
-      error = "empty shape " + filename;
-      return false;
-    };
-
-    shape = {};
-
-    auto ext = path_extension(filename);
-    if (ext == ".ply" || ext == ".PLY") {
-      auto ply = ply_model{};
-      if (!load_ply(filename, ply, error)) return false;
-      // TODO: remove when all as arrays
-      get_positions(ply, (vector<array<float, 3>>&)shape.positions);
-      get_normals(ply, (vector<array<float, 3>>&)shape.normals);
-      get_texcoords(
-          ply, (vector<array<float, 2>>&)shape.texcoords, flip_texcoord);
-      get_quads(ply, (vector<array<int, 4>>&)shape.quadspos);
-      if (!shape.normals.empty()) shape.quadsnorm = shape.quadspos;
-      if (!shape.texcoords.empty()) shape.quadstexcoord = shape.quadspos;
-      if (shape.quadspos.empty()) return shape_error();
-      return true;
-    } else if (ext == ".obj" || ext == ".OBJ") {
-      auto obj = obj_shape{};
-      if (!load_obj(filename, obj, error, true)) return false;
-      // TODO: remove when all as arrays
-      auto materials = vector<int>{};
-      get_positions(obj, (vector<array<float, 3>>&)shape.positions);
-      get_normals(obj, (vector<array<float, 3>>&)shape.normals);
-      get_texcoords(
-          obj, (vector<array<float, 2>>&)shape.texcoords, flip_texcoord);
-      get_fvquads(obj, (vector<array<int, 4>>&)shape.quadspos,
-          (vector<array<int, 4>>&)shape.quadsnorm,
-          (vector<array<int, 4>>&)shape.quadstexcoord, materials);
-      if (shape.quadspos.empty()) return shape_error();
-      return true;
-    } else if (ext == ".stl" || ext == ".STL") {
-      auto stl = stl_model{};
-      if (!load_stl(filename, stl, error, true)) return false;
-      if (stl.shapes.empty()) return shape_error();
-      if (stl.shapes.size() > 1) return shape_error();
-      auto fnormals  = vector<vec3f>{};
-      auto triangles = vector<vec3i>{};
-      if (!get_triangles(stl, 0, (vector<array<int, 3>>&)triangles,
-              (vector<array<float, 3>>&)shape.positions,
-              (vector<array<float, 3>>&)fnormals))
-        return shape_error();
-      shape.quadspos = triangles_to_quads(triangles);
-      return true;
-    } else {
-      error = "unsupported format " + filename;
-      return false;
-    }
-  }
-
-  // Save ply mesh
-  bool save_fvshape(const string& filename, const fvshape_data& shape,
-      string& error, bool flip_texcoord, bool ascii) {
-    auto shape_error = [&]() {
-      error = "empty shape " + filename;
-      return false;
-    };
-
-    auto ext = path_extension(filename);
-    if (ext == ".ply" || ext == ".PLY") {
-      auto ply             = ply_model{};
-      auto split_quads     = vector<vec4i>{};
-      auto split_positions = vector<vec3f>{};
-      auto split_normals   = vector<vec3f>{};
-      auto split_texcoords = vector<vec2f>{};
-      split_facevarying(split_quads, split_positions, split_normals,
-          split_texcoords, shape.quadspos, shape.quadsnorm, shape.quadstexcoord,
-          shape.positions, shape.normals, shape.texcoords);
-      // TODO: remove when all as arrays
-      add_positions(ply, (const vector<array<float, 3>>&)split_positions);
-      add_normals(ply, (const vector<array<float, 3>>&)split_normals);
-      add_texcoords(
-          ply, (const vector<array<float, 2>>&)split_texcoords, flip_texcoord);
-      add_quads(ply, (const vector<array<int, 4>>&)split_quads);
-      if (!save_ply(filename, ply, error)) return false;
-      return true;
-    } else if (ext == ".obj" || ext == ".OBJ") {
-      auto obj = obj_shape{};
-      // TODO: remove when all as arrays
-      add_positions(obj, (const vector<array<float, 3>>&)shape.positions);
-      add_normals(obj, (const vector<array<float, 3>>&)shape.normals);
-      add_texcoords(
-          obj, (const vector<array<float, 2>>&)shape.texcoords, flip_texcoord);
-      add_fvquads(obj, (const vector<array<int, 4>>&)shape.quadspos,
-          (const vector<array<int, 4>>&)shape.quadsnorm,
-          (const vector<array<int, 4>>&)shape.quadstexcoord, 0);
-      if (!save_obj(filename, obj, error)) return false;
-      return true;
-    } else if (ext == ".stl" || ext == ".STL") {
-      auto stl = stl_model{};
-      if (!shape.quadspos.empty()) {
-        auto split_quads     = vector<vec4i>{};
-        auto split_positions = vector<vec3f>{};
-        auto split_normals   = vector<vec3f>{};
-        auto split_texcoords = vector<vec2f>{};
-        split_facevarying(split_quads, split_positions, split_normals,
-            split_texcoords, shape.quadspos, shape.quadsnorm,
-            shape.quadstexcoord, shape.positions, shape.normals,
-            shape.texcoords);
-        auto triangles = quads_to_triangles(split_quads);
-        add_triangles(stl, (const vector<array<int, 3>>&)triangles,
-            (const vector<array<float, 3>>&)split_positions, {});
-      } else {
-        return shape_error();
-      }
-      if (!save_stl(filename, stl, error)) return false;
-      return true;
-    } else if (ext == ".cpp" || ext == ".CPP") {
-      auto to_cpp = [](const string& name, const string& vname,
-                        const auto& values) -> string {
-        using T = typename std::remove_const_t<
-            std::remove_reference_t<decltype(values)>>::value_type;
-        if (values.empty()) return ""s;
-        auto str = "auto " + name + "_" + vname + " = ";
-        if constexpr (std::is_same_v<int, T>) str += "vector<int>{\n";
-        if constexpr (std::is_same_v<float, T>) str += "vector<float>{\n";
-        if constexpr (std::is_same_v<vec2i, T>) str += "vector<vec2i>{\n";
-        if constexpr (std::is_same_v<vec2f, T>) str += "vector<vec2f>{\n";
-        if constexpr (std::is_same_v<vec3i, T>) str += "vector<vec3i>{\n";
-        if constexpr (std::is_same_v<vec3f, T>) str += "vector<vec3f>{\n";
-        if constexpr (std::is_same_v<vec4i, T>) str += "vector<vec4i>{\n";
-        if constexpr (std::is_same_v<vec4f, T>) str += "vector<vec4f>{\n";
-        for (auto& value : values) {
-          if constexpr (std::is_same_v<int, T> || std::is_same_v<float, T>) {
-            str += std::to_string(value) + ",\n";
-          } else if constexpr (std::is_same_v<vec2i, T> ||
-                               std::is_same_v<vec2f, T>) {
-            str += "{" + std::to_string(value.x) + "," +
-                   std::to_string(value.y) + "},\n";
-          } else if constexpr (std::is_same_v<vec3i, T> ||
-                               std::is_same_v<vec3f, T>) {
-            str += "{" + std::to_string(value.x) + "," +
-                   std::to_string(value.y) + "," + std::to_string(value.z) +
-                   "},\n";
-          } else if constexpr (std::is_same_v<vec4i, T> ||
-                               std::is_same_v<vec4f, T>) {
-            str += "{" + std::to_string(value.x) + "," +
-                   std::to_string(value.y) + "," + std::to_string(value.z) +
-                   "," + std::to_string(value.w) + "},\n";
-          } else {
-            throw std::invalid_argument{"cannot print this"};
-          }
-        }
-        str += "};\n\n";
-        return str;
-      };
-      auto name = string{"shape"};
-      auto str  = ""s;
-      str += to_cpp(name, "positions", shape.positions);
-      str += to_cpp(name, "normals", shape.normals);
-      str += to_cpp(name, "texcoords", shape.texcoords);
-      str += to_cpp(name, "quadspos", shape.quadspos);
-      str += to_cpp(name, "quadsnorm", shape.quadsnorm);
-      str += to_cpp(name, "quadstexcoord", shape.quadstexcoord);
-      if (!save_text(filename, str, error)) return false;
-      return true;
-    } else {
-      error = "unsupported format " + filename;
-      return false;
-    }
-  }
-
   // Load mesh
   shape_data load_shape(
       const string& filename, string& error, bool flip_texcoord) {
@@ -1144,27 +970,6 @@ namespace yocto {
       bool flip_texcoord, bool ascii) {
     auto error = string{};
     if (!save_shape(filename, shape, error, flip_texcoord, ascii))
-      throw io_error{error};
-  }
-
-  // Load mesh
-  fvshape_data load_fvshape(const string& filename, bool flip_texcoord) {
-    auto error = string{};
-    auto shape = fvshape_data{};
-    if (!load_fvshape(filename, shape, error, flip_texcoord))
-      throw io_error{error};
-    return shape;
-  }
-  void load_fvshape(
-      const string& filename, fvshape_data& fvshape, bool flip_texcoord) {
-    auto error = string{};
-    if (!load_fvshape(filename, fvshape, error, flip_texcoord))
-      throw io_error{error};
-  }
-  void save_fvshape(const string& filename, const fvshape_data& fvshape,
-      bool flip_texcoord, bool ascii) {
-    auto error = string{};
-    if (!save_fvshape(filename, fvshape, error, flip_texcoord, ascii))
       throw io_error{error};
   }
 
@@ -1431,13 +1236,6 @@ namespace yocto {
       return get_element_name("material", idx, scene.materials.size());
     return scene.material_names[idx];
   }
-  [[maybe_unused]] static string get_subdiv_name(
-      const scene_data& scene, int idx) {
-    if (idx < 0) return "";
-    if (scene.subdiv_names.empty())
-      return get_element_name("subdiv", idx, scene.subdivs.size());
-    return scene.subdiv_names[idx];
-  }
 
   [[maybe_unused]] static string get_camera_name(
       const scene_data& scene, const camera_data& camera) {
@@ -1463,10 +1261,6 @@ namespace yocto {
   [[maybe_unused]] static string get_material_name(
       const scene_data& scene, const material_data& material) {
     return get_material_name(scene, (int)(&material - scene.materials.data()));
-  }
-  [[maybe_unused]] static string get_subdiv_name(
-      const scene_data& scene, const subdiv_data& subdiv) {
-    return get_subdiv_name(scene, (int)(&subdiv - scene.subdivs.data()));
   }
 
   template <typename T>
@@ -1554,21 +1348,12 @@ namespace yocto {
       shape.tangents.shrink_to_fit();
       shape.ends.shrink_to_fit();
     }
-    for (auto& subdiv : scene.subdivs) {
-      subdiv.positions.shrink_to_fit();
-      subdiv.normals.shrink_to_fit();
-      subdiv.texcoords.shrink_to_fit();
-      subdiv.quadspos.shrink_to_fit();
-      subdiv.quadsnorm.shrink_to_fit();
-      subdiv.quadstexcoord.shrink_to_fit();
-    }
     for (auto& texture : scene.textures) {
       texture.pixelsf.shrink_to_fit();
       texture.pixelsb.shrink_to_fit();
     }
     scene.cameras.shrink_to_fit();
     scene.shapes.shrink_to_fit();
-    scene.subdivs.shrink_to_fit();
     scene.instances.shrink_to_fit();
     scene.materials.shrink_to_fit();
     scene.textures.shrink_to_fit();
@@ -1640,9 +1425,6 @@ namespace yocto {
     if (!scene.textures.empty())
       if (!make_directory(path_join(path_dirname(filename), "textures"), error))
         return false;
-    if (!scene.subdivs.empty())
-      if (!make_directory(path_join(path_dirname(filename), "subdivs"), error))
-        return false;
     return true;
   }
 
@@ -1671,125 +1453,12 @@ namespace yocto {
 
 }  // namespace yocto
 
-// -----------------------------------------------------------------------------
-// INDIVIDUAL ELEMENTS
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-  // load instances
-  static bool load_instance(
-      const string& filename, vector<frame3f>& frames, string& error) {
-    auto ext = path_extension(filename);
-    if (ext == ".ply" || ext == ".PLY") {
-      auto ply = ply_model{};
-      if (!load_ply(filename, ply, error)) return false;
-      // TODO: remove when all as arrays
-      if (!get_values(ply, "instance",
-              {"xx", "xy", "xz", "yx", "yy", "yz", "zx", "zy", "zz", "ox", "oy",
-                  "oz"},
-              (vector<array<float, 12>>&)frames)) {
-        error = "cannot parse " + filename;
-        return false;
-      }
-      return true;
-    } else {
-      error = "unsupported format " + filename;
-      return false;
-    }
-  }
-
-  // save instances
-  [[maybe_unused]] static bool save_instance(const string& filename,
-      const vector<frame3f>& frames, string& error, bool ascii = false) {
-    auto ext = path_extension(filename);
-    if (ext == ".ply" || ext == ".PLY") {
-      auto ply = ply_model{};
-      // TODO: remove when all as arrays
-      add_values(ply, "instance",
-          {"xx", "xy", "xz", "yx", "yy", "yz", "zx", "zy", "zz", "ox", "oy",
-              "oz"},
-          (const vector<array<float, 12>>&)frames);
-      if (!save_ply(filename, ply, error)) return false;
-      return true;
-    } else {
-      error = "unsupported format " + filename;
-      return false;
-    }
-  }
-
-  // load subdiv
-  bool load_subdiv(const string& filename, subdiv_data& subdiv, string& error) {
-    auto lsubdiv = fvshape_data{};
-    if (!load_fvshape(filename, lsubdiv, error, true)) return false;
-    subdiv.quadspos      = lsubdiv.quadspos;
-    subdiv.quadsnorm     = lsubdiv.quadsnorm;
-    subdiv.quadstexcoord = lsubdiv.quadstexcoord;
-    subdiv.positions     = lsubdiv.positions;
-    subdiv.normals       = lsubdiv.normals;
-    subdiv.texcoords     = lsubdiv.texcoords;
-    return true;
-  }
-
-  // save subdiv
-  bool save_subdiv(
-      const string& filename, const subdiv_data& subdiv, string& error) {
-    auto ssubdiv          = fvshape_data{};
-    ssubdiv.quadspos      = subdiv.quadspos;
-    ssubdiv.quadsnorm     = subdiv.quadsnorm;
-    ssubdiv.quadstexcoord = subdiv.quadstexcoord;
-    ssubdiv.positions     = subdiv.positions;
-    ssubdiv.normals       = subdiv.normals;
-    ssubdiv.texcoords     = subdiv.texcoords;
-    if (!save_fvshape(filename, ssubdiv, error, true)) return false;
-    return true;
-  }
-
-  // load/save subdiv
-  subdiv_data load_subdiv(const string& filename) {
-    auto error  = string{};
-    auto subdiv = subdiv_data{};
-    if (!load_subdiv(filename, subdiv, error)) throw io_error{error};
-    return subdiv;
-  }
-  void load_subdiv(const string& filename, subdiv_data& subdiv) {
-    auto error = string{};
-    if (!load_subdiv(filename, subdiv, error)) throw io_error{error};
-  }
-  void save_subdiv(const string& filename, const subdiv_data& subdiv) {
-    auto error = string{};
-    if (!save_subdiv(filename, subdiv, error)) throw io_error{error};
-  }
-
-}  // namespace yocto
 
 // -----------------------------------------------------------------------------
 // JSON IO
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Material type
-  enum struct material_type40 {
-    // clang-format off
-    matte, glossy, metallic, transparent, refractive, subsurface, volume, gltfpbr
-    // clang-format on
-  };
-
-  // Enum labels
-  static const auto material_type40_names = std::vector<std::string>{"matte",
-      "glossy", "metallic", "transparent", "refractive", "subsurface", "volume",
-      "gltfpbr"};
-
-  NLOHMANN_JSON_SERIALIZE_ENUM(
-      material_type40, {
-                           {material_type40::matte, "matte"},
-                           {material_type40::glossy, "glossy"},
-                           {material_type40::metallic, "metallic"},
-                           {material_type40::transparent, "transparent"},
-                           {material_type40::refractive, "refractive"},
-                           {material_type40::subsurface, "subsurface"},
-                           {material_type40::volume, "volume"},
-                           {material_type40::gltfpbr, "gltfpbr"},
-                       })
   NLOHMANN_JSON_SERIALIZE_ENUM(
       material_type, {
                          {material_type::matte, "matte"},
@@ -1803,606 +1472,6 @@ namespace yocto {
                      })
 
   // Load a scene in the builtin JSON format.
-  static bool load_json_scene_version40(const string& filename,
-      const json_value& json, scene_data& scene, string& error,
-      bool noparallel) {
-    auto parse_error = [filename, &error](const string& patha,
-                           const string& pathb = "", const string& pathc = "") {
-      auto path = patha;
-      if (!pathb.empty()) path += "/" + pathb;
-      if (!pathc.empty()) path += "/" + pathc;
-      error = "parse error " + filename + " at " + path;
-      return false;
-    };
-    auto key_error = [filename, &error](const string& patha,
-                         const string& pathb = "", const string& pathc = "") {
-      auto path = patha;
-      if (!pathb.empty()) path += "/" + pathb;
-      if (!pathc.empty()) path += "/" + pathc;
-      error = filename + "; unknow key at " + path;
-      return false;
-    };
-
-    // parse json value
-    auto get_opt = [](const json_value& json, const string& key, auto& value) {
-      value = json.value(key, value);
-    };
-    auto get_of3 = [](const json_value& json, const string& key, auto& value) {
-      auto valuea = json.value(key, (array<float, 12>&)value);
-      value       = *(frame3f*)&valuea;
-    };
-    auto get_om3 = [](const json_value& json, const string& key, auto& value) {
-      auto valuea = json.value(key, (array<float, 9>&)value);
-      value       = *(mat3f*)&valuea;
-    };
-
-    // parse json reference
-    auto shape_map = unordered_map<string, int>{};
-    auto get_shp   = [&scene, &shape_map](
-                       const json_value& json, const string& key, int& value) {
-      auto name = json.value(key, string{});
-      if (name.empty()) return;
-      auto it = shape_map.find(name);
-      if (it != shape_map.end()) {
-        value = it->second;
-      } else {
-        scene.shape_names.emplace_back(name);
-        scene.shapes.emplace_back();
-        auto shape_id   = (int)scene.shapes.size() - 1;
-        shape_map[name] = shape_id;
-        value           = shape_id;
-      }
-    };
-
-    // parse json reference
-    auto material_map = unordered_map<string, int>{};
-    auto get_mat      = [&material_map](
-                       const json_value& json, const string& key, int& value) {
-      auto name = json.value(key, string{});
-      if (name.empty()) return;
-      auto it = material_map.find(name);
-      if (it != material_map.end()) {
-        value = it->second;
-      } else {
-        throw std::out_of_range{"missing key"};
-      }
-    };
-
-    // parse json reference
-    auto texture_map = unordered_map<string, int>{};
-    auto get_tex     = [&scene, &texture_map](
-                       const json_value& json, const string& key, int& value) {
-      auto name = json.value(key, string{});
-      if (name.empty()) return;
-      auto it = texture_map.find(name);
-      if (it != texture_map.end()) {
-        value = it->second;
-      } else {
-        scene.texture_names.emplace_back(name);
-        scene.textures.emplace_back();
-        auto texture_id   = (int)scene.textures.size() - 1;
-        texture_map[name] = texture_id;
-        value             = texture_id;
-      }
-    };
-
-    // load json instance
-    struct ply_instance {
-      vector<frame3f> frames = {};
-    };
-    using ply_instance_handle = int;
-    auto ply_instances        = vector<ply_instance>{};
-    auto ply_instances_names  = vector<string>{};
-    auto ply_instance_map     = unordered_map<string, ply_instance_handle>{
-        {"", invalidid}};
-    auto instance_ply = unordered_map<int, ply_instance_handle>{};
-    auto get_ist      = [&scene, &ply_instances, &ply_instances_names,
-                       &ply_instance_map, &instance_ply](const json_value& json,
-                       const string& key, const instance_data& instance) {
-      auto name = json.value(key, string{});
-      if (name.empty()) return;
-      auto instance_id = (int)(&instance - scene.instances.data());
-      auto it          = ply_instance_map.find(name);
-      if (it != ply_instance_map.end()) {
-        instance_ply[instance_id] = it->second;
-      } else {
-        ply_instances_names.emplace_back(name);
-        ply_instances.emplace_back(ply_instance());
-        auto ply_instance_id      = (int)ply_instances.size() - 1;
-        ply_instance_map[name]    = ply_instance_id;
-        instance_ply[instance_id] = ply_instance_id;
-      }
-    };
-    auto get_ply_instance_name = [&ply_instances, &ply_instances_names](
-                                     const scene_data&   scene,
-                                     const ply_instance& instance) -> string {
-      return ply_instances_names[&instance - ply_instances.data()];
-    };
-
-    // parsing values
-    try {
-      if (json.contains("asset")) {
-        auto& element = json.at("asset");
-        get_opt(element, "copyright", scene.copyright);
-      }
-      if (json.contains("cameras")) {
-        for (auto& [key, element] : json.at("cameras").items()) {
-          auto& camera = scene.cameras.emplace_back();
-          scene.camera_names.emplace_back(key);
-          get_of3(element, "frame", camera.frame);
-          get_opt(element, "orthographic", camera.orthographic);
-          get_opt(element, "ortho", camera.orthographic);
-          get_opt(element, "lens", camera.lens);
-          get_opt(element, "aspect", camera.aspect);
-          get_opt(element, "film", camera.film);
-          get_opt(element, "focus", camera.focus);
-          get_opt(element, "aperture", camera.aperture);
-          if (element.contains("lookat")) {
-            get_om3(element, "lookat", (mat3f&)camera.frame);
-            camera.focus = length(camera.frame.x - camera.frame.y);
-            camera.frame = lookat_frame(
-                camera.frame.x, camera.frame.y, camera.frame.z);
-          }
-        }
-      }
-      if (json.contains("environments")) {
-        for (auto& [key, element] : json.at("environments").items()) {
-          auto& environment = scene.environments.emplace_back();
-          scene.environment_names.emplace_back(key);
-          get_of3(element, "frame", environment.frame);
-          get_opt(element, "emission", environment.emission);
-          get_tex(element, "emission_tex", environment.emission_tex);
-          if (element.contains("lookat")) {
-            get_om3(element, "lookat", (mat3f&)environment.frame);
-            environment.frame = lookat_frame(environment.frame.x,
-                environment.frame.y, environment.frame.z, false);
-          }
-        }
-      }
-      if (json.contains("materials")) {
-        for (auto& [key, element] : json.at("materials").items()) {
-          auto& material = scene.materials.emplace_back();
-          scene.material_names.emplace_back(key);
-          material_map[key] = (int)scene.materials.size() - 1;
-          auto type40       = material_type40::matte;
-          get_opt(element, "type", type40);
-          material.type = (material_type)type40;
-          get_opt(element, "emission", material.emission);
-          get_opt(element, "color", material.color);
-          get_opt(element, "metallic", material.metallic);
-          get_opt(element, "roughness", material.roughness);
-          get_opt(element, "ior", material.ior);
-          get_opt(element, "trdepth", material.trdepth);
-          get_opt(element, "scattering", material.scattering);
-          get_opt(element, "scanisotropy", material.scanisotropy);
-          get_opt(element, "opacity", material.opacity);
-          get_tex(element, "emission_tex", material.emission_tex);
-          get_tex(element, "color_tex", material.color_tex);
-          get_tex(element, "roughness_tex", material.roughness_tex);
-          get_tex(element, "scattering_tex", material.scattering_tex);
-          get_tex(element, "normal_tex", material.normal_tex);
-        }
-      }
-      if (json.contains("instances")) {
-        for (auto& [key, element] : json.at("instances").items()) {
-          auto& instance = scene.instances.emplace_back();
-          scene.instance_names.emplace_back(key);
-          get_of3(element, "frame", instance.frame);
-          get_shp(element, "shape", instance.shape);
-          get_mat(element, "material", instance.material);
-          if (element.contains("lookat")) {
-            get_om3(element, "lookat", (mat3f&)instance.frame);
-            instance.frame = lookat_frame(
-                instance.frame.x, instance.frame.y, instance.frame.z, false);
-          }
-        }
-      }
-      if (json.contains("objects")) {
-        for (auto& [key, element] : json.at("objects").items()) {
-          auto& instance = scene.instances.emplace_back();
-          scene.instance_names.emplace_back(key);
-          get_of3(element, "frame", instance.frame);
-          get_shp(element, "shape", instance.shape);
-          get_mat(element, "material", instance.material);
-          if (element.contains("lookat")) {
-            get_om3(element, "lookat", (mat3f&)instance.frame);
-            instance.frame = lookat_frame(
-                instance.frame.x, instance.frame.y, instance.frame.z, false);
-          }
-          if (element.contains("instance")) {
-            get_ist(element, "instance", instance);
-          }
-        }
-      }
-      if (json.contains("subdivs")) {
-        for (auto& [key, element] : json.at("subdivs").items()) {
-          auto& subdiv = scene.subdivs.emplace_back();
-          scene.subdiv_names.emplace_back(key);
-          get_shp(element, "shape", subdiv.shape);
-          get_opt(element, "subdivisions", subdiv.subdivisions);
-          get_opt(element, "catmullclark", subdiv.catmullclark);
-          get_opt(element, "smooth", subdiv.smooth);
-          get_opt(element, "displacement", subdiv.displacement);
-          get_tex(element, "displacement_tex", subdiv.displacement_tex);
-        }
-      }
-    } catch (...) {
-      error = "cannot parse " + filename;
-      return false;
-    }
-
-    // dirname
-    auto dirname         = path_dirname(filename);
-    auto dependent_error = [&filename, &error]() {
-      error = "cannot load " + filename + " since " + error;
-      return false;
-    };
-
-    // get filename from name
-    auto find_path = [dirname](const string& name, const string& group,
-                         const vector<string>& extensions) {
-      for (auto& extension : extensions) {
-        auto path = path_join(dirname, group, name + extension);
-        if (path_exists(path)) return path_join(group, name + extension);
-      }
-      return path_join(group, name + extensions.front());
-    };
-
-    // load resources
-    if (noparallel) {
-      auto error = string{};
-      // load shapes
-      for (auto& shape : scene.shapes) {
-        auto path = find_path(
-            get_shape_name(scene, shape), "shapes", {".ply", ".obj"});
-        if (!load_shape(path_join(dirname, path), shape, error, true))
-          return dependent_error();
-      }
-      // load subdivs
-      for (auto& subdiv : scene.subdivs) {
-        auto path = find_path(
-            get_subdiv_name(scene, subdiv), "subdivs", {".ply", ".obj"});
-        if (!load_subdiv(path_join(dirname, path), subdiv, error))
-          return dependent_error();
-      }
-      // load textures
-      for (auto& texture : scene.textures) {
-        auto path = find_path(get_texture_name(scene, texture), "textures",
-            {".hdr", ".exr", ".png", ".jpg"});
-        if (!load_texture(path_join(dirname, path), texture, error))
-          return dependent_error();
-      }
-      // load instances
-      for (auto& ply_instance : ply_instances) {
-        auto path = find_path(
-            get_ply_instance_name(scene, ply_instance), "instances", {".ply"});
-        if (!load_instance(
-                path_join(dirname, path), ply_instance.frames, error))
-          return dependent_error();
-      }
-    } else {
-      // load shapes
-      if (!parallel_foreach(
-              scene.shapes, error, [&](auto& shape, string& error) {
-                auto path = find_path(
-                    get_shape_name(scene, shape), "shapes", {".ply", ".obj"});
-                return load_shape(path_join(dirname, path), shape, error, true);
-              }))
-        return dependent_error();
-      // load subdivs
-      if (!parallel_foreach(
-              scene.subdivs, error, [&](auto& subdiv, string& error) {
-                auto path = find_path(get_subdiv_name(scene, subdiv), "subdivs",
-                    {".ply", ".obj"});
-                return load_subdiv(path_join(dirname, path), subdiv, error);
-              }))
-        return dependent_error();
-      // load textures
-      if (!parallel_foreach(
-              scene.textures, error, [&](auto& texture, string& error) {
-                auto path = find_path(get_texture_name(scene, texture),
-                    "textures", {".hdr", ".exr", ".png", ".jpg"});
-                return load_texture(path_join(dirname, path), texture, error);
-              }))
-        return dependent_error();
-      // load instances
-      if (!parallel_foreach(
-              ply_instances, error, [&](auto& ply_instance, string& error) {
-                auto path = find_path(
-                    get_ply_instance_name(scene, ply_instance), "instances",
-                    {".ply"});
-                return load_instance(
-                    path_join(dirname, path), ply_instance.frames, error);
-              }))
-        return dependent_error();
-    }
-
-    // apply instances
-    if (!ply_instances.empty()) {
-      auto instances      = scene.instances;
-      auto instance_names = scene.instance_names;
-      scene.instances.clear();
-      scene.instance_names.clear();
-      for (auto& instance : instances) {
-        auto it = instance_ply.find((int)(&instance - instances.data()));
-        if (it == instance_ply.end()) {
-          auto& ninstance = scene.instances.emplace_back();
-          scene.instance_names.emplace_back(
-              instance_names[&instance - instances.data()]);
-          ninstance.frame    = instance.frame;
-          ninstance.shape    = instance.shape;
-          ninstance.material = instance.material;
-        } else {
-          auto& ply_instance = ply_instances[it->second];
-          auto  instance_id  = 0;
-          for (auto& frame : ply_instance.frames) {
-            auto& ninstance = scene.instances.emplace_back();
-            scene.instance_names.emplace_back(
-                instance_names[&instance - instances.data()] + "_" +
-                std::to_string(instance_id++));
-            ninstance.frame    = frame * instance.frame;
-            ninstance.shape    = instance.shape;
-            ninstance.material = instance.material;
-          }
-        }
-      }
-    }
-
-    // fix scene
-    add_missing_camera(scene);
-    add_missing_radius(scene);
-    trim_memory(scene);
-
-    // done
-    return true;
-  }
-
-  // Load a scene in the builtin JSON format.
-  static bool load_json_scene_version41(const string& filename,
-      json_value& json, scene_data& scene, string& error, bool noparallel) {
-    // check version
-    if (!json.contains("asset") || !json.at("asset").contains("version"))
-      return load_json_scene_version40(
-          filename, json, scene, error, noparallel);
-
-    // parse json value
-    auto get_opt = [](const json_value& json, const string& key, auto& value) {
-      value = json.value(key, value);
-    };
-    auto get_ref = [](const json_value& json, const string& key, int& value,
-                       const unordered_map<string, int>& map) {
-      auto values = json.value(key, string{});
-      value       = values.empty() ? -1 : map.at(values);
-    };
-
-    // references
-    auto shape_map    = unordered_map<string, int>{};
-    auto texture_map  = unordered_map<string, int>{};
-    auto material_map = unordered_map<string, int>{};
-
-    // filenames
-    auto shape_filenames   = vector<string>{};
-    auto texture_filenames = vector<string>{};
-    auto subdiv_filenames  = vector<string>{};
-
-    // parsing values
-    try {
-      if (json.contains("asset")) {
-        auto& element = json.at("asset");
-        get_opt(element, "copyright", scene.copyright);
-      }
-      if (json.contains("cameras")) {
-        auto& group = json.at("cameras");
-        scene.cameras.reserve(group.size());
-        scene.camera_names.reserve(group.size());
-        for (auto& [key, element] : group.items()) {
-          auto& camera = scene.cameras.emplace_back();
-          scene.camera_names.push_back(key);
-          get_opt(element, "frame", camera.frame);
-          get_opt(element, "orthographic", camera.orthographic);
-          get_opt(element, "ortho", camera.orthographic);
-          get_opt(element, "lens", camera.lens);
-          get_opt(element, "aspect", camera.aspect);
-          get_opt(element, "film", camera.film);
-          get_opt(element, "focus", camera.focus);
-          get_opt(element, "aperture", camera.aperture);
-          if (element.contains("lookat")) {
-            get_opt(element, "lookat", (mat3f&)camera.frame);
-            camera.focus = length(camera.frame.x - camera.frame.y);
-            camera.frame = lookat_frame(
-                camera.frame.x, camera.frame.y, camera.frame.z);
-          }
-        }
-      }
-      if (json.contains("textures")) {
-        auto& group = json.at("textures");
-        scene.textures.reserve(group.size());
-        scene.texture_names.reserve(group.size());
-        texture_filenames.reserve(group.size());
-        for (auto& [key, element] : group.items()) {
-          [[maybe_unused]] auto& texture = scene.textures.emplace_back();
-          scene.texture_names.push_back(key);
-          auto& datafile   = texture_filenames.emplace_back();
-          texture_map[key] = (int)scene.textures.size() - 1;
-          if (element.is_string()) {
-            auto filename       = element.get<string>();
-            element             = json_value::object();
-            element["datafile"] = filename;
-          }
-          get_opt(element, "datafile", datafile);
-        }
-      }
-      if (json.contains("materials")) {
-        auto& group = json.at("materials");
-        scene.materials.reserve(group.size());
-        scene.material_names.reserve(group.size());
-        for (auto& [key, element] : json.at("materials").items()) {
-          auto& material = scene.materials.emplace_back();
-          scene.material_names.push_back(key);
-          material_map[key] = (int)scene.materials.size() - 1;
-          get_opt(element, "type", material.type);
-          get_opt(element, "emission", material.emission);
-          get_opt(element, "color", material.color);
-          get_opt(element, "metallic", material.metallic);
-          get_opt(element, "roughness", material.roughness);
-          get_opt(element, "ior", material.ior);
-          get_opt(element, "trdepth", material.trdepth);
-          get_opt(element, "scattering", material.scattering);
-          get_opt(element, "scanisotropy", material.scanisotropy);
-          get_opt(element, "opacity", material.opacity);
-          get_ref(element, "emission_tex", material.emission_tex, texture_map);
-          get_ref(element, "color_tex", material.color_tex, texture_map);
-          get_ref(
-              element, "roughness_tex", material.roughness_tex, texture_map);
-          get_ref(
-              element, "scattering_tex", material.scattering_tex, texture_map);
-          get_ref(element, "normal_tex", material.normal_tex, texture_map);
-        }
-      }
-      if (json.contains("shapes")) {
-        auto& group = json.at("shapes");
-        scene.shapes.reserve(group.size());
-        scene.shape_names.reserve(group.size());
-        shape_filenames.reserve(group.size());
-        for (auto& [key, element] : group.items()) {
-          [[maybe_unused]] auto& shape = scene.shapes.emplace_back();
-          scene.shape_names.push_back(key);
-          auto& datafile = shape_filenames.emplace_back();
-          shape_map[key] = (int)scene.shapes.size() - 1;
-          if (element.is_string()) {
-            auto filename       = element.get<string>();
-            element             = json_value::object();
-            element["datafile"] = filename;
-          }
-          get_opt(element, "datafile", datafile);
-        }
-      }
-      if (json.contains("subdivs")) {
-        auto& group = json.at("subdivs");
-        scene.subdivs.reserve(group.size());
-        scene.subdiv_names.reserve(group.size());
-        subdiv_filenames.reserve(group.size());
-        for (auto& [key, element] : group.items()) {
-          auto& subdiv = scene.subdivs.emplace_back();
-          scene.subdiv_names.emplace_back(key);
-          auto& datafile = subdiv_filenames.emplace_back();
-          get_opt(element, "datafile", datafile);
-          get_ref(element, "shape", subdiv.shape, shape_map);
-          get_opt(element, "subdivisions", subdiv.subdivisions);
-          get_opt(element, "catmullclark", subdiv.catmullclark);
-          get_opt(element, "smooth", subdiv.smooth);
-          get_opt(element, "displacement", subdiv.displacement);
-          get_ref(element, "displacement_tex", subdiv.displacement_tex,
-              texture_map);
-        }
-      }
-      if (json.contains("instances")) {
-        auto& group = json.at("instances");
-        scene.instances.reserve(group.size());
-        scene.instance_names.reserve(group.size());
-        for (auto& [key, element] : group.items()) {
-          auto& instance = scene.instances.emplace_back();
-          scene.instance_names.emplace_back(key);
-          get_opt(element, "frame", instance.frame);
-          get_ref(element, "shape", instance.shape, shape_map);
-          get_ref(element, "material", instance.material, material_map);
-          if (element.contains("lookat")) {
-            get_opt(element, "lookat", (mat3f&)instance.frame);
-            instance.frame = lookat_frame(
-                instance.frame.x, instance.frame.y, instance.frame.z, false);
-          }
-        }
-      }
-      if (json.contains("environments")) {
-        auto& group = json.at("environments");
-        scene.instances.reserve(group.size());
-        scene.instance_names.reserve(group.size());
-        for (auto& [key, element] : group.items()) {
-          auto& environment = scene.environments.emplace_back();
-          scene.environment_names.push_back(key);
-          get_opt(element, "frame", environment.frame);
-          get_opt(element, "emission", environment.emission);
-          get_ref(
-              element, "emission_tex", environment.emission_tex, texture_map);
-          if (element.contains("lookat")) {
-            get_opt(element, "lookat", (mat3f&)environment.frame);
-            environment.frame = lookat_frame(environment.frame.x,
-                environment.frame.y, environment.frame.z, false);
-          }
-        }
-      }
-    } catch (...) {
-      error = "cannot parse " + filename;
-      return false;
-    }
-
-    // prepare data
-    auto dirname         = path_dirname(filename);
-    auto dependent_error = [&filename, &error]() {
-      error = "cannot load " + filename + " since " + error;
-      return false;
-    };
-
-    // fix paths
-    for (auto& datafile : shape_filenames)
-      datafile = path_join(dirname, "shapes", datafile);
-    for (auto& datafile : texture_filenames)
-      datafile = path_join(dirname, "textures", datafile);
-    for (auto& datafile : subdiv_filenames)
-      datafile = path_join(dirname, "subdivs", datafile);
-
-    // load resources
-    if (noparallel) {
-      auto error = string{};
-      // load shapes
-      for (auto idx : range(scene.shapes.size())) {
-        if (!load_shape(shape_filenames[idx], scene.shapes[idx], error, true))
-          return dependent_error();
-      }
-      // load subdivs
-      for (auto idx : range(scene.subdivs.size())) {
-        if (!load_subdiv(subdiv_filenames[idx], scene.subdivs[idx], error))
-          return dependent_error();
-      }
-      // load textures
-      for (auto idx : range(scene.textures.size())) {
-        if (!load_texture(texture_filenames[idx], scene.textures[idx], error))
-          return dependent_error();
-      }
-    } else {
-      // load shapes
-      if (!parallel_for(
-              scene.shapes.size(), error, [&](size_t idx, string& error) {
-                return load_shape(
-                    shape_filenames[idx], scene.shapes[idx], error, true);
-              }))
-        return dependent_error();
-      // load subdivs
-      if (!parallel_for(
-              scene.subdivs.size(), error, [&](size_t idx, string& error) {
-                return load_subdiv(
-                    subdiv_filenames[idx], scene.subdivs[idx], error);
-              }))
-        return dependent_error();
-      // load textures
-      if (!parallel_for(
-              scene.textures.size(), error, [&](size_t idx, string& error) {
-                return load_texture(
-                    texture_filenames[idx], scene.textures[idx], error);
-              }))
-        return dependent_error();
-    }
-
-    // fix scene
-    add_missing_camera(scene);
-    add_missing_radius(scene);
-    trim_memory(scene);
-
-    // done
-    return false;
-  }
-
-  // Load a scene in the builtin JSON format.
   static bool load_json_scene(const string& filename, scene_data& scene,
       string& error, bool noparallel) {
     // open file
@@ -2410,13 +1479,9 @@ namespace yocto {
     if (!load_json(filename, json, error)) return false;
 
     // check version
-    if (!json.contains("asset") || !json.at("asset").contains("version"))
-      return load_json_scene_version40(
-          filename, json, scene, error, noparallel);
-    if (json.contains("asset") && json.at("asset").contains("version") &&
-        json.at("asset").at("version") == "4.1")
-      return load_json_scene_version41(
-          filename, json, scene, error, noparallel);
+    if (!json.contains("asset") || !json.at("asset").contains("version") ||
+        json.at("asset").at("version") != "4.2")
+      return false;
 
     // parse json value
     auto get_opt = [](const json_value& json, const string& key, auto& value) {
@@ -2428,7 +1493,6 @@ namespace yocto {
     auto shape_filenames   = vector<string>{};
     auto shape_borders     = vector<float>{};
     auto texture_filenames = vector<string>{};
-    auto subdiv_filenames  = vector<string>{};
 
     // errors
     auto parse_error = [&filename, &error]() {
@@ -2575,25 +1639,6 @@ namespace yocto {
           }
         }
       }
-      if (json.contains("subdivs")) {
-        auto& group = json.at("subdivs");
-        scene.subdivs.reserve(group.size());
-        scene.subdiv_names.reserve(group.size());
-        subdiv_filenames.reserve(group.size());
-        for (auto& element : group) {
-          auto& subdiv = scene.subdivs.emplace_back();
-          auto& name   = scene.subdiv_names.emplace_back();
-          auto& uri    = subdiv_filenames.emplace_back();
-          get_opt(element, "name", name);
-          get_opt(element, "uri", uri);
-          get_opt(element, "shape", subdiv.shape);
-          get_opt(element, "subdivisions", subdiv.subdivisions);
-          get_opt(element, "catmullclark", subdiv.catmullclark);
-          get_opt(element, "smooth", subdiv.smooth);
-          get_opt(element, "displacement", subdiv.displacement);
-          get_opt(element, "displacement_tex", subdiv.displacement_tex);
-        }
-      }
       if (json.contains("instances")) {
         auto& group = json.at("instances");
         scene.instances.reserve(group.size());
@@ -2643,12 +1688,6 @@ namespace yocto {
           scene.shapes[idx].border_radius = shape_borders[idx];
         }
       }
-      // load subdivs
-      for (auto idx : range(scene.subdivs.size())) {
-        if (!load_subdiv(path_join(dirname, subdiv_filenames[idx]),
-                scene.subdivs[idx], error))
-          return dependent_error();
-      }
       // load textures
       for (auto idx : range(scene.textures.size())) {
         if (!load_texture(path_join(dirname, texture_filenames[idx]),
@@ -2667,13 +1706,6 @@ namespace yocto {
                   return true;
                 } else
                   return true;
-              }))
-        return dependent_error();
-      // load subdivs
-      if (!parallel_for(
-              scene.subdivs.size(), error, [&](size_t idx, string& error) {
-                return load_subdiv(path_join(dirname, subdiv_filenames[idx]),
-                    scene.subdivs[idx], error);
               }))
         return dependent_error();
       // load textures
@@ -2719,10 +1751,6 @@ namespace yocto {
       if (value == def) return;
       json[name] = value;
     };
-    auto set_ref = [](json_value& json, const string& name, int value) {
-      if (value < 0) return;
-      json[name] = value;
-    };
     auto reserve_values = [](json_value& json, size_t size) {
       json.get_ptr<json_value::array_t*>()->reserve(size);
     };
@@ -2744,7 +1772,6 @@ namespace yocto {
     // filenames
     auto shape_filenames   = vector<string>(scene.shapes.size());
     auto texture_filenames = vector<string>(scene.textures.size());
-    auto subdiv_filenames  = vector<string>(scene.subdivs.size());
     for (auto idx : range(shape_filenames.size())) {
       shape_filenames[idx] = get_filename(
           scene.shape_names, idx, "shape", ".ply");
@@ -2752,10 +1779,6 @@ namespace yocto {
     for (auto idx : range(texture_filenames.size())) {
       texture_filenames[idx] = get_filename(scene.texture_names, idx, "texture",
           (scene.textures[idx].pixelsf.empty() ? ".png" : ".hdr"));
-    }
-    for (auto idx : range(subdiv_filenames.size())) {
-      subdiv_filenames[idx] = get_filename(
-          scene.subdiv_names, idx, "subdiv", ".obj");
     }
 
     // save json file
@@ -2839,27 +1862,6 @@ namespace yocto {
       }
     }
 
-    if (!scene.subdivs.empty()) {
-      auto  default_ = subdiv_data{};
-      auto& group    = add_array(json, "subdivs");
-      reserve_values(group, scene.subdivs.size());
-      for (auto&& [idx, subdiv] : enumerate(scene.subdivs)) {
-        auto& element = append_object(group);
-        set_val(element, "name", get_name(scene.subdiv_names, idx), "");
-        set_ref(element, "shape", subdiv.shape);
-        set_val(element, "uri", subdiv_filenames[idx], "");
-        set_val(element, "subdivisions", subdiv.subdivisions,
-            default_.subdivisions);
-        set_val(element, "catmullclark", subdiv.catmullclark,
-            default_.subdivisions);
-        set_val(element, "smooth", subdiv.smooth, default_.subdivisions);
-        set_val(element, "displacement", subdiv.displacement,
-            default_.subdivisions);
-        set_val(element, "displacement_tex",
-            get_texture_name(scene, subdiv.displacement_tex), "");
-      }
-    }
-
     if (!scene.instances.empty()) {
       auto  default_ = instance_data{};
       auto& group    = add_array(json, "instances");
@@ -2905,12 +1907,6 @@ namespace yocto {
                 scene.shapes[idx], error, true))
           return dependent_error();
       }
-      // save subdiv
-      for (auto idx : range(scene.subdivs.size())) {
-        if (!save_subdiv(path_join(dirname, subdiv_filenames[idx]),
-                scene.subdivs[idx], error))
-          return dependent_error();
-      }
       // save textures
       for (auto idx : range(scene.textures.size())) {
         if (!save_texture(path_join(dirname, texture_filenames[idx]),
@@ -2923,13 +1919,6 @@ namespace yocto {
               scene.shapes.size(), error, [&](auto idx, string& error) {
                 return save_shape(path_join(dirname, shape_filenames[idx]),
                     scene.shapes[idx], error, true);
-              }))
-        return dependent_error();
-      // save subdivs
-      if (!parallel_for(
-              scene.subdivs.size(), error, [&](auto idx, string& error) {
-                return save_subdiv(path_join(dirname, subdiv_filenames[idx]),
-                    scene.subdivs[idx], error);
               }))
         return dependent_error();
       // save textures

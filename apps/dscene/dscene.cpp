@@ -85,13 +85,6 @@ void run_convert(const convert_params& params) {
     for (auto stat : scene_stats(scene)) print_info(stat);
   }
 
-  // tesselate if needed
-  if (!scene.subdivs.empty()) {
-    timer = simple_timer{};
-    tesselate_subdivs(scene);
-    print_info("tesselate subdivs: {}", elapsed_formatted(timer));
-  }
-
   // save scene
   timer = simple_timer{};
   make_scene_directories(params.output, scene);
@@ -187,11 +180,6 @@ void run_render(const render_params& params_) {
   // camera
   params.camera = find_camera(scene, params.camname);
 
-  // tesselation
-  if (!scene.subdivs.empty()) {
-    tesselate_subdivs(scene);
-  }
-
   // build bvh
   auto bvh = make_bvh(scene, params);
 
@@ -280,11 +268,6 @@ void run_view(const view_params& params_) {
     add_environment(scene, params.envname);
   }
 
-  // tesselation
-  if (!scene.subdivs.empty()) {
-    tesselate_subdivs(scene);
-  }
-
   // find camera
   params.camera = find_camera(scene, params.camname);
 
@@ -311,11 +294,6 @@ void run_glview(const glview_params& params_) {
 
   // loading scene
   auto scene = load_scene(params.scene);
-
-  // tesselation
-  if (!scene.subdivs.empty()) {
-    tesselate_subdivs(scene);
-  }
 
   // camera
   auto viewparams   = shade_params{};

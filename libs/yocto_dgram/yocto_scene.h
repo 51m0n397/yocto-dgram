@@ -155,32 +155,6 @@ namespace yocto {
     int     emission_tex = invalidid;
   };
 
-  // Subdiv data represented as face-varying primitives where
-  // each vertex data has its own topology.
-  struct subdiv_data {
-    // face-varying primitives
-    vector<vec4i> quadspos      = {};
-    vector<vec4i> quadsnorm     = {};
-    vector<vec4i> quadstexcoord = {};
-
-    // vertex data
-    vector<vec3f> positions = {};
-    vector<vec3f> normals   = {};
-    vector<vec2f> texcoords = {};
-
-    // subdivision data
-    int  subdivisions = 0;
-    bool catmullclark = true;
-    bool smooth       = true;
-
-    // displacement data
-    float displacement     = 0;
-    int   displacement_tex = invalidid;
-
-    // shape reference
-    int shape = invalidid;
-  };
-
   // Scene comprised an array of objects whose memory is owened by the scene.
   // All members are optional,Scene objects (camera, instances, environments)
   // have transforms defined internally. A scene can optionally contain a
@@ -196,7 +170,6 @@ namespace yocto {
     vector<shape_data>       shapes       = {};
     vector<texture_data>     textures     = {};
     vector<material_data>    materials    = {};
-    vector<subdiv_data>      subdivs      = {};
 
     // names (this will be cleanup significantly later)
     vector<string> camera_names      = {};
@@ -205,7 +178,6 @@ namespace yocto {
     vector<string> shape_names       = {};
     vector<string> instance_names    = {};
     vector<string> environment_names = {};
-    vector<string> subdiv_names      = {};
 
     // copyright info preserve in IO
     string copyright = "";
@@ -353,41 +325,6 @@ namespace yocto {
   // Return validation errors as list of strings.
   vector<string> scene_validation(
       const scene_data& scene, bool notextures = false);
-
-}  // namespace yocto
-
-// -----------------------------------------------------------------------------
-// SCENE TESSELATION
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-  // Apply subdivision and displacement rules.
-  void tesselate_subdivs(scene_data& scene);
-
-}  // namespace yocto
-
-// -----------------------------------------------------------------------------
-// BACKWARDS COMPATIBILITY
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-  using sceneio_scene [[deprecated]]       = scene_data;
-  using scene_model [[deprecated]]         = scene_data;
-  using sceneio_camera [[deprecated]]      = camera_data;
-  using scene_camera [[deprecated]]        = camera_data;
-  using sceneio_texture [[deprecated]]     = texture_data;
-  using scene_texture [[deprecated]]       = texture_data;
-  using sceneio_material [[deprecated]]    = material_data;
-  using scene_material_type [[deprecated]] = material_type;
-  using sceneio_material [[deprecated]]    = material_data;
-  using sceneio_shape [[deprecated]]       = shape_data;
-  using scene_shape [[deprecated]]         = shape_data;
-  using scene_fvshape [[deprecated]]       = fvshape_data;
-  using sceneio_instance [[deprecated]]    = instance_data;
-  using scene_instance [[deprecated]]      = instance_data;
-  using sceneio_environment [[deprecated]] = environment_data;
-  using scene_environment [[deprecated]]   = environment_data;
-  using scene_subdiv [[deprecated]]        = subdiv_data;
 
 }  // namespace yocto
 
