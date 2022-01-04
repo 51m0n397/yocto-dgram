@@ -518,12 +518,12 @@ namespace yocto {
 
     // Computing ends' parameters
     if (ea == line_end::arrow) {
-      pa  = pa + ra * dir;
-      rac = ra * 1.5;
+      pa  = pa + 2 * ra * dir;
+      rac = ra * 2;
     }
     if (eb == line_end::arrow) {
-      pb  = pb - rb * dir;
-      rbc = rb * 1.5;
+      pb  = pb - 2 * rb * dir;
+      rbc = rb * 2;
     }
 
     if (ra != rb) {                  // Cone
@@ -1030,12 +1030,12 @@ namespace yocto {
 
     // Computing ends' parameters
     if (ea == line_end::arrow) {
-      pa  = pa + ra * dir;
-      rac = ra * 1.5;
+      pa  = pa + 2 * ra * dir;
+      rac = ra * 2;
     }
     if (eb == line_end::arrow) {
-      pb  = pb - rb * dir;
-      rbc = rb * 1.5;
+      pb  = pb - 2 * rb * dir;
+      rbc = rb * 2;
     }
 
     auto frame = frame_fromz({0, 0, 0}, normalize(p1 - p0));
