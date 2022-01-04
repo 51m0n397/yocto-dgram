@@ -139,9 +139,9 @@ namespace yocto {
                                            : scene.background_color;
 
     if (intersection.border) {
-      auto back_isec = intersect_scene(bvh, scene, ray, true);
-      if (back_isec.instance == intersection.instance &&
-          back_isec.element == intersection.element) {
+      auto back_isec     = intersect_scene(bvh, scene, ray, true);
+      auto back_isec_old = back_isec;
+      if (back_isec.instance == intersection.instance) {
         auto uv  = vec2f{-1e-2f, back_isec.uv.y};
         auto min = back_isec.uv.x;
         if ((1 - back_isec.uv.x) < min) {
@@ -173,10 +173,11 @@ namespace yocto {
                    interpolate_quad(shape.positions[q.x], shape.positions[q.y],
                        shape.positions[q.z], shape.positions[q.w], uv));
         }
-        auto dir  = normalize(p - ray.o);
+        auto dir = normalize(p - ray.o);
         back_isec = intersect_scene(bvh, scene, {p - dir * 1e-2f, dir}, true);
       }
-      if (back_isec.instance == intersection.instance) intersection = back_isec;
+      if (back_isec.instance == intersection.instance)
+        intersection = back_isec_old;
     }
 
     auto position = eval_position(scene, intersection);
@@ -237,9 +238,9 @@ namespace yocto {
     auto color    = intersection.border ? material.stroke : material.fill;
 
     auto rgb_color = rgba_to_rgb(color) * dot(normal, -ray.d);
-    color.x = rgb_color.x;
-    color.y = rgb_color.y;
-    color.z = rgb_color.z;
+    color.x        = rgb_color.x;
+    color.y        = rgb_color.y;
+    color.z        = rgb_color.z;
 
     if (color.w < 1) {
       auto back_color = trace_eyelight(
