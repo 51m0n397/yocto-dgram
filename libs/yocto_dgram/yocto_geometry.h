@@ -768,14 +768,14 @@ namespace yocto {
   // Intersect a ray with a point
   inline bool intersect_point(const ray3f& ray, const vec3f& p, float r,
       vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
-    auto b   = 2 * dot(ray.d, ray.o - p);
-    auto c   = dot(ray.o - p, ray.o - p) - r * r;
-    auto det = b * b - 4 * c;
+    auto a = dot(ray.d, ray.d);
+    auto b = 2 * dot(ray.d, ray.o - p);
+    auto c = dot(ray.o - p, ray.o - p) - r * r;
 
-    if (det < 0) return false;
+    auto t1 = 0.0f;
+    auto t2 = 0.0f;
 
-    auto t1 = (-b - sqrt(det)) / 2;
-    auto t2 = (-b + sqrt(det)) / 2;
+    if (!solve_quadratic(a, b, c, t1, t2)) return false;
 
     auto t = ray.tmax;
     if (t1 >= ray.tmin && t1 < t) {
@@ -812,12 +812,10 @@ namespace yocto {
     auto cv = dp - dot(dp, dir) * dir;
     auto c  = dot(cv, cv) - r * r;
 
-    float det = b * b - 4 * a * c;
-    if (det < 0) return false;
+    auto t1 = 0.0f;
+    auto t2 = 0.0f;
 
-    det     = sqrt(det);
-    auto t1 = (-b - det) / (2. * a);
-    auto t2 = (-b + det) / (2. * a);
+    if (!solve_quadratic(a, b, c, t1, t2)) return false;
 
     auto q1 = ray.o + t1 * ray.d;
     auto q2 = ray.o + t2 * ray.d;
@@ -864,18 +862,17 @@ namespace yocto {
     auto pa    = p0 - dir * o;     // Cone's apex point
     auto tga   = (r1 - r0) / ab;
     auto cosa2 = 1 / (1 + tga * tga);
-    auto co    = ray.o - pa;
+
+    auto co = ray.o - pa;
 
     auto a = dot(ray.d, dir) * dot(ray.d, dir) - cosa2;
     auto b = 2 * (dot(ray.d, dir) * dot(co, dir) - dot(ray.d, co) * cosa2);
     auto c = dot(co, dir) * dot(co, dir) - dot(co, co) * cosa2;
 
-    float det = b * b - 4 * a * c;
-    if (det < 0) return false;
+    auto t1 = 0.0f;
+    auto t2 = 0.0f;
 
-    det     = sqrt(det);
-    auto t1 = (-b - det) / (2. * a);
-    auto t2 = (-b + det) / (2. * a);
+    if (!solve_quadratic(a, b, c, t1, t2)) return false;
 
     auto q1 = ray.o + t1 * ray.d;
     auto q2 = ray.o + t2 * ray.d;
@@ -919,14 +916,14 @@ namespace yocto {
   inline bool intersect_cap(const ray3f& ray, const vec3f& pa, const vec3f& pb,
       const vec3f& pc, float r, const vec3f& dir, const frame3f& frame,
       const int sign, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
-    auto b   = 2 * dot(ray.d, ray.o - pc);
-    auto c   = dot(ray.o - pc, ray.o - pc) - r * r;
-    auto det = b * b - 4 * c;
+    auto a = dot(ray.d, ray.d);
+    auto b = 2 * dot(ray.d, ray.o - pc);
+    auto c = dot(ray.o - pc, ray.o - pc) - r * r;
 
-    if (det < 0) return false;
+    auto t1 = 0.0f;
+    auto t2 = 0.0f;
 
-    auto t1 = (-b - sqrt(det)) / 2;
-    auto t2 = (-b + sqrt(det)) / 2;
+    if (!solve_quadratic(a, b, c, t1, t2)) return false;
 
     auto p1 = ray.o + t1 * ray.d;
     auto p2 = ray.o + t2 * ray.d;
