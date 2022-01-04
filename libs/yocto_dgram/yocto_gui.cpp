@@ -422,7 +422,7 @@ namespace yocto {
         auto tparams = params;
         edited += draw_gui_combobox("camera", tparams.camera, camera_names);
         edited += draw_gui_slider("resolution", tparams.resolution, 180, 4096);
-        edited += draw_gui_slider("samples", tparams.samples, 16, 4096);
+        edited += draw_gui_slider("samples", tparams.samples, 1, 4096);
         edited += draw_gui_combobox(
             "tracer", (int&)tparams.sampler, trace_sampler_names);
         edited += draw_gui_slider("bounces", tparams.bounces, 1, 128);
@@ -433,7 +433,6 @@ namespace yocto {
         continue_gui_line();
         edited += draw_gui_checkbox("filter", tparams.tentfilter);
         edited += draw_gui_slider("pratio", tparams.pratio, 1, 64);
-        // edited += draw_gui_slider("exposure", tparams.exposure, -5, 5);
         end_gui_header();
         if (edited) {
           stop_render();
