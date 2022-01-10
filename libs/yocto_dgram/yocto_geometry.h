@@ -1056,17 +1056,20 @@ namespace yocto {
       lb = sqrt(rb * rb + rbc * rbc);
     }
 
-    if (ra == rb) {  // Cylinder
-      if (intersect_cylinder(ray, pa, pb, ra, dir, frame, tuv, t, p, n))
+    auto l  = distance(pb, pa);        // Distance between the two ends
+    auto oa = ra * l / (rb - ra);      // Distance of the apex of the cone
+                                       // along the cone's axis, from pa
+    auto ob = oa + l;                  // Distance of the apex of the cone
+                                       // along the cone's axis, from pb
+    auto o     = pa - dir * oa;        // Cone's apex point
+    auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
+    auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
+
+    if (cosa2 == 1) {
+      if (intersect_cylinder(
+              ray, pa, pb, ra + rb / 2, dir, frame, tuv, t, p, n))
         tuv = {tuv.x, (lb + lb1 + tuv.y * lc) / (lb + lb1 + lc + la1 + la)};
-    } else {                         // Cone
-      auto l  = distance(pb, pa);    // Distance between the two ends
-      auto oa = ra * l / (rb - ra);  // Distance of the apex of the cone
-                                     // along the cone's axis, from pa
-      auto ob = oa + l;              // Distance of the apex of the cone
-                                     // along the cone's axis, from pb
-      auto o    = pa - dir * oa;     // Cone's apex point
-      auto tga  = (rb - ra) / l;     // Tangent of Cone's angle
+    } else {
       auto cosa = sqrt(ob * ob - rb * rb) / ob;  // Consine of Cone's angle
 
       // Computing ends' parameters
