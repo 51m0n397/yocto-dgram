@@ -173,7 +173,7 @@ namespace yocto {
                    interpolate_quad(shape.positions[q.x], shape.positions[q.y],
                        shape.positions[q.z], shape.positions[q.w], uv));
         }
-        auto dir = normalize(p - ray.o);
+        auto dir  = normalize(p - ray.o);
         back_isec = intersect_scene(bvh, scene, {p - dir * 1e-2f, dir}, true);
       }
       if (back_isec.instance == intersection.instance)
@@ -185,8 +185,7 @@ namespace yocto {
     auto color    = intersection.border ? material.stroke : material.fill;
 
     if (color.w < 1) {
-      auto back_color = trace_color(
-          scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
+      auto back_color = trace_color(scene, bvh, {position, ray.d}, rng, params);
       return composite(color, back_color);
     }
 
@@ -207,7 +206,7 @@ namespace yocto {
 
     if (color.w < 1) {
       auto back_color = trace_color_wireframe(
-          scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
+          scene, bvh, {position, ray.d}, rng, params);
       return composite(color, back_color);
     }
 
@@ -244,7 +243,7 @@ namespace yocto {
 
     if (color.w < 1) {
       auto back_color = trace_eyelight(
-          scene, bvh, {position + ray.d * 1e-2f, ray.d}, rng, params);
+          scene, bvh, {position, ray.d}, rng, params);
       return composite(color, back_color);
     }
 
