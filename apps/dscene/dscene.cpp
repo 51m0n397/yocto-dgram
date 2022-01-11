@@ -144,14 +144,10 @@ void add_options(cli_command& cli, render_params& params) {
   add_option(
       cli, "sampler", params.sampler, "sampler type", trace_sampler_labels);
   add_option(cli, "samples", params.samples, "number of samples");
-  add_option(cli, "bounces", params.bounces, "number of bounces");
   add_option(cli, "batch", params.batch, "sample batch");
-  add_option(cli, "clamp", params.clamp, "clamp params");
   add_option(cli, "transparent_background", params.transparent_background,
       "hide environment");
-  add_option(cli, "tentfilter", params.tentfilter, "filter image");
   add_option(cli, "highqualitybvh", params.highqualitybvh, "high quality bvh");
-  add_option(cli, "exposure", params.exposure, "exposure value");
   add_option(cli, "noparallel", params.noparallel, "disable threading");
 }
 
@@ -191,8 +187,7 @@ void run_render(const render_params& params_) {
                                  "-s" + std::to_string(sample) +
                                  fs::path(params.output).extension().string())
                              .string();
-      if (!is_hdr_filename(params.output))
-        image = tonemap_image(image, params.exposure);
+      if (!is_hdr_filename(params.output)) image = tonemap_image(image, 0);
       save_image(outfilename, image);
     }
   }
@@ -201,8 +196,7 @@ void run_render(const render_params& params_) {
   // save image
   timer      = simple_timer{};
   auto image = get_render(state);
-  if (!is_hdr_filename(params.output))
-    image = tonemap_image(image, params.exposure);
+  if (!is_hdr_filename(params.output)) image = tonemap_image(image, 0);
   save_image(params.output, image);
   print_info("save image: {}", elapsed_formatted(timer));
 }
@@ -225,15 +219,11 @@ void add_options(cli_command& cli, view_params& params) {
   add_option(
       cli, "sampler", params.sampler, "sampler type", trace_sampler_labels);
   add_option(cli, "samples", params.samples, "number of samples");
-  add_option(cli, "bounces", params.bounces, "number of bounces");
   add_option(cli, "batch", params.batch, "sample batch");
-  add_option(cli, "clamp", params.clamp, "clamp params");
   add_option(cli, "transparent_background", params.transparent_background,
       "hide environment");
-  add_option(cli, "tentfilter", params.tentfilter, "filter image");
   add_option(
       cli, "--highqualitybvh", params.highqualitybvh, "use high quality BVH");
-  add_option(cli, "exposure", params.exposure, "exposure value");
   add_option(cli, "noparallel", params.noparallel, "disable threading");
 }
 

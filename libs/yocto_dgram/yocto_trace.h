@@ -81,15 +81,11 @@ namespace yocto {
     trace_sampler_type sampler      = trace_sampler_type::color;
     antialiasing_type  antialiasing = antialiasing_type::super_sampling;
     int                samples      = 9;
-    int                bounces      = 8;
-    float              clamp        = 10;
     bool               transparent_background = false;
-    bool               tentfilter             = false;
     uint64_t           seed                   = trace_default_seed;
     bool               highqualitybvh         = false;
     bool               noparallel             = false;
     int                pratio                 = 8;
-    float              exposure               = 0;
     int                batch                  = 1;
   };
 

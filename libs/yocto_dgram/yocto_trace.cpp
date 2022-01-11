@@ -110,25 +110,10 @@ namespace yocto {
 
   // Sample camera
   static ray3f sample_camera(const camera_data& camera, const vec2i& ij,
-      const vec2i& image_size, const vec2f& puv, const vec2f& luv, bool tent) {
-    if (!tent) {
-      auto uv = vec2f{
-          (ij.x + puv.x) / image_size.x, (ij.y + puv.y) / image_size.y};
-      return eval_camera(camera, uv, sample_disk(luv));
-    } else {
-      const auto width  = 2.0f;
-      const auto offset = 0.5f;
-      auto       fuv =
-          width *
-              vec2f{
-                  puv.x < 0.5f ? sqrt(2 * puv.x) - 1 : 1 - sqrt(2 - 2 * puv.x),
-                  puv.y < 0.5f ? sqrt(2 * puv.y) - 1 : 1 - sqrt(2 - 2 * puv.y),
-              } +
-          offset;
-      auto uv = vec2f{
-          (ij.x + fuv.x) / image_size.x, (ij.y + fuv.y) / image_size.y};
-      return eval_camera(camera, uv, sample_disk(luv));
-    }
+      const vec2i& image_size, const vec2f& puv, const vec2f& luv) {
+    auto uv = vec2f{
+        (ij.x + puv.x) / image_size.x, (ij.y + puv.y) / image_size.y};
+    return eval_camera(camera, uv, sample_disk(luv));
   }
 
   static vec4f trace_color(const scene_data& scene, const scene_bvh& bvh,
@@ -284,12 +269,10 @@ namespace yocto {
     }
 
     auto luv = rand2f(state.rngs[idx]);
-    auto ray = sample_camera(camera, {i, j}, {state.width, state.height}, puv,
-        luv, params.tentfilter);
+    auto ray = sample_camera(
+        camera, {i, j}, {state.width, state.height}, puv, luv);
     auto radiance = sampler(scene, bvh, ray, state.rngs[idx], params);
     if (!isfinite(radiance)) radiance = {0, 0, 0};
-    if (max(radiance) > params.clamp)
-      radiance = radiance * (params.clamp / max(radiance));
     state.image[idx] += radiance;
     state.hits[idx] += 1;
   }

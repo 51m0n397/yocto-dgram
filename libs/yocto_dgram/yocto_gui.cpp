@@ -355,7 +355,7 @@ namespace yocto {
         auto lock      = std::lock_guard{render_mutex};
         render_current = 0;
         image          = render;
-        tonemap_image_mt(display, image, params.exposure);
+        tonemap_image_mt(display, image, 0);
         render_update = true;
       }
 
@@ -375,7 +375,7 @@ namespace yocto {
             render_current = state.samples;
             get_render(render, state);
             image = render;
-            tonemap_image_mt(display, image, params.exposure);
+            tonemap_image_mt(display, image, 0);
             render_update = true;
           }
         }
@@ -413,7 +413,6 @@ namespace yocto {
       draw_image(glimage, glparams);
     };
     callbacks.widgets = [&](const gui_input& input) {
-      auto edited = 0;
       draw_gui_combobox("name", selected, names);
       auto current = (int)render_current;
       draw_gui_progressbar("sample", current, params.samples);
@@ -427,27 +426,15 @@ namespace yocto {
             "antialiasing", (int&)tparams.antialiasing, antialiasing_names);
         edited += draw_gui_combobox(
             "tracer", (int&)tparams.sampler, trace_sampler_names);
-        edited += draw_gui_slider("bounces", tparams.bounces, 1, 128);
         edited += draw_gui_slider("batch", tparams.batch, 1, 16);
-        edited += draw_gui_slider("clamp", tparams.clamp, 10, 1000);
         edited += draw_gui_checkbox(
             "transparent background", tparams.transparent_background);
-        continue_gui_line();
-        edited += draw_gui_checkbox("filter", tparams.tentfilter);
         edited += draw_gui_slider("pratio", tparams.pratio, 1, 64);
         end_gui_header();
         if (edited) {
           stop_render();
           params = tparams;
           reset_display();
-        }
-      }
-      if (draw_gui_header("tonemap")) {
-        edited += draw_gui_slider("exposure", params.exposure, -5, 5);
-        end_gui_header();
-        if (edited) {
-          tonemap_image_mt(display, image, params.exposure);
-          set_image(glimage, display);
         }
       }
       draw_image_inspector(input, image, display, glparams);
