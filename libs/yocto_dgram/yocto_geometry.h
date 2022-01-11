@@ -1016,7 +1016,20 @@ namespace yocto {
       sign = -1;
     }
 
-    auto dir = normalize(pb - pa);  // The direction of the line
+    auto dir = normalize(pb - pa);     // The direction of the line
+    auto l   = distance(pb, pa);       // Distance between the two ends
+    auto oa  = ra * l / (rb - ra);     // Distance of the apex of the cone
+                                       // along the cone's axis, from pa
+    auto ob = oa + l;                  // Distance of the apex of the cone
+                                       // along the cone's axis, from pb
+    auto o     = pa - dir * oa;        // Cone's apex point
+    auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
+    auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
+
+    if (cosa2 == 1) {
+      ra = (r0 + r1) / 2;
+      rb = ra;
+    }
 
     auto t   = ray.tmax;
     auto p   = vec3f{0, 0, 0};
@@ -1056,22 +1069,11 @@ namespace yocto {
       lb = sqrt(rb * rb + rbc * rbc);
     }
 
-    auto l  = distance(pb, pa);        // Distance between the two ends
-    auto oa = ra * l / (rb - ra);      // Distance of the apex of the cone
-                                       // along the cone's axis, from pa
-    auto ob = oa + l;                  // Distance of the apex of the cone
-                                       // along the cone's axis, from pb
-    auto o     = pa - dir * oa;        // Cone's apex point
-    auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
-    auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
-
-    if (cosa2 == 1) {
-      ra = (r0 + r1) / 2;
-      rb = ra;
+    if (ra == rb) {
       if (intersect_cylinder(ray, pa, pb, ra, dir, frame, tuv, t, p, n))
         tuv = {tuv.x, (lb + lb1 + tuv.y * lc) / (lb + lb1 + lc + la1 + la)};
     } else {
-      auto cosa = sqrt(ob * ob - rb * rb) / ob;  // Consine of Cone's angle
+      auto cosa = sqrt(ob * ob - rb * rb) / ob;
 
       // Computing ends' parameters
       if (ea == line_end::cap) {
