@@ -68,17 +68,21 @@ namespace yocto {
   // Type of tracing algorithm
   enum struct trace_sampler_type { color, color_wireframe, normal, eyelight };
 
+  // Type of antialiasing
+  enum struct antialiasing_type { random_sampling, super_sampling };
+
   // Default trace seed
   const auto trace_default_seed = 961748941ull;
 
   // Options for trace functions
   struct trace_params {
-    int                camera                 = 0;
-    int                resolution             = 1280;
-    trace_sampler_type sampler                = trace_sampler_type::color;
-    int                samples                = 8;
-    int                bounces                = 8;
-    float              clamp                  = 10;
+    int                camera       = 0;
+    int                resolution   = 1280;
+    trace_sampler_type sampler      = trace_sampler_type::color;
+    antialiasing_type  antialiasing = antialiasing_type::super_sampling;
+    int                samples      = 9;
+    int                bounces      = 8;
+    float              clamp        = 10;
     bool               transparent_background = false;
     bool               tentfilter             = false;
     uint64_t           seed                   = trace_default_seed;
@@ -140,6 +144,16 @@ namespace yocto {
           {trace_sampler_type::color_wireframe, "color_wireframe"},
           {trace_sampler_type::normal, "normal"},
           {trace_sampler_type::eyelight, "eyelight"}};
+
+  // antialiasing names
+  inline const auto antialiasing_names = vector<string>{
+      "random_sampling", "super_sampling"};
+
+  // antialiasing labels
+  inline const auto antialiasing_labels =
+      vector<pair<antialiasing_type, string>>{
+          {antialiasing_type::random_sampling, "random_sampling"},
+          {antialiasing_type::super_sampling, "super_sampling"}};
 
 }  // namespace yocto
 

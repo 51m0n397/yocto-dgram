@@ -424,6 +424,8 @@ namespace yocto {
         edited += draw_gui_slider("resolution", tparams.resolution, 180, 4096);
         edited += draw_gui_slider("samples", tparams.samples, 1, 4096);
         edited += draw_gui_combobox(
+            "antialiasing", (int&)tparams.antialiasing, antialiasing_names);
+        edited += draw_gui_combobox(
             "tracer", (int&)tparams.sampler, trace_sampler_names);
         edited += draw_gui_slider("bounces", tparams.bounces, 1, 128);
         edited += draw_gui_slider("batch", tparams.batch, 1, 16);

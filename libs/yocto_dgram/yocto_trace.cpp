@@ -270,12 +270,23 @@ namespace yocto {
   // Trace a block of samples
   void trace_sample(trace_state& state, const scene_data& scene,
       const scene_bvh& bvh, int i, int j, const trace_params& params) {
-    auto& camera   = scene.cameras[params.camera];
-    auto  sampler  = get_trace_sampler_func(params);
-    auto  idx      = state.width * j + i;
-    auto  ray      = sample_camera(camera, {i, j}, {state.width, state.height},
-              rand2f(state.rngs[idx]), rand2f(state.rngs[idx]), params.tentfilter);
-    auto  radiance = sampler(scene, bvh, ray, state.rngs[idx], params);
+    auto& camera  = scene.cameras[params.camera];
+    auto  sampler = get_trace_sampler_func(params);
+    auto  idx     = state.width * j + i;
+
+    auto puv = rand2f(state.rngs[idx]);
+
+    if (params.antialiasing == antialiasing_type::super_sampling) {
+      auto ns = ceil(sqrt((float)params.samples));
+      auto si = floor(state.samples / ns);
+      auto sj = state.samples - floor(state.samples / ns) * ns;
+      puv     = (vec2f{si, sj} + 0.5f) / ns;
+    }
+
+    auto luv = rand2f(state.rngs[idx]);
+    auto ray = sample_camera(camera, {i, j}, {state.width, state.height}, puv,
+        luv, params.tentfilter);
+    auto radiance = sampler(scene, bvh, ray, state.rngs[idx], params);
     if (!isfinite(radiance)) radiance = {0, 0, 0};
     if (max(radiance) > params.clamp)
       radiance = radiance * (params.clamp / max(radiance));

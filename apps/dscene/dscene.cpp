@@ -139,6 +139,8 @@ void add_options(cli_command& cli, render_params& params) {
   add_option(cli, "camera", params.camname, "camera name");
   add_option(cli, "savebatch", params.savebatch, "save batch");
   add_option(cli, "resolution", params.resolution, "image resolution");
+  add_option(cli, "antialiasing", params.antialiasing, "antialiasing type",
+      antialiasing_labels);
   add_option(
       cli, "sampler", params.sampler, "sampler type", trace_sampler_labels);
   add_option(cli, "samples", params.samples, "number of samples");
@@ -218,6 +220,8 @@ void add_options(cli_command& cli, view_params& params) {
   add_option(cli, "output", params.output, "output filename");
   add_option(cli, "camera", params.camname, "camera name");
   add_option(cli, "resolution", params.resolution, "image resolution");
+  add_option(cli, "antialiasing", params.antialiasing, "antialiasing type",
+      antialiasing_labels);
   add_option(
       cli, "sampler", params.sampler, "sampler type", trace_sampler_labels);
   add_option(cli, "samples", params.samples, "number of samples");
