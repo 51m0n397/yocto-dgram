@@ -510,6 +510,20 @@ namespace yocto {
     }
 
     auto dir = normalize(pb - pa);  // The direction of the line
+    auto l   = distance(pb, pa);    // Distance between the two ends
+    auto oa  = ra * l / (rb - ra);  // Distance of the apex of the cone
+                                    // along the cone's axis, from pa
+    auto ob = oa + l;               // Distance of the apex of the cone
+                                    // along the cone's axis, from pb
+    auto o   = pa - dir * oa;       // Cone's apex point
+    auto tga = ((double)rb - (double)ra) /
+               (double)l;              // Tangent of Cone's angle
+    auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
+
+    if (cosa2 > 0.999995) {
+      ra = (r0 + r1) / 2;
+      rb = ra;
+    }
 
     auto rac = ra;
     auto rbc = rb;
@@ -526,25 +540,18 @@ namespace yocto {
       rbc = rb * 2;
     }
 
-    if (ra != rb) {                  // Cone
-      auto l  = distance(pb, pa);    // Distance between the two ends
-      auto oa = ra * l / (rb - ra);  // Distance of the apex of the cone
-                                     // along the cone's axis, from pa
-      auto ob = oa + l;              // Distance of the apex of the cone
-                                     // along the cone's axis, from pb
-      auto o    = pa - dir * oa;     // Cone's apex point
-      auto tga  = (rb - ra) / l;     // Tangent of Cone's angle
-      auto cosa = sqrt(ob * ob - rb * rb) / ob;  // Consine of Cone's angle
+    if (ra != rb) {  // Cone
+      auto cosa = sqrt(ob * ob - rb * rb) / ob;
 
       // Computing ends' parameters
       if (ea == line_end::cap) {
         rac = ra / cosa;
-        pac = o + dir * (oa + tga * rac);
+        pac = o + dir * ((double)oa + (double)tga * (double)rac);
       }
 
       if (eb == line_end::cap) {
         rbc = rb / cosa;
-        pbc = o + dir * (ob + tga * rbc);
+        pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
       }
     }
 
@@ -860,22 +867,24 @@ namespace yocto {
     auto o = r0 * ab / (r1 - r0);  // Distance of the apex of the cone along the
                                    // cone's axis, from p0
     auto pa    = p0 - dir * o;     // Cone's apex point
-    auto tga   = (r1 - r0) / ab;
+    auto tga   = ((double)r1 - (double)r0) / (double)ab;
     auto cosa2 = 1 / (1 + tga * tga);
 
     auto co = ray.o - pa;
 
-    auto a = dot(ray.d, dir) * dot(ray.d, dir) - cosa2;
-    auto b = 2 * (dot(ray.d, dir) * dot(co, dir) - dot(ray.d, co) * cosa2);
-    auto c = dot(co, dir) * dot(co, dir) - dot(co, co) * cosa2;
+    auto a = (double)dot(ray.d, dir) * (double)dot(ray.d, dir) - cosa2;
+    auto b = 2 * ((double)dot(ray.d, dir) * (double)dot(co, dir) -
+                     (double)dot(ray.d, co) * cosa2);
+    auto c = (double)dot(co, dir) * (double)dot(co, dir) -
+             (double)dot(co, co) * cosa2;
 
-    auto t1 = 0.0f;
-    auto t2 = 0.0f;
+    auto t1 = 0.0;
+    auto t2 = 0.0;
 
     if (!solve_quadratic(a, b, c, t1, t2)) return false;
 
-    auto q1 = ray.o + t1 * ray.d;
-    auto q2 = ray.o + t2 * ray.d;
+    auto q1 = ray.o + (float)t1 * ray.d;
+    auto q2 = ray.o + (float)t2 * ray.d;
 
     auto t = dist;
     auto p = vec3f{0, 0, 0};
@@ -1016,17 +1025,18 @@ namespace yocto {
       sign = -1;
     }
 
-    auto dir = normalize(pb - pa);     // The direction of the line
-    auto l   = distance(pb, pa);       // Distance between the two ends
-    auto oa  = ra * l / (rb - ra);     // Distance of the apex of the cone
-                                       // along the cone's axis, from pa
-    auto ob = oa + l;                  // Distance of the apex of the cone
-                                       // along the cone's axis, from pb
-    auto o     = pa - dir * oa;        // Cone's apex point
-    auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
+    auto dir = normalize(pb - pa);  // The direction of the line
+    auto l   = distance(pb, pa);    // Distance between the two ends
+    auto oa  = ra * l / (rb - ra);  // Distance of the apex of the cone
+                                    // along the cone's axis, from pa
+    auto ob = oa + l;               // Distance of the apex of the cone
+                                    // along the cone's axis, from pb
+    auto o   = pa - dir * oa;       // Cone's apex point
+    auto tga = ((double)rb - (double)ra) /
+               (double)l;              // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
 
-    if (cosa2 == 1) {
+    if (cosa2 > 0.999995) {
       ra = (r0 + r1) / 2;
       rb = ra;
     }
@@ -1078,13 +1088,13 @@ namespace yocto {
       // Computing ends' parameters
       if (ea == line_end::cap) {
         rac = ra / cosa;
-        pac = o + dir * (oa + tga * rac);
+        pac = o + dir * ((double)oa + (double)tga * (double)rac);
         la  = sqrt(ra * ra + rac * rac);
       }
 
       if (eb == line_end::cap) {
         rbc = rb / cosa;
-        pbc = o + dir * (ob + tga * rbc);
+        pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
         lb  = sqrt(rb * rb + rbc * rbc);
       }
 

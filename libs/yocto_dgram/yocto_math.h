@@ -114,6 +114,9 @@ namespace yocto {
   inline bool solve_quadratic(
       const float& a, const float& b, const float& c, float& x0, float& x1);
 
+  inline bool solve_quadratic(const double& a, const double& b, const double& c,
+      double& x0, double& x1);
+
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
@@ -1420,6 +1423,23 @@ namespace yocto {
       float q = (b > 0) ? -0.5 * (b + sqrt(discr)) : -0.5 * (b - sqrt(discr));
       x0      = q / a;
       x1      = c / q;
+    }
+
+    return true;
+  }
+
+  inline bool solve_quadratic(const double& a, const double& b, const double& c,
+      double& x0, double& x1) {
+    // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection
+    double discr = b * b - 4 * a * c;
+    if (discr < 0)
+      return false;
+    else if (discr == 0)
+      x0 = x1 = -0.5 * b / a;
+    else {
+      double q = (b > 0) ? -0.5 * (b + sqrt(discr)) : -0.5 * (b - sqrt(discr));
+      x0       = q / a;
+      x1       = c / q;
     }
 
     return true;
