@@ -11,6 +11,7 @@
       ],
       "cameras": [
         {
+          "orthographic": false,
           "from": [
             6.0,
             3.0,
@@ -469,6 +470,7 @@
       ],
       "cameras": [
         {
+          "orthographic": false,
           "from": [
             6.0,
             3.0,
