@@ -109,14 +109,28 @@ namespace yocto {
     // textures
     int fill_tex   = invalidid;
     int stroke_tex = invalidid;
+
+    float thickness = 2;
+  };
+
+  struct label_data {
+    frame3f        frame     = identity3x4f;
+    vec4f          color     = {0, 0, 0, 1};
+    vector<vec3f>  positions = {};
+    vector<string> text      = {};
+    vector<vec2f>  offset    = {};
+    vector<vec2f>  alignment = {};
+    vector<int>    shapes    = {};
+    vector<int>    textures  = {};
   };
 
   // Instance.
   struct instance_data {
     // instance data
-    frame3f frame           = identity3x4f;
-    int     shape           = invalidid;
-    int     material        = invalidid;
+    frame3f frame    = identity3x4f;
+    int     shape    = invalidid;
+    int     material = invalidid;
+    int     labels   = invalidid;
   };
 
   // Scene comprised an array of objects whose memory is owened by the scene.
@@ -126,24 +140,13 @@ namespace yocto {
   // transforms are computed from the hierarchy. Animation is also optional,
   // with keyframe data that updates node transformations only if defined.
   struct scene_data {
-    // scene elements
+    vec2f                 offset    = {0, 0};
     vector<camera_data>   cameras   = {};
     vector<instance_data> instances = {};
+    vector<material_data> materials = {};
     vector<shape_data>    shapes    = {};
     vector<texture_data>  textures  = {};
-    vector<material_data> materials = {};
-
-    // names (this will be cleanup significantly later)
-    vector<string> camera_names   = {};
-    vector<string> texture_names  = {};
-    vector<string> material_names = {};
-    vector<string> shape_names    = {};
-    vector<string> instance_names = {};
-
-    vec4f background_color = {1, 1, 1, 1};
-
-    // copyright info preserve in IO
-    string copyright = "";
+    vector<label_data>    labels    = {};
   };
 
 }  // namespace yocto
@@ -239,20 +242,16 @@ namespace yocto {
   // compute scene bounds
   bbox3f compute_bounds(const scene_data& scene);
 
-  // add missing elements
-  void add_camera(scene_data& scene);
+  // get camera
+  int find_camera(const scene_data& scene, int id);
 
-  // get named camera or default if name is empty
-  int find_camera(const scene_data& scene, const string& name);
-
-  // create a scene from a shape
-  scene_data make_shape_scene(const shape_data& shape);
-
-  // Return scene statistics as list of strings.
-  vector<string> scene_stats(const scene_data& scene, bool verbose = false);
-  // Return validation errors as list of strings.
-  vector<string> scene_validation(
-      const scene_data& scene, bool notextures = false);
+  void cull_shapes(scene_data& scene, int camera);
+  void compute_borders(scene_data& scene);
+  void compute_radius(scene_data& scene, int camera, vec2f size, float res);
+  void compute_text(
+      scene_data& scene, int camera, int resolution, vec2f size, float res);
+  void update_text_positions(scene_data& scene, int camera);
+  void update_text_textures(scene_data& scene, int camera, int res);
 
 }  // namespace yocto
 

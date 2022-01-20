@@ -41,6 +41,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -55,16 +56,18 @@ namespace yocto {
 
   // using directives
   using std::array;
+  using std::set;
   using std::string;
   using std::unique_ptr;
   using std::vector;
-
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
 // BVH, RAY INTERSECTION AND OVERLAP QUERIES
 // -----------------------------------------------------------------------------
 namespace yocto {
+
+  enum class primitive_type { point, line, triangle, quad, border };
 
   // BVH tree node containing its bounds, indices to the BVH arrays of either
   // primitives or internal nodes, the node element type,
@@ -84,7 +87,7 @@ namespace yocto {
   // for internal nodes, or the primitive arrays, for leaf nodes.
   // Application data is not stored explicitly.
   // Additionally, we support the use of Intel Embree.
-  struct shape_bvh {
+  struct instance_bvh {
     vector<bvh_node> nodes      = {};
     vector<int>      primitives = {};
   };
@@ -98,33 +101,32 @@ namespace yocto {
   struct scene_bvh {
     vector<bvh_node>  nodes      = {};
     vector<int>       primitives = {};
-    vector<shape_bvh> shapes     = {};  // shapes
+    vector<instance_bvh> instances     = {};  // shapes
   };
 
   // Build the bvh acceleration structure.
-  shape_bvh make_bvh(const shape_data& shape, bool highquality = false);
+  instance_bvh make_bvh(const shape_data& shape, const frame3f& frame, bool highquality = false);
   scene_bvh make_bvh(const scene_data& scene, bool highquality = false,
       bool noparallel = false);
-
-  // Refit bvh data
-  void update_bvh(shape_bvh& bvh, const shape_data& shape);
-  void update_bvh(scene_bvh& bvh, const scene_data& scene,
-      const vector<int>& updated_instances, const vector<int>& updated_shapes);
 
   // Results of intersect_xxx and overlap_xxx functions that include hit flag,
   // instance id, shape element id, shape element uv and intersection distance.
   // The values are all set for scene intersection. Shape intersection does not
   // set the instance id and element intersections do not set shape element id
   // and the instance id. Results values are set only if hit is true.
-  struct scene_intersection {
-    int   instance = -1;
-    int   element  = -1;
-    vec2f uv       = {0, 0};
-    float distance = 0;
-    vec3f position = {0, 0, 0};
-    vec3f normal   = {0, 0, 0};
-    bool  hit      = false;
-    bool  border   = false;
+  struct instance_intersection {
+    int            instance  = -1;
+    int            element   = -1;
+    vec2f          uv        = {0, 0};
+    float          distance  = 0;
+    vec3f          position  = {0, 0, 0};
+    vec3f          normal    = {0, 0, 0};
+    bool           hit       = false;
+    primitive_type primitive = primitive_type::triangle;
+
+    bool operator<(const instance_intersection& x) const {
+      return instance > x.instance;
+    }
   };
 
   // Results of intersect_xxx and overlap_xxx functions that include hit flag,
@@ -133,27 +135,27 @@ namespace yocto {
   // set the instance id and element intersections do not set shape element id
   // and the instance id. Results values are set only if hit is true.
   struct shape_intersection {
-    int   element  = -1;
-    vec2f uv       = {0, 0};
-    float distance = 0;
-    vec3f position = {0, 0, 0};
-    vec3f normal   = {0, 0, 0};
-    bool  hit      = false;
-    bool  border   = false;
+    int            element   = -1;
+    vec2f          uv        = {0, 0};
+    float          distance  = 0;
+    vec3f          position  = {0, 0, 0};
+    vec3f          normal    = {0, 0, 0};
+    bool           hit       = false;
+    primitive_type primitive = primitive_type::triangle;
   };
 
   // Intersect ray with a bvh returning either the first or any intersection
   // depending on `find_any`. Returns the ray distance , the instance id,
   // the shape element index and the element barycentric coordinates.
-  shape_intersection intersect_shape(const shape_bvh& bvh,
-      const shape_data& shape, const ray3f& ray, bool ignore_borders,
-      bool find_any = false);
-  scene_intersection intersect_scene(const scene_bvh& bvh,
-      const scene_data& scene, const ray3f& ray, bool ignore_borders,
-      bool find_any = false);
-  scene_intersection intersect_instance(const scene_bvh& bvh,
+  shape_intersection intersect_shape(const instance_bvh& bvh,
+      const shape_data& shape, const ray3f& ray, bool find_any = false);
+
+  /*instance_intersection intersect_instance(const scene_bvh& bvh,
       const scene_data& scene, int instance, const ray3f& ray,
-      bool ignore_borders, bool find_any = false);
+      bool find_any = false);*/
+
+  set<instance_intersection> intersect_scene(const scene_bvh& bvh,
+      const scene_data& scene, const ray3f& ray, bool find_any = false);
 
 }  // namespace yocto
 

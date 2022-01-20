@@ -177,6 +177,8 @@ namespace yocto {
       const vector<string>& labels, bool include_null = false);
   bool draw_gui_combobox(const char* lbl, string& value,
       const vector<string>& labels, bool include_null = false);
+  bool draw_gui_combobox(const char* lbl, int& value,
+      string label, int size, bool include_null = false);
 
   // Progress bar
   void draw_gui_progressbar(const char* lbl, float fraction);

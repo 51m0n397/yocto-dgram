@@ -34,10 +34,16 @@
 #include <climits>
 #include <cstdlib>
 #include <cstring>
+#include <iomanip>
 #include <memory>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 #include <unordered_map>
 
+#include "ext/HTTPRequest.hpp"
+#include "ext/base64.h"
+#include "ext/stb_image.h"
 #include "yocto_color.h"
 #include "yocto_geometry.h"
 #include "yocto_image.h"
@@ -52,6 +58,7 @@ namespace yocto {
   // using directives
   using std::unique_ptr;
   using namespace std::string_literals;
+  using std::to_string;
 
 }  // namespace yocto
 
@@ -83,7 +90,7 @@ namespace yocto {
       return ray3f{transform_point(camera.frame, e),
           transform_direction(camera.frame, d)};
     } else {
-      auto scale = 1 / camera.lens;
+      auto scale = camera.focus / camera.lens;
       auto q     = vec3f{film.x * (0.5f - image_uv.x) * scale,
           film.y * (image_uv.y - 0.5f) * scale, camera.lens};
       // point on the lens
@@ -423,6 +430,14 @@ static pair<vec3f, vec3f> eval_tangents(
     }
   }
 
+  int eval_color(const scene_data& scene, const instance_data& instance,
+      int element, vec4f& color) {
+    auto& shape = scene.shapes[instance.shape];
+    if (shape.colors.empty()) return false;
+    color = shape.colors[element];
+    return true;
+  }
+
   // Evaluate material
   material_point eval_material(const scene_data& scene,
       const instance_data& instance, int element, const vec2f& uv) {
@@ -433,9 +448,13 @@ static pair<vec3f, vec3f> eval_tangents(
     auto fill_tex   = eval_texture(scene, material.fill_tex, texcoord, true);
     auto stroke_tex = eval_texture(scene, material.stroke_tex, texcoord, true);
 
+    auto color_shp = zero4f;
+
     // material point
     auto point   = material_point{};
-    point.fill   = material.fill * fill_tex;
+    point.fill   = eval_color(scene, instance, element, color_shp)
+                       ? color_shp
+                       : material.fill * fill_tex;
     point.stroke = material.stroke * stroke_tex;
 
     return point;
@@ -448,71 +467,10 @@ static pair<vec3f, vec3f> eval_tangents(
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Add missing cameras.
-  void add_camera(scene_data& scene) {
-    scene.camera_names.emplace_back("camera");
-    auto& camera        = scene.cameras.emplace_back();
-    camera.orthographic = false;
-    camera.film         = 0.036f;
-    camera.aspect       = (float)16 / (float)9;
-    camera.aperture     = 0;
-    camera.lens         = 0.050f;
-    auto bbox           = compute_bounds(scene);
-    auto center         = (bbox.max + bbox.min) / 2;
-    auto bbox_radius    = length(bbox.max - bbox.min) / 2;
-    auto camera_dir     = vec3f{0, 0, 1};
-    auto camera_dist    = bbox_radius * camera.lens /
-                       (camera.film / camera.aspect);
-    camera_dist *= 2.0f;  // correction for tracer camera implementation
-    auto from    = camera_dir * camera_dist + center;
-    auto to      = center;
-    auto up      = vec3f{0, 1, 0};
-    camera.frame = lookat_frame(from, to, up);
-    camera.focus = length(from - to);
-  }
-
-  // get named camera or default if camera is empty
-  int find_camera(const scene_data& scene, const string& name) {
+  // get camera
+  int find_camera(const scene_data& scene, int id) {
     if (scene.cameras.empty()) return invalidid;
-    if (scene.camera_names.empty()) return 0;
-    for (auto idx = 0; idx < (int)scene.camera_names.size(); idx++) {
-      if (scene.camera_names[idx] == name) return idx;
-    }
-    for (auto idx = 0; idx < (int)scene.camera_names.size(); idx++) {
-      if (scene.camera_names[idx] == "default") return idx;
-    }
-    for (auto idx = 0; idx < (int)scene.camera_names.size(); idx++) {
-      if (scene.camera_names[idx] == "camera") return idx;
-    }
-    for (auto idx = 0; idx < (int)scene.camera_names.size(); idx++) {
-      if (scene.camera_names[idx] == "camera0") return idx;
-    }
-    for (auto idx = 0; idx < (int)scene.camera_names.size(); idx++) {
-      if (scene.camera_names[idx] == "camera1") return idx;
-    }
-    return 0;
-  }
-
-  // create a scene from a shape
-  scene_data make_shape_scene(const shape_data& shape) {
-    // scene
-    auto scene = scene_data{};
-    // shape
-    scene.shape_names.emplace_back("shape");
-    scene.shapes.push_back(shape);
-    // material
-    scene.material_names.emplace_back("material");
-    auto& shape_material = scene.materials.emplace_back();
-    shape_material.fill  = {0.5f, 1.0f, 0.5f, 1.0f};
-    // instance
-    scene.instance_names.emplace_back("instance");
-    auto& shape_instance    = scene.instances.emplace_back();
-    shape_instance.shape    = 0;
-    shape_instance.material = 0;
-    // camera
-    add_camera(scene);
-    // done
-    return scene;
+    return id;
   }
 
   // Updates the scene and scene's instances bounding boxes
@@ -527,202 +485,412 @@ namespace yocto {
       auto& sbvh = shape_bbox[instance.shape];
       bbox       = merge(bbox, transform_bbox(instance.frame, sbvh));
     }
+    for (auto& label : scene.labels) {
+      auto label_bbox = invalidb3f;
+      for (auto p : label.positions) label_bbox = merge(label_bbox, p);
+      bbox = merge(bbox, transform_bbox(label.frame, label_bbox));
+    }
     return bbox;
   }
 
-}  // namespace yocto
+  vec3f intersect_plane(const ray3f& ray, const vec3f& p, const vec3f& n) {
+    auto o = ray.o - p;
 
-// -----------------------------------------------------------------------------
-// SCENE STATS AND VALIDATION
-// -----------------------------------------------------------------------------
-namespace yocto {
+    auto den = dot(ray.d, n);
+    if (den == 0) return vec3f{0, 0, 0};
 
-  size_t compute_memory(const scene_data& scene) {
-    auto vector_memory = [](auto& values) -> size_t {
-      if (values.empty()) return 0;
-      return values.size() * sizeof(values[0]);
-    };
+    auto t = -dot(n, o) / den;
 
-    auto memory = (size_t)0;
-    memory += vector_memory(scene.cameras);
-    memory += vector_memory(scene.instances);
-    memory += vector_memory(scene.materials);
-    memory += vector_memory(scene.shapes);
-    memory += vector_memory(scene.textures);
-    memory += vector_memory(scene.camera_names);
-    memory += vector_memory(scene.instance_names);
-    memory += vector_memory(scene.material_names);
-    memory += vector_memory(scene.shape_names);
-    memory += vector_memory(scene.texture_names);
+    auto q = ray.o + ray.d * t;
+
+    return q;
+  }
+
+  void compute_borders(scene_data& scene) {
     for (auto& shape : scene.shapes) {
-      memory += vector_memory(shape.points);
-      memory += vector_memory(shape.lines);
-      memory += vector_memory(shape.triangles);
-      memory += vector_memory(shape.quads);
-      memory += vector_memory(shape.positions);
-      memory += vector_memory(shape.normals);
-      memory += vector_memory(shape.texcoords);
-      memory += vector_memory(shape.colors);
-      memory += vector_memory(shape.triangles);
-    }
-    for (auto& texture : scene.textures) {
-      memory += vector_memory(texture.pixelsb);
-      memory += vector_memory(texture.pixelsf);
-    }
-    return memory;
-  }
-
-  vector<string> scene_stats(const scene_data& scene, bool verbose) {
-    auto accumulate = [](const auto& values, const auto& func) -> size_t {
-      auto sum = (size_t)0;
-      for (auto& value : values) sum += func(value);
-      return sum;
-    };
-    auto format = [](size_t num) {
-      auto str = string{};
-      while (num > 0) {
-        str = std::to_string(num % 1000) + (str.empty() ? "" : ",") + str;
-        num /= 1000;
+      shape.borders = vector<vec2i>{};
+      if (!shape.triangles.empty()) {
+        auto emap    = make_edge_map(shape.triangles);
+        auto borders = shape.boundary ? get_boundary(emap) : get_edges(emap);
+        shape.borders.insert(
+            shape.borders.end(), borders.begin(), borders.end());
       }
-      if (str.empty()) str = "0";
-      while (str.size() < 20) str = " " + str;
-      return str;
-    };
-    auto format3 = [](auto num) {
-      auto str = std::to_string(num.x) + " " + std::to_string(num.y) + " " +
-                 std::to_string(num.z);
-      while (str.size() < 48) str = " " + str;
-      return str;
-    };
-
-    auto bbox = compute_bounds(scene);
-
-    auto stats = vector<string>{};
-    stats.push_back("cameras:      " + format(scene.cameras.size()));
-    stats.push_back("instances:    " + format(scene.instances.size()));
-    stats.push_back("materials:    " + format(scene.materials.size()));
-    stats.push_back("shapes:       " + format(scene.shapes.size()));
-    stats.push_back("textures:     " + format(scene.textures.size()));
-    stats.push_back("memory:       " + format(compute_memory(scene)));
-    stats.push_back("points:       " +
-                    format(accumulate(scene.shapes,
-                        [](auto& shape) { return shape.points.size(); })));
-    stats.push_back("lines:        " +
-                    format(accumulate(scene.shapes,
-                        [](auto& shape) { return shape.lines.size(); })));
-    stats.push_back("triangles:    " +
-                    format(accumulate(scene.shapes,
-                        [](auto& shape) { return shape.triangles.size(); })));
-    stats.push_back("quads:        " +
-                    format(accumulate(scene.shapes,
-                        [](auto& shape) { return shape.quads.size(); })));
-    stats.push_back("texels4b:     " +
-                    format(accumulate(scene.textures,
-                        [](auto& texture) { return texture.pixelsb.size(); })));
-    stats.push_back("texels4f:     " +
-                    format(accumulate(scene.textures,
-                        [](auto& texture) { return texture.pixelsf.size(); })));
-    stats.push_back("center:       " + format3(center(bbox)));
-    stats.push_back("size:         " + format3(size(bbox)));
-
-    return stats;
+      if (!shape.quads.empty()) {
+        auto emap    = make_edge_map(shape.quads);
+        auto borders = shape.boundary ? get_boundary(emap) : get_edges(emap);
+        shape.borders.insert(
+            shape.borders.end(), borders.begin(), borders.end());
+      }
+    }
   }
 
-  // Checks for validity of the scene.
-  vector<string> scene_validation(const scene_data& scene, bool notextures) {
-    auto errs        = vector<string>();
-    auto check_names = [&errs](
-                           const vector<string>& names, const string& base) {
-      auto used = unordered_map<string, int>();
-      used.reserve(names.size());
-      for (auto& name : names) used[name] += 1;
-      for (auto& [name, used] : used) {
-        if (name.empty()) {
-          errs.push_back("empty " + base + " name");
-        } else if (used > 1) {
-          errs.push_back("duplicated " + base + " name " + name);
+  void cull_shapes(scene_data& scene, int camera) {
+    auto cam = scene.cameras[camera];
+
+    for (auto& instance : scene.instances) {
+      auto& shape = scene.shapes[instance.shape];
+      if (!shape.triangles.empty()) {
+        auto culled = vector<vec3i>{};
+        if (shape.cull) {
+          for (auto& triangle : shape.triangles) {
+            auto p0 = transform_point(
+                instance.frame, shape.positions[triangle.x]);
+            auto p1 = transform_point(
+                instance.frame, shape.positions[triangle.y]);
+            auto p2 = transform_point(
+                instance.frame, shape.positions[triangle.z]);
+            auto fcenter = (p0 + p1 + p2) / 3;
+            if (dot(cam.frame.o - fcenter, cross(p1 - p0, p2 - p0)) < 0)
+              continue;
+            culled.push_back(triangle);
+          }
+          shape.triangles = culled;
         }
       }
-    };
-    auto check_empty_textures = [&errs](const scene_data& scene) {
-      for (auto idx = 0; idx < (int)scene.textures.size(); idx++) {
-        auto& texture = scene.textures[idx];
-        if (texture.pixelsf.empty() && texture.pixelsb.empty()) {
-          errs.push_back("empty texture " + scene.texture_names[idx]);
+      if (!shape.quads.empty()) {
+        auto culled = vector<vec4i>{};
+        if (shape.cull) {
+          for (auto& quad : shape.quads) {
+            auto p0 = transform_point(instance.frame, shape.positions[quad.x]);
+            auto p1 = transform_point(instance.frame, shape.positions[quad.y]);
+            auto p2 = transform_point(instance.frame, shape.positions[quad.z]);
+            auto p3 = transform_point(instance.frame, shape.positions[quad.w]);
+            auto fcenter = (p0 + p1 + p2 + p3) / 4;
+            if (dot(cam.frame.o - fcenter, cross(p1 - p0, p2 - p0)) < 0)
+              continue;
+            culled.push_back(quad);
+          }
+          shape.quads = culled;
         }
       }
-    };
-
-    check_names(scene.camera_names, "camera");
-    check_names(scene.shape_names, "shape");
-    check_names(scene.material_names, "material");
-    check_names(scene.instance_names, "instance");
-    check_names(scene.texture_names, "texture");
-    if (!notextures) check_empty_textures(scene);
-
-    return errs;
+    }
   }
 
-}  // namespace yocto
+  void compute_radius(scene_data& scene, int camera, vec2f size, float res) {
+    auto cam = scene.cameras[camera];
 
-// -----------------------------------------------------------------------------
-// ANIMATION UTILITIES
-// -----------------------------------------------------------------------------
-namespace yocto {
+    auto plane_point   = transform_point(cam.frame, {0, 0, cam.lens});
+    auto plane_dir     = transform_normal(cam.frame, {0, 0, cam.lens});
+    auto camera_origin = transform_point(cam.frame, {0, 0, 0});
 
-  // Find the first keyframe value that is greater than the argument.
-  inline int keyframe_index(const vector<float>& times, const float& time) {
-    for (auto i = 0; i < times.size(); i++)
-      if (times[i] > time) return i;
-    return (int)times.size();
+    for (auto& instance : scene.instances) {
+      auto& shape    = scene.shapes[instance.shape];
+      auto& material = scene.materials[instance.material];
+      shape.radius   = vector<float>{};
+      for (auto& position : shape.positions) {
+        if (cam.orthographic)
+          shape.radius.push_back(material.thickness / (res * 2));
+        else {
+          auto thickness = material.thickness / size.x * cam.film / 2;
+
+          auto p = transform_point(instance.frame, position);
+
+          auto po = normalize(p - camera_origin);
+
+          auto p_on_plane = intersect_plane(
+              ray3f{camera_origin, po}, plane_point, plane_dir);
+
+          auto trans_p = transform_point(inverse(cam.frame), p_on_plane);
+
+          auto radius = 0.0f;
+
+          auto trasl_p        = trans_p + vec3f{0, thickness, 0};
+          auto traslated_p    = transform_point(cam.frame, trasl_p);
+          auto translated_dir = normalize(traslated_p - camera_origin);
+          auto new_p          = intersect_plane(
+                       ray3f{camera_origin, translated_dir}, p, plane_dir);
+          radius += distance(p, new_p);
+
+          trasl_p        = trans_p + vec3f{0, -thickness, 0};
+          traslated_p    = transform_point(cam.frame, trasl_p);
+          translated_dir = normalize(traslated_p - camera_origin);
+          new_p          = intersect_plane(
+                       ray3f{camera_origin, translated_dir}, p, plane_dir);
+          radius += distance(p, new_p);
+
+          trasl_p        = trans_p + vec3f{thickness, 0, 0};
+          traslated_p    = transform_point(cam.frame, trasl_p);
+          translated_dir = normalize(traslated_p - camera_origin);
+          new_p          = intersect_plane(
+                       ray3f{camera_origin, translated_dir}, p, plane_dir);
+          radius += distance(p, new_p);
+
+          trasl_p        = trans_p + vec3f{-thickness, 0, 0};
+          traslated_p    = transform_point(cam.frame, trasl_p);
+          translated_dir = normalize(traslated_p - camera_origin);
+          new_p          = intersect_plane(
+                       ray3f{camera_origin, translated_dir}, p, plane_dir);
+          radius += distance(p, new_p);
+
+          radius /= 4;
+
+          shape.radius.push_back(radius);
+        }
+      }
+    }
   }
 
-  // Evaluates a keyframed value using step interpolation.
-  template <typename T>
-  inline T keyframe_step(
-      const vector<float>& times, const vector<T>& vals, float time) {
-    if (time <= times.front()) return vals.front();
-    if (time >= times.back()) return vals.back();
-    time     = clamp(time, times.front(), times.back() - 0.001f);
-    auto idx = keyframe_index(times, time);
-    return vals.at(idx - 1);
+  string escape_string(const string& value) {
+    // https://stackoverflow.com/questions/154536/encode-decode-urls-in-c
+    std::ostringstream escaped;
+    escaped.fill('0');
+    escaped << std::hex;
+
+    for (string::const_iterator i = value.begin(), n = value.end(); i != n;
+         ++i) {
+      string::value_type c = (*i);
+
+      // Keep alphanumeric and other accepted characters intact
+      if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+        escaped << c;
+        continue;
+      }
+
+      // Any other characters are percent-encoded
+      escaped << std::uppercase;
+      escaped << '%' << std::setw(2) << int((unsigned char)c);
+      escaped << std::nouppercase;
+    }
+
+    return escaped.str();
   }
 
-  // Evaluates a keyframed value using linear interpolation.
-  template <typename T>
-  inline vec4f keyframe_slerp(
-      const vector<float>& times, const vector<vec4f>& vals, float time) {
-    if (time <= times.front()) return vals.front();
-    if (time >= times.back()) return vals.back();
-    time     = clamp(time, times.front(), times.back() - 0.001f);
-    auto idx = keyframe_index(times, time);
-    auto t   = (time - times.at(idx - 1)) / (times.at(idx) - times.at(idx - 1));
-    return slerp(vals.at(idx - 1), vals.at(idx), t);
+  void compute_text(
+      scene_data& scene, int camera, int resolution, vec2f size, float res) {
+    auto cam = scene.cameras[camera];
+
+    auto width  = resolution;
+    auto height = (int)round(resolution / cam.aspect);
+    auto film   = vec2f{cam.film, cam.film / cam.aspect};
+    if (cam.aspect < 1) {
+      width  = (int)round(resolution * cam.aspect);
+      height = resolution;
+      film   = vec2f{cam.film * cam.aspect, cam.film};
+    }
+
+    auto plane_point   = transform_point(cam.frame, {0, 0, cam.lens});
+    auto plane_dir     = transform_normal(cam.frame, {0, 0, cam.lens});
+    auto camera_origin = transform_point(cam.frame, {0, 0, 0});
+
+    http::Request request{"localhost:5500/rasterize"};
+
+    for (auto& label : scene.labels) {
+      for (auto idx = 0; idx < label.text.size(); idx++) {
+        auto color = rgb_to_srgb(label.color);
+        auto body  = "text=" + escape_string(label.text[idx]) +
+                    "&width=" + to_string(width) +
+                    "&height=" + to_string(height) +
+                    "&film=" + to_string(film.x) +
+                    "&align_x=" + to_string(label.alignment[idx].x) +
+                    "&r=" + to_string((int)round(color.x * 255)) +
+                    "&g=" + to_string((int)round(color.y * 255)) +
+                    "&b=" + to_string((int)round(color.z * 255)) +
+                    "&a=" + to_string((int)round(color.w * 255));
+        auto response = request.send(
+            "POST", body, {"Content-Type: application/x-www-form-urlencoded"});
+        auto string64 = string{response.body.begin(), response.body.end()};
+        auto buffer   = base64_decode(string64);
+
+        auto texture = texture_data{};
+        auto ncomp   = 0;
+        auto pixels  = stbi_load_from_memory(buffer.data(), (int)buffer.size(),
+             &texture.width, &texture.height, &ncomp, 4);
+        texture.linear  = false;
+        texture.pixelsb = vector<vec4b>{
+            (vec4b*)pixels, (vec4b*)pixels + texture.width * texture.height};
+        free(pixels);
+
+        scene.textures.push_back(texture);
+
+        auto shape = shape_data{};
+
+        auto p = transform_point(label.frame, label.positions[idx]);
+
+        auto offset   = label.offset[idx];
+        auto baseline = 7.0f;
+
+        auto align_x0 = 0.0f;
+        auto align_x1 = 0.0f;
+        auto align_x2 = 0.0f;
+        auto align_x3 = 0.0f;
+
+        if (label.alignment[idx].x > 0) {
+          align_x0 = 1.0f;
+          align_x1 = 0.0f;
+          align_x2 = 0.0f;
+          align_x3 = 1.0f;
+        } else if (label.alignment[idx].x < 0) {
+          align_x0 = 0.0f;
+          align_x1 = -1.0f;
+          align_x2 = -1.0f;
+          align_x3 = 0.0f;
+        } else {
+          align_x0 = 0.5f;
+          align_x1 = -0.5f;
+          align_x2 = -0.5f;
+          align_x3 = 0.5f;
+        }
+
+        auto align_y0 = -1.0f;
+        auto align_y1 = -1.0f;
+        auto align_y2 = 0.0f;
+        auto align_y3 = 0.0f;
+
+        vec3f p0, p1, p2, p3;
+
+        if (cam.orthographic) {
+          auto poff = p +
+                      vec3f{offset.x / res, (-baseline - offset.y) / res, 0};
+          p0 = poff -
+               vec3f{align_x0 * size.x / res, align_y0 * size.y / res, 0};
+          p1 = poff -
+               vec3f{align_x1 * size.x / res, align_y1 * size.y / res, 0};
+          p2 = poff -
+               vec3f{align_x2 * size.x / res, align_y2 * size.y / res, 0};
+          p3 = poff -
+               vec3f{align_x3 * size.x / res, align_y3 * size.y / res, 0};
+        } else {
+          auto po = normalize(p - camera_origin);
+
+          auto p_on_plane = intersect_plane(
+              ray3f{camera_origin, po}, plane_point, plane_dir);
+
+          auto trans_p = transform_point(inverse(cam.frame), p_on_plane);
+          trans_p += vec3f{-offset.x / size.x * film.x,
+              (baseline + offset.y) / size.x * film.x, 0};
+
+          auto p0_on_plane = transform_point(cam.frame,
+              trans_p + vec3f{align_x0 * film.x, align_y0 * film.y, 0});
+          auto p1_on_plane = transform_point(cam.frame,
+              trans_p + vec3f{align_x1 * film.x, align_y1 * film.y, 0});
+          auto p2_on_plane = transform_point(cam.frame,
+              trans_p + vec3f{align_x2 * film.x, align_y2 * film.y, 0});
+          auto p3_on_plane = transform_point(cam.frame,
+              trans_p + vec3f{align_x3 * film.x, align_y3 * film.y, 0});
+
+          p0 = intersect_plane(
+              ray3f{camera_origin, p0_on_plane - camera_origin}, p, plane_dir);
+          p1 = intersect_plane(
+              ray3f{camera_origin, p1_on_plane - camera_origin}, p, plane_dir);
+          p2 = intersect_plane(
+              ray3f{camera_origin, p2_on_plane - camera_origin}, p, plane_dir);
+          p3 = intersect_plane(
+              ray3f{camera_origin, p3_on_plane - camera_origin}, p, plane_dir);
+        }
+
+        shape.positions.push_back(p0);
+        shape.positions.push_back(p1);
+        shape.positions.push_back(p2);
+        shape.positions.push_back(p3);
+        shape.radius = vector<float>(4, 0);
+
+        shape.quads.push_back(vec4i{0, 1, 2, 3});
+        scene.shapes.push_back(shape);
+
+        label.shapes.push_back((int)scene.shapes.size() - 1);
+        label.textures.push_back((int)scene.textures.size() - 1);
+      }
+    }
   }
 
-  // Evaluates a keyframed value using linear interpolation.
-  template <typename T>
-  inline T keyframe_linear(
-      const vector<float>& times, const vector<T>& vals, float time) {
-    if (time <= times.front()) return vals.front();
-    if (time >= times.back()) return vals.back();
-    time     = clamp(time, times.front(), times.back() - 0.001f);
-    auto idx = keyframe_index(times, time);
-    auto t   = (time - times.at(idx - 1)) / (times.at(idx) - times.at(idx - 1));
-    return vals.at(idx - 1) * (1 - t) + vals.at(idx) * t;
+  void update_text_positions(scene_data& scene, int camera) {
+    auto cam = scene.cameras[camera];
+
+    auto film = vec2f{cam.film, cam.film / cam.aspect};
+    if (cam.aspect < 1) {
+      film = vec2f{cam.film * cam.aspect, cam.film};
+    }
+
+    auto plane_point   = transform_point(cam.frame, {0, 0, cam.lens});
+    auto plane_dir     = transform_normal(cam.frame, {0, 0, cam.lens});
+    auto camera_origin = transform_point(cam.frame, {0, 0, 0});
+
+    for (auto& label : scene.labels) {
+      for (auto idx = 0; idx < label.text.size(); idx++) {
+        auto p = label.positions[idx];
+
+        auto po = normalize(p - camera_origin);
+
+        auto p_on_plane = intersect_plane(
+            ray3f{camera_origin, po}, plane_point, plane_dir);
+
+        auto trans_p = transform_point(inverse(cam.frame), p_on_plane);
+
+        auto offset = label.offset[idx];
+        trans_p += vec3f{-offset.x * film.x / 100, offset.y * film.y / 100, 0};
+
+        auto p0_on_plane = transform_point(cam.frame, trans_p);
+        auto p1_on_plane = transform_point(
+            cam.frame, trans_p + vec3f{-film.x, 0, 0});
+        auto p2_on_plane = transform_point(
+            cam.frame, trans_p + vec3f{-film.x, film.y, 0});
+        auto p3_on_plane = transform_point(
+            cam.frame, trans_p + vec3f{0, film.y, 0});
+
+        if (label.alignment[idx].x < 0) {
+          p0_on_plane = transform_point(
+              cam.frame, trans_p + vec3f{film.x, 0, 0});
+          p1_on_plane = transform_point(cam.frame, trans_p);
+          p2_on_plane = transform_point(
+              cam.frame, trans_p + vec3f{0, film.y, 0});
+          p3_on_plane = transform_point(
+              cam.frame, trans_p + vec3f{film.x, film.y, 0});
+        }
+
+        auto p0 = intersect_plane(
+            ray3f{camera_origin, p0_on_plane - camera_origin}, p, plane_dir);
+        auto p1 = intersect_plane(
+            ray3f{camera_origin, p1_on_plane - camera_origin}, p, plane_dir);
+        auto p2 = intersect_plane(
+            ray3f{camera_origin, p2_on_plane - camera_origin}, p, plane_dir);
+        auto p3 = intersect_plane(
+            ray3f{camera_origin, p3_on_plane - camera_origin}, p, plane_dir);
+
+        auto& shape        = scene.shapes[label.shapes[idx]];
+        shape.positions[0] = p0;
+        shape.positions[1] = p1;
+        shape.positions[2] = p2;
+        shape.positions[3] = p3;
+      }
+    }
   }
 
-  // Evaluates a keyframed value using Bezier interpolation.
-  template <typename T>
-  inline T keyframe_bezier(
-      const vector<float>& times, const vector<T>& vals, float time) {
-    if (time <= times.front()) return vals.front();
-    if (time >= times.back()) return vals.back();
-    time     = clamp(time, times.front(), times.back() - 0.001f);
-    auto idx = keyframe_index(times, time);
-    auto t   = (time - times.at(idx - 1)) / (times.at(idx) - times.at(idx - 1));
-    return interpolate_bezier(
-        vals.at(idx - 3), vals.at(idx - 2), vals.at(idx - 1), vals.at(idx), t);
+  void update_text_textures(scene_data& scene, int camera, int res) {
+    auto cam = scene.cameras[camera];
+
+    auto width  = res;
+    auto height = (int)round(res / cam.aspect);
+    auto film   = vec2f{cam.film, cam.film / cam.aspect};
+    if (cam.aspect < 1) {
+      width  = (int)round(res * cam.aspect);
+      height = res;
+      film   = vec2f{cam.film * cam.aspect, cam.film};
+    }
+
+    http::Request request{"localhost:5500/rasterize"};
+
+    for (auto& label : scene.labels) {
+      for (auto idx = 0; idx < label.text.size(); idx++) {
+        auto body = "text=" + label.text[idx] + "&width=" + to_string(width) +
+                    "&height=" + to_string(height) +
+                    "&film=" + to_string(film.x);
+        auto response = request.send(
+            "POST", body, {"Content-Type: application/x-www-form-urlencoded"});
+        auto string64 = string{response.body.begin(), response.body.end()};
+        auto buffer   = base64_decode(string64);
+
+        auto texture = texture_data{};
+        auto ncomp   = 0;
+        auto pixels  = stbi_load_from_memory(buffer.data(), (int)buffer.size(),
+             &texture.width, &texture.height, &ncomp, 4);
+        texture.linear  = false;
+        texture.pixelsb = vector<vec4b>{
+            (vec4b*)pixels, (vec4b*)pixels + texture.width * texture.height};
+        free(pixels);
+
+        scene.textures[label.textures[idx]] = texture;
+      }
+    }
   }
 
 }  // namespace yocto

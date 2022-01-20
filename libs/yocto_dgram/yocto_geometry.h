@@ -784,16 +784,19 @@ namespace yocto {
 
     if (!solve_quadratic(a, b, c, t1, t2)) return false;
 
-    auto t = ray.tmax;
-    if (t1 >= ray.tmin && t1 < t) {
-      t = t1;
+    auto hit = false;
+    auto t   = ray.tmax;
+    if (t1 >= ray.tmin && t1 <= t) {
+      t   = t1;
+      hit = true;
     }
 
-    if (t2 >= ray.tmin && t2 < t) {
-      t = t2;
+    if (t2 >= ray.tmin && t2 <= t) {
+      t   = t2;
+      hit = true;
     }
 
-    if (t == ray.tmax) return false;
+    if (!hit) return false;
 
     // compute local point for uvs
     auto pl = ray.o + t * ray.d;
@@ -827,22 +830,25 @@ namespace yocto {
     auto q1 = ray.o + t1 * ray.d;
     auto q2 = ray.o + t2 * ray.d;
 
-    auto t = dist;
-    auto p = vec3f{0, 0, 0};
+    auto hit = false;
+    auto t   = dist;
+    auto p   = vec3f{0, 0, 0};
 
-    if (t1 >= ray.tmin && t1 < t && dot(dir, q1 - p0) > 0 &&
+    if (t1 >= ray.tmin && t1 <= t && dot(dir, q1 - p0) > 0 &&
         dot(dir, q1 - p1) < 0) {
-      t = t1;
-      p = q1;
+      t   = t1;
+      p   = q1;
+      hit = true;
     }
 
-    if (t2 >= ray.tmin && t2 < t && dot(dir, q2 - p0) > 0 &&
+    if (t2 >= ray.tmin && t2 <= t && dot(dir, q2 - p0) > 0 &&
         dot(dir, q2 - p1) < 0) {
-      t = t2;
-      p = q2;
+      t   = t2;
+      p   = q2;
+      hit = true;
     }
 
-    if (t == dist) return false;
+    if (!hit) return false;
 
     auto d  = dot(p - p0, dir);
     auto pt = p0 + d * dir;
@@ -886,22 +892,25 @@ namespace yocto {
     auto q1 = ray.o + (float)t1 * ray.d;
     auto q2 = ray.o + (float)t2 * ray.d;
 
-    auto t = dist;
-    auto p = vec3f{0, 0, 0};
+    auto hit = false;
+    auto t   = dist;
+    auto p   = vec3f{0, 0, 0};
 
-    if (t1 >= ray.tmin && t1 < t && dot(dir, q1 - p0) > 0 &&
+    if (t1 >= ray.tmin && t1 <= t && dot(dir, q1 - p0) > 0 &&
         dot(dir, q1 - p1) < 0) {
-      t = t1;
-      p = q1;
+      t   = t1;
+      p   = q1;
+      hit = true;
     }
 
-    if (t2 >= ray.tmin && t2 < t && dot(dir, q2 - p0) > 0 &&
+    if (t2 >= ray.tmin && t2 <= t && dot(dir, q2 - p0) > 0 &&
         dot(dir, q2 - p1) < 0) {
-      t = t2;
-      p = q2;
+      t   = t2;
+      p   = q2;
+      hit = true;
     }
 
-    if (t == dist) return false;
+    if (!hit) return false;
 
     auto cp = p - pa;
     auto n  = normalize(cp * dot(dir, cp) / dot(cp, cp) - dir);
@@ -937,20 +946,23 @@ namespace yocto {
     auto p1 = ray.o + t1 * ray.d;
     auto p2 = ray.o + t2 * ray.d;
 
-    auto t = dist;
-    auto p = vec3f{0, 0, 0};
+    auto hit = false;
+    auto t   = dist;
+    auto p   = vec3f{0, 0, 0};
 
-    if (t1 >= ray.tmin && t1 < t && dot(p1 - pa, dir) < 0) {
-      t = t1;
-      p = p1;
+    if (t1 >= ray.tmin && t1 <= t && dot(p1 - pa, dir) < 0) {
+      t   = t1;
+      p   = p1;
+      hit = true;
     }
 
-    if (t2 >= ray.tmin && t2 < t && dot(p2 - pa, dir) < 0) {
-      t = t2;
-      p = p2;
+    if (t2 >= ray.tmin && t2 <= t && dot(p2 - pa, dir) < 0) {
+      t   = t2;
+      p   = p2;
+      hit = true;
     }
 
-    if (t == dist) return false;
+    if (!hit) return false;
 
     auto n = normalize(p - pc);
 
@@ -982,7 +994,7 @@ namespace yocto {
     auto q2 = sqrt(dot(q, q));
     if (q2 <= r1 || q2 >= r2) return false;
 
-    if (t < ray.tmin || t >= dist) return false;
+    if (t < ray.tmin || t > dist) return false;
 
     auto d = normalize(ray.o + ray.d * t - p);
 
@@ -1041,6 +1053,7 @@ namespace yocto {
       rb = ra;
     }
 
+    auto hit = false;
     auto t   = ray.tmax;
     auto p   = vec3f{0, 0, 0};
     auto n   = vec3f{0, 0, 0};
@@ -1080,8 +1093,10 @@ namespace yocto {
     }
 
     if (ra == rb) {
-      if (intersect_cylinder(ray, pa, pb, ra, dir, frame, tuv, t, p, n))
+      if (intersect_cylinder(ray, pa, pb, ra, dir, frame, tuv, t, p, n)) {
         tuv = {tuv.x, (lb + lb1 + tuv.y * lc) / (lb + lb1 + lc + la1 + la)};
+        hit = true;
+      }
     } else {
       auto cosa = sqrt(ob * ob - rb * rb) / ob;
 
@@ -1104,6 +1119,7 @@ namespace yocto {
         } else {
           tuv = {tuv.x, (la + la1 + tuv.y * lc) / (lb + lb1 + lc + la1 + la)};
         }
+        hit = true;
       }
     }
 
@@ -1116,6 +1132,7 @@ namespace yocto {
         } else {
           tuv = {tuv.x, (2 * tuv.y * la) / (lb + lb1 + lc + la1 + la)};
         }
+        hit = true;
       }
 
     } else {
@@ -1126,6 +1143,7 @@ namespace yocto {
         } else {
           tuv = {tuv.x, (la + tuv.y * la1) / (lb + lb1 + lc + la1 + la)};
         }
+        hit = true;
       }
 
       if (intersect_cone(
@@ -1136,6 +1154,7 @@ namespace yocto {
         } else {
           tuv = {tuv.x, (tuv.y * la) / (lb + lb1 + lc + la1 + la)};
         }
+        hit = true;
       }
     }
 
@@ -1148,6 +1167,7 @@ namespace yocto {
           tuv = {tuv.x, (la + la1 + lc + 2 * (tuv.y - 0.5f) * lb) /
                             (lb + lb1 + lc + la1 + la)};
         }
+        hit = true;
       }
     } else {
       if (intersect_disk(ray, pb, rb, rbc, -dir, frame, -sign, tuv, t, p, n)) {
@@ -1158,6 +1178,7 @@ namespace yocto {
           tuv = {tuv.x,
               (la + la1 + lc + tuv.y * lb1) / (lb + lb1 + lc + la1 + la)};
         }
+        hit = true;
       }
       if (intersect_cone(
               ray, pbc, pb, 0, rbc, -dir, frame, -sign, tuv, t, p, n)) {
@@ -1168,10 +1189,11 @@ namespace yocto {
           tuv = {tuv.x,
               (la + la1 + lc + lb1 + tuv.y * lb) / (lb + lb1 + lc + la1 + la)};
         }
+        hit = true;
       }
     }
 
-    if (t == ray.tmax) return false;
+    if (!hit) return false;
 
     // intersection occurred: set params and exit
     uv   = tuv;

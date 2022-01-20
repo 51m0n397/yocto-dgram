@@ -43,6 +43,7 @@
 #include <vector>
 
 #include "yocto_scene.h"
+#include "yocto_dgram.h"
 
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
@@ -144,23 +145,12 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Load/save a scene in the supported formats.
-  bool load_scene(const string& filename, scene_data& scene, string& error,
+  // Load a scene in the supported formats.
+  bool load_scene(const string& filename, dgram_data& dgram, string& error,
       bool noparallel = false);
-  bool save_scene(const string& filename, const scene_data& scene,
-      string& error, bool noparallel = false);
 
-  // Make missing scene directories
-  bool make_scene_directories(
-      const string& filename, const scene_data& scene, string& error);
-
-  // Load/save a scene in the supported formats.
-  scene_data load_scene(const string& filename, bool noparallel = false);
-  void save_scene(
-      const string& filename, const scene_data& scene, bool noparallel = false);
-
-  // Make missing scene directories
-  void make_scene_directories(const string& filename, const scene_data& scene);
+  // Load a scene in the supported formats.
+  dgram_data load_scene(const string& filename, bool noparallel = false);
 
 }  // namespace yocto
 

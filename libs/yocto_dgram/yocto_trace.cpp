@@ -93,19 +93,17 @@ namespace yocto {
 
   // Convenience functions
   static material_point eval_material(
-      const scene_data& scene, const scene_intersection& intersection) {
+      const scene_data& scene, const instance_intersection& intersection) {
     return eval_material(scene, scene.instances[intersection.instance],
         intersection.element, intersection.uv);
   }
   static vec3f eval_position(
-      const scene_data& scene, const scene_intersection& intersection) {
-    auto instance = scene.instances[intersection.instance];
-    return transform_point(instance.frame, intersection.position);
+      const scene_data& scene, const instance_intersection& intersection) {
+    return intersection.position;
   }
   static vec3f eval_normal(
-      const scene_data& scene, const scene_intersection& intersection) {
-    auto instance = scene.instances[intersection.instance];
-    return transform_normal(instance.frame, intersection.normal);
+      const scene_data& scene, const instance_intersection& intersection) {
+    return intersection.normal;
   }
 
   // Sample camera
@@ -116,123 +114,99 @@ namespace yocto {
     return eval_camera(camera, uv, sample_disk(luv));
   }
 
-  static vec4f trace_color(const scene_data& scene, const scene_bvh& bvh,
+  static vec4f trace_text(const scene_data& scene, const scene_bvh& bvh,
       const ray3f& ray, rng_state& rng, const trace_params& params) {
-    auto intersection = intersect_scene(bvh, scene, ray, false);
-    if (!intersection.hit)
-      return params.transparent_background ? vec4f{0, 0, 0, 0}
-                                           : scene.background_color;
-
-    if (intersection.border) {
-      auto back_isec     = intersect_scene(bvh, scene, ray, true);
-      auto back_isec_old = back_isec;
-      if (back_isec.instance == intersection.instance) {
-        auto uv  = vec2f{-1e-2f, back_isec.uv.y};
-        auto min = back_isec.uv.x;
-        if ((1 - back_isec.uv.x) < min) {
-          min = 1 - back_isec.uv.x;
-          uv  = vec2f{1 + 1e-2f, back_isec.uv.y};
+    auto text_color = vec4f{0, 0, 0, 0};
+    for (auto& label : scene.labels) {
+      for (auto idx = 0; idx < label.text.size(); idx++) {
+        auto& shape        = scene.shapes[label.shapes[idx]];
+        auto  instance_bvh = make_bvh(shape, identity3x4f, false);
+        auto  isec         = intersect_shape(instance_bvh, shape, ray);
+        if (isec.hit) {
+          auto color = eval_texture(scene, label.textures[idx], isec.uv, true);
+          text_color = composite(color, text_color);
         }
-        if (back_isec.uv.y < min) {
-          min = back_isec.uv.y;
-          uv  = vec2f{back_isec.uv.x, -1e-2f};
-        }
-        if ((1 - back_isec.uv.y) < min) {
-          min = 1 - back_isec.uv.y;
-          uv  = vec2f{back_isec.uv.x, 1 + 1e-2f};
-        }
-        auto  instance = scene.instances[intersection.instance];
-        auto  element  = intersection.element;
-        auto& shape    = scene.shapes[instance.shape];
-
-        auto p = vec3f{0, 0, 0};
-
-        if (!shape.triangles.empty()) {
-          auto t = shape.triangles[element];
-          p      = transform_point(instance.frame,
-                   interpolate_triangle(shape.positions[t.x], shape.positions[t.y],
-                       shape.positions[t.z], uv));
-        } else if (!shape.quads.empty()) {
-          auto q = shape.quads[element];
-          p      = transform_point(instance.frame,
-                   interpolate_quad(shape.positions[q.x], shape.positions[q.y],
-                       shape.positions[q.z], shape.positions[q.w], uv));
-        }
-        auto dir  = normalize(p - ray.o);
-        back_isec = intersect_scene(bvh, scene, {p - dir * 1e-2f, dir}, true);
       }
-      if (back_isec.instance == intersection.instance)
-        intersection = back_isec_old;
     }
-
-    auto position = eval_position(scene, intersection);
-    auto material = eval_material(scene, intersection);
-    auto color    = intersection.border ? material.stroke : material.fill;
-
-    if (color.w < 1) {
-      auto back_color = trace_color(scene, bvh, {position, ray.d}, rng, params);
-      return composite(color, back_color);
-    }
-
-    return color;
+    return text_color;
   }
 
-  static vec4f trace_color_wireframe(const scene_data& scene,
-      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
-      const trace_params& params) {
-    auto intersection = intersect_scene(bvh, scene, ray, false);
-    if (!intersection.hit)
-      return params.transparent_background ? vec4f{0, 0, 0, 0}
-                                           : scene.background_color;
+  static vec4f trace_color(const scene_data& scene, const scene_bvh& bvh,
+      const ray3f& ray, rng_state& rng, const trace_params& params) {
+    auto radiance = vec4f{0, 0, 0, 0};
 
-    auto position = eval_position(scene, intersection);
-    auto material = eval_material(scene, intersection);
-    auto color    = intersection.border ? material.stroke : material.fill;
+    auto intersections = intersect_scene(bvh, scene, ray);
 
-    if (color.w < 1) {
-      auto back_color = trace_color_wireframe(
-          scene, bvh, {position, ray.d}, rng, params);
-      return composite(color, back_color);
+    auto position = zero3f;
+    auto hit      = false;
+
+    for (auto& intersection : intersections) {
+      hit           = true;
+      position      = eval_position(scene, intersection);
+      auto material = eval_material(scene, intersection);
+      auto color    = material.fill;
+      if (intersection.primitive == primitive_type::point ||
+          intersection.primitive == primitive_type::line ||
+          intersection.primitive == primitive_type::border)
+        color = material.stroke;
+
+      radiance = composite(radiance, color);
     }
 
-    return color;
+    if (hit && radiance.w < 1) {
+      auto back_color = trace_color(scene, bvh, {position, ray.d}, rng, params);
+      return composite(radiance, back_color);
+    }
+
+    return radiance;
   }
 
   static vec4f trace_normal(const scene_data& scene, const scene_bvh& bvh,
       const ray3f& ray, rng_state& rng, const trace_params& params) {
-    auto intersection = intersect_scene(bvh, scene, ray, false);
-    if (!intersection.hit)
-      return params.transparent_background ? vec4f{0, 0, 0, 0}
-                                           : vec4f{1, 1, 1, 1};
+    auto intersections = intersect_scene(bvh, scene, ray);
 
-    return rgb_to_rgba(eval_normal(scene, intersection));
+    if (!intersections.empty())
+      return rgb_to_rgba(eval_normal(scene, *(intersections.begin())));
+
+    return vec4f{0, 0, 0, 0};
   }
 
   // Eyelight for quick previewing.
   static vec4f trace_eyelight(const scene_data& scene, const scene_bvh& bvh,
       const ray3f& ray, rng_state& rng, const trace_params& params) {
-    auto intersection = intersect_scene(bvh, scene, ray, false);
-    if (!intersection.hit)
-      return params.transparent_background ? vec4f{0, 0, 0, 0}
-                                           : scene.background_color;
+    auto radiance = vec4f{0, 0, 0, 0};
 
-    auto normal   = eval_normal(scene, intersection);
-    auto position = eval_position(scene, intersection);
-    auto material = eval_material(scene, intersection);
-    auto color    = intersection.border ? material.stroke : material.fill;
+    auto intersections = intersect_scene(bvh, scene, ray);
 
-    auto rgb_color = rgba_to_rgb(color) * dot(normal, -ray.d);
-    color.x        = rgb_color.x;
-    color.y        = rgb_color.y;
-    color.z        = rgb_color.z;
+    auto position = zero3f;
+    auto hit      = false;
 
-    if (color.w < 1) {
-      auto back_color = trace_eyelight(
-          scene, bvh, {position, ray.d}, rng, params);
-      return composite(color, back_color);
+    for (auto& intersection : intersections) {
+      hit           = true;
+      position      = eval_position(scene, intersection);
+      auto normal   = eval_normal(scene, intersection);
+      auto material = eval_material(scene, intersection);
+      auto color    = material.fill;
+      if (intersection.primitive == primitive_type::point ||
+          intersection.primitive == primitive_type::line ||
+          intersection.primitive == primitive_type::border)
+        color = material.stroke;
+
+      auto rgb_color = rgba_to_rgb(color) * dot(normal, -ray.d);
+      color.x        = rgb_color.x;
+      color.y        = rgb_color.y;
+      color.z        = rgb_color.z;
+
+      radiance = composite(radiance, color);
     }
 
-    return color;
+    if (hit && radiance.w < 1) {
+      auto back_color = trace_eyelight(
+          scene, bvh, {position, ray.d}, rng, params);
+      return composite(radiance, back_color);
+    }
+
+    return radiance;
   }
 
   // Trace a single ray from the camera using the given algorithm.
@@ -242,7 +216,6 @@ namespace yocto {
     switch (params.sampler) {
       case trace_sampler_type::color: return trace_color;
 
-      case trace_sampler_type::color_wireframe: return trace_color_wireframe;
       case trace_sampler_type::normal: return trace_normal;
       case trace_sampler_type::eyelight: return trace_eyelight;
       default: {
@@ -268,10 +241,16 @@ namespace yocto {
       puv     = (vec2f{si, sj} + 0.5f) / ns;
     }
 
+    auto offset = scene.offset * params.resolution * 80 * 2;
+    auto ii     = i - (int)offset.x;
+    auto ij     = j - (int)offset.y;
+
     auto luv = rand2f(state.rngs[idx]);
     auto ray = sample_camera(
-        camera, {i, j}, {state.width, state.height}, puv, luv);
+        camera, {ii, ij}, {state.width, state.height}, puv, luv);
     auto radiance = sampler(scene, bvh, ray, state.rngs[idx], params);
+    auto text     = trace_text(scene, bvh, ray, state.rngs[idx], params);
+    radiance      = composite(text, radiance);
     if (!isfinite(radiance)) radiance = {0, 0, 0};
     state.image[idx] += radiance;
     state.hits[idx] += 1;

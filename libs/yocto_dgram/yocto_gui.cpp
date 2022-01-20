@@ -210,7 +210,8 @@ namespace yocto {
       const function<void()>& before_edit) {
     auto edited = 0;
     if (draw_gui_header("cameras")) {
-      draw_gui_combobox("camera", selection.camera, scene.camera_names);
+      draw_gui_combobox(
+          "camera", selection.camera, "camera", (int)scene.cameras.size());
       auto camera = scene.cameras.at(selection.camera);
       edited += draw_gui_checkbox("ortho", camera.orthographic);
       edited += draw_gui_slider("lens", camera.lens, 0.001f, 1);
@@ -218,7 +219,6 @@ namespace yocto {
       edited += draw_gui_slider("film", camera.film, 0.1f, 0.5f);
       edited += draw_gui_slider("focus", camera.focus, 0.001f, 100);
       edited += draw_gui_slider("aperture", camera.aperture, 0, 1);
-      //   frame3f frame        = identity3x4f;
       if (edited) {
         if (before_edit) before_edit();
         scene.cameras.at(selection.camera) = camera;
@@ -226,12 +226,13 @@ namespace yocto {
       end_gui_header();
     }
     if (draw_gui_header("instances")) {
-      draw_gui_combobox("instance", selection.instance, scene.instance_names);
+      draw_gui_combobox("instance", selection.instance, "instance",
+          (int)scene.instances.size());
       auto instance = scene.instances.at(selection.instance);
-      edited += draw_gui_combobox("shape", instance.shape, scene.shape_names);
       edited += draw_gui_combobox(
-          "material", instance.material, scene.material_names);
-      //   frame3f frame        = identity3x4f;
+          "shape", instance.shape, "shape", (int)scene.shapes.size());
+      edited += draw_gui_combobox("material", instance.material, "material",
+          (int)scene.materials.size());
       if (edited) {
         if (before_edit) before_edit();
         scene.instances.at(selection.instance) = instance;
@@ -239,14 +240,16 @@ namespace yocto {
       end_gui_header();
     }
     if (draw_gui_header("materials")) {
-      draw_gui_combobox("material", selection.material, scene.material_names);
+      draw_gui_combobox("material", selection.material, "material",
+          (int)scene.materials.size());
       auto material = scene.materials.at(selection.material);
       edited += draw_gui_coloredithdr("fill", material.fill);
-      edited += draw_gui_combobox(
-          "fill_tex", material.fill_tex, scene.texture_names, true);
+      edited += draw_gui_combobox("fill_tex", material.fill_tex, "texture",
+          (int)scene.textures.size(), true);
       edited += draw_gui_coloredithdr("stroke", material.stroke);
-      edited += draw_gui_combobox(
-          "stroke_tex", material.stroke_tex, scene.texture_names, true);
+      edited += draw_gui_combobox("stroke_tex", material.stroke_tex, "texture",
+          (int)scene.textures.size(), true);
+      edited += draw_gui_slider("thickness", material.thickness, 0.0f, 20.0f);
       if (edited) {
         if (before_edit) before_edit();
         scene.materials.at(selection.material) = material;
@@ -254,7 +257,8 @@ namespace yocto {
       end_gui_header();
     }
     if (draw_gui_header("shapes")) {
-      draw_gui_combobox("shape", selection.shape, scene.shape_names);
+      draw_gui_combobox(
+          "shape", selection.shape, "shape", (int)scene.shapes.size());
       auto& shape = scene.shapes.at(selection.shape);
       draw_gui_label("points", (int)shape.points.size());
       draw_gui_label("lines", (int)shape.lines.size());
@@ -269,7 +273,8 @@ namespace yocto {
       end_gui_header();
     }
     if (draw_gui_header("textures")) {
-      draw_gui_combobox("texture", selection.texture, scene.texture_names);
+      draw_gui_combobox(
+          "texture", selection.texture, "texture", (int)scene.textures.size());
       auto& texture = scene.textures.at(selection.texture);
       draw_gui_label("width", texture.width);
       draw_gui_label("height", texture.height);
@@ -294,6 +299,8 @@ namespace yocto {
     auto params = params_;
 
     // build bvh
+    //compute_radius(scene, params.camera);
+    //compute_text(scene, params.camera, params.resolution);
     auto bvh = make_bvh(scene, params);
 
     // init state
@@ -310,14 +317,6 @@ namespace yocto {
     auto names    = vector<string>{name};
     auto selected = 0;
 
-    // camera names
-    auto camera_names = scene.camera_names;
-    if (camera_names.empty()) {
-      for (auto idx = 0; idx < (int)scene.cameras.size(); idx++) {
-        camera_names.push_back("camera" + std::to_string(idx + 1));
-      }
-    }
-
     // renderer update
     auto render_update  = std::atomic<bool>{};
     auto render_current = std::atomic<int>{};
@@ -328,6 +327,10 @@ namespace yocto {
       // stop render
       render_stop = true;
       if (render_worker.valid()) render_worker.get();
+
+      // compute_radius(scene, params.camera);
+      // update_text_positions(scene, params.camera);
+      bvh = make_bvh(scene, params);
 
       state   = make_state(scene, params);
       image   = make_image(state.width, state.height, true);
@@ -419,8 +422,12 @@ namespace yocto {
       if (draw_gui_header("render")) {
         auto edited  = 0;
         auto tparams = params;
-        edited += draw_gui_combobox("camera", tparams.camera, camera_names);
+        edited += draw_gui_combobox(
+            "camera", tparams.camera, "camera", (int)scene.cameras.size());
         edited += draw_gui_slider("resolution", tparams.resolution, 180, 4096);
+        /*if (ImGui::IsItemDeactivated()) {
+          update_text_textures(scene, params.camera, params.resolution);
+        }*/
         edited += draw_gui_slider("samples", tparams.samples, 1, 4096);
         edited += draw_gui_combobox(
             "antialiasing", (int&)tparams.antialiasing, antialiasing_names);
@@ -1176,6 +1183,31 @@ namespace yocto {
     for (auto i = 0; i < labels.size(); i++) {
       ImGui::PushID(i);
       if (ImGui::Selectable(labels[i].c_str(), value == i)) value = i;
+      if (value == i) ImGui::SetItemDefaultFocus();
+      ImGui::PopID();
+    }
+    ImGui::EndCombo();
+    return value != old_val;
+  }
+
+  bool draw_gui_combobox(
+      const char* lbl, int& value, string label, int size, bool include_null) {
+    if (!ImGui::BeginCombo(
+            lbl, value >= 0 ? (label + " " + std::to_string(value)).c_str()
+                            : "<none>"))
+      return false;
+    auto old_val = value;
+    if (include_null) {
+      ImGui::PushID(100000);
+      if (ImGui::Selectable("<none>", value < 0)) value = -1;
+      if (value < 0) ImGui::SetItemDefaultFocus();
+      ImGui::PopID();
+    }
+    for (auto i = 0; i < size; i++) {
+      ImGui::PushID(i);
+      if (ImGui::Selectable(
+              (label + " " + std::to_string(i)).c_str(), value == i))
+        value = i;
       if (value == i) ImGui::SetItemDefaultFocus();
       ImGui::PopID();
     }

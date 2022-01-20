@@ -66,7 +66,7 @@ namespace yocto {
 namespace yocto {
 
   // Type of tracing algorithm
-  enum struct trace_sampler_type { color, color_wireframe, normal, eyelight };
+  enum struct trace_sampler_type { color, normal, eyelight };
 
   // Type of antialiasing
   enum struct antialiasing_type { random_sampling, super_sampling };
@@ -131,13 +131,12 @@ namespace yocto {
 
   // trace sampler names
   inline const auto trace_sampler_names = vector<string>{
-      "color", "color_wireframe", "normal", "eyelight"};
+      "color", "normal", "eyelight"};
 
   // trace sampler labels
   inline const auto trace_sampler_labels =
       vector<pair<trace_sampler_type, string>>{
           {trace_sampler_type::color, "color"},
-          {trace_sampler_type::color_wireframe, "color_wireframe"},
           {trace_sampler_type::normal, "normal"},
           {trace_sampler_type::eyelight, "eyelight"}};
 

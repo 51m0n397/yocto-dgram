@@ -60,6 +60,7 @@ namespace yocto {
   // using directives
   using std::unique_ptr;
   using namespace std::string_literals;
+  using std::to_string;
 
 }  // namespace yocto
 
@@ -1192,93 +1193,9 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // make element name
-  [[maybe_unused]] static string get_element_name(
-      const string& name, int idx, size_t size) {
-    // there are much better ways to do this, but fine for now
-    auto num_str  = std::to_string(idx + 1);
-    auto size_str = std::to_string(size + 1);
-    while (num_str.size() < size_str.size()) num_str = "0" + num_str;
-    return name + num_str;
-  }
-
-  // get name
-  [[maybe_unused]] static string get_camera_name(
-      const scene_data& scene, int idx) {
-    if (idx < 0) return "";
-    if (scene.camera_names.empty())
-      return get_element_name("camera", idx, scene.cameras.size());
-    return scene.camera_names[idx];
-  }
-  [[maybe_unused]] static string get_shape_name(
-      const scene_data& scene, int idx) {
-    if (idx < 0) return "";
-    if (scene.shape_names.empty())
-      return get_element_name("shape", idx, scene.shapes.size());
-    return scene.shape_names[idx];
-  }
-  [[maybe_unused]] static string get_texture_name(
-      const scene_data& scene, int idx) {
-    if (idx < 0) return "";
-    if (scene.texture_names.empty())
-      return get_element_name("texture", idx, scene.textures.size());
-    return scene.texture_names[idx];
-  }
-  [[maybe_unused]] static string get_instance_name(
-      const scene_data& scene, int idx) {
-    if (idx < 0) return "";
-    if (scene.instance_names.empty())
-      return get_element_name("instance", idx, scene.instances.size());
-    return scene.instance_names[idx];
-  }
-  [[maybe_unused]] static string get_material_name(
-      const scene_data& scene, int idx) {
-    if (idx < 0) return "";
-    if (scene.material_names.empty())
-      return get_element_name("material", idx, scene.materials.size());
-    return scene.material_names[idx];
-  }
-
-  [[maybe_unused]] static string get_camera_name(
-      const scene_data& scene, const camera_data& camera) {
-    return get_camera_name(scene, (int)(&camera - scene.cameras.data()));
-  }
-  [[maybe_unused]] static string get_shape_name(
-      const scene_data& scene, const shape_data& shape) {
-    return get_shape_name(scene, (int)(&shape - scene.shapes.data()));
-  }
-  [[maybe_unused]] static string get_texture_name(
-      const scene_data& scene, const texture_data& texture) {
-    return get_texture_name(scene, (int)(&texture - scene.textures.data()));
-  }
-  [[maybe_unused]] static string get_instance_name(
-      const scene_data& scene, const instance_data& instance) {
-    return get_instance_name(scene, (int)(&instance - scene.instances.data()));
-  }
-  [[maybe_unused]] static string get_material_name(
-      const scene_data& scene, const material_data& material) {
-    return get_material_name(scene, (int)(&material - scene.materials.data()));
-  }
-
-  template <typename T>
-  static vector<string> make_names(const vector<T>& elements,
-      const vector<string>& names, const string& prefix) {
-    if (names.size() == elements.size()) return names;
-    auto nnames = vector<string>(elements.size());
-    for (auto idx : range(elements.size())) {
-      // there are much better ways to do this, but fine for now
-      auto num_str  = std::to_string(idx + 1);
-      auto size_str = std::to_string(elements.size());
-      while (num_str.size() < size_str.size()) num_str = "0" + num_str;
-      nnames[idx] = prefix + num_str;
-    }
-    return nnames;
-  }
-
   // Add missing cameras.
   void add_missing_camera(scene_data& scene) {
     if (!scene.cameras.empty()) return;
-    scene.camera_names.emplace_back("camera");
     auto& camera        = scene.cameras.emplace_back();
     camera.orthographic = false;
     camera.film         = 0.036f;
@@ -1363,67 +1280,28 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Load/save a scene in the builtin JSON format.
-  static bool load_json_scene(const string& filename, scene_data& scene,
-      string& error, bool noparallel);
-  static bool save_json_scene(const string& filename, const scene_data& scene,
+  // Load a scene in the builtin JSON format.
+  static bool load_json_scene(const string& filename, dgram_data& dgram,
       string& error, bool noparallel);
 
   // Load a scene
-  bool load_scene(const string& filename, scene_data& scene, string& error,
+  bool load_scene(const string& filename, dgram_data& dgram, string& error,
       bool noparallel) {
     auto ext = path_extension(filename);
     if (ext == ".json" || ext == ".JSON") {
-      return load_json_scene(filename, scene, error, noparallel);
+      return load_json_scene(filename, dgram, error, noparallel);
     } else {
       error = "unsupported format " + filename;
       return false;
     }
   }
 
-  // Save a scene
-  bool save_scene(const string& filename, const scene_data& scene,
-      string& error, bool noparallel) {
-    auto ext = path_extension(filename);
-    if (ext == ".json" || ext == ".JSON") {
-      return save_json_scene(filename, scene, error, noparallel);
-    } else {
-      error = "unsupported format " + filename;
-      return false;
-    }
-  }
-
-  // Load/save a scene
-  scene_data load_scene(const string& filename, bool noparallel) {
+  // Load a scene
+  dgram_data load_scene(const string& filename, bool noparallel) {
     auto error = string{};
-    auto scene = scene_data{};
+    auto scene = dgram_data{};
     if (!load_scene(filename, scene, error, noparallel)) throw io_error{error};
     return scene;
-  }
-  void save_scene(
-      const string& filename, const scene_data& scene, bool noparallel) {
-    auto error = string{};
-    if (!save_scene(filename, scene, error, noparallel)) throw io_error{error};
-  }
-
-  // Make missing scene directories
-  bool make_scene_directories(
-      const string& filename, const scene_data& scene, string& error) {
-    // make a directory if needed
-    if (!make_directory(path_dirname(filename), error)) return false;
-    if (!scene.shapes.empty())
-      if (!make_directory(path_join(path_dirname(filename), "shapes"), error))
-        return false;
-    if (!scene.textures.empty())
-      if (!make_directory(path_join(path_dirname(filename), "textures"), error))
-        return false;
-    return true;
-  }
-
-  // Make missing scene directories
-  void make_scene_directories(const string& filename, const scene_data& scene) {
-    auto error = string{};
-    if (!make_scene_directories(filename, scene, error)) throw io_error{error};
   }
 
 }  // namespace yocto
@@ -1433,544 +1311,148 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  static bool load_path_json_scene(const string& filename, json_value& json,
-      scene_data& scene, string& error, bool noparallel) {
-    // parse json value
-    auto get_opt = [](const json_value& json, const string& key, auto& value) {
-      value = json.value(key, value);
-    };
-
-    // filenames
-    auto shape_types       = vector<string>{};
-    auto shape_filenames   = vector<string>{};
-    auto shape_borders     = vector<float>{};
-    auto texture_filenames = vector<string>{};
-
-    // errors
-    auto parse_error = [&filename, &error]() {
-      error = "cannot parse " + filename;
-      return false;
-    };
-
-    // parsing values
-    try {
-      if (json.contains("asset")) {
-        auto& element = json.at("asset");
-        get_opt(element, "copyright", scene.copyright);
-        auto version = string{};
-        get_opt(element, "version", version);
-        if (version != "4.2" && version != "5.0") return parse_error();
-      }
-      if (json.contains("cameras")) {
-        auto& group = json.at("cameras");
-        scene.cameras.reserve(group.size());
-        scene.camera_names.reserve(group.size());
-        for (auto& element : group) {
-          auto& camera = scene.cameras.emplace_back();
-          auto& name   = scene.camera_names.emplace_back();
-          get_opt(element, "name", name);
-          get_opt(element, "frame", camera.frame);
-          get_opt(element, "orthographic", camera.orthographic);
-          get_opt(element, "lens", camera.lens);
-          get_opt(element, "aspect", camera.aspect);
-          get_opt(element, "film", camera.film);
-          get_opt(element, "focus", camera.focus);
-          get_opt(element, "aperture", camera.aperture);
-        }
-      }
-      if (json.contains("textures")) {
-        auto& group = json.at("textures");
-        scene.textures.reserve(group.size());
-        scene.texture_names.reserve(group.size());
-        texture_filenames.reserve(group.size());
-        for (auto& element : group) {
-          [[maybe_unused]] auto& texture = scene.textures.emplace_back();
-          auto&                  name    = scene.texture_names.emplace_back();
-          auto&                  uri     = texture_filenames.emplace_back();
-          get_opt(element, "name", name);
-          get_opt(element, "uri", uri);
-        }
-      }
-      if (json.contains("materials")) {
-        auto& group = json.at("materials");
-        scene.materials.reserve(group.size());
-        scene.material_names.reserve(group.size());
-        for (auto& element : json.at("materials")) {
-          auto& material = scene.materials.emplace_back();
-          auto& name     = scene.material_names.emplace_back();
-          get_opt(element, "name", name);
-
-          auto color   = vec3f{0, 0, 0};
-          auto opacity = 1.0f;
-          get_opt(element, "color", color);
-          get_opt(element, "opacity", opacity);
-          material.fill = {color.x, color.y, color.z, opacity};
-
-          get_opt(element, "color_tex", material.fill_tex);
-        }
-      }
-      if (json.contains("shapes")) {
-        auto& group = json.at("shapes");
-        scene.shapes.reserve(group.size());
-        scene.shape_names.reserve(group.size());
-        shape_filenames.reserve(group.size());
-        for (auto& element : group) {
-          auto& shape  = scene.shapes.emplace_back();
-          auto& name   = scene.shape_names.emplace_back();
-          auto& type   = shape_types.emplace_back();
-          auto& uri    = shape_filenames.emplace_back();
-          auto& border = shape_borders.emplace_back();
-          get_opt(element, "name", name);
-          get_opt(element, "type", type);
-          if (type == "point") {
-            shape          = {};
-            auto& position = shape.positions.emplace_back();
-            auto& radius   = shape.radius.emplace_back();
-            get_opt(element, "position", position);
-            get_opt(element, "radius", radius);
-            shape.points.push_back(0);
-          } else if (type == "line") {
-            shape           = {};
-            auto& position1 = shape.positions.emplace_back();
-            auto& radius1   = shape.radius.emplace_back();
-            auto& end1      = shape.ends.emplace_back();
-            get_opt(element, "position1", position1);
-            get_opt(element, "radius1", radius1);
-            get_opt(element, "arrow1", (bool&)end1);
-
-            auto& position2 = shape.positions.emplace_back();
-            auto& radius2   = shape.radius.emplace_back();
-            auto& end2      = shape.ends.emplace_back();
-            get_opt(element, "position2", position2);
-            get_opt(element, "radius2", radius2);
-            get_opt(element, "arrow2", (bool&)end2);
-
-            shape.lines.push_back({0, 1});
-          } else if (type == "triangle") {
-            shape           = {};
-            auto& position1 = shape.positions.emplace_back();
-            get_opt(element, "position1", position1);
-
-            auto& position2 = shape.positions.emplace_back();
-            get_opt(element, "position2", position2);
-
-            auto& position3 = shape.positions.emplace_back();
-            get_opt(element, "position3", position3);
-
-            shape.triangles.push_back({0, 1, 2});
-
-            get_opt(element, "border_size", shape.border_radius);
-          } else if (type == "quad") {
-            shape           = {};
-            auto& position1 = shape.positions.emplace_back();
-            get_opt(element, "position1", position1);
-
-            auto& position2 = shape.positions.emplace_back();
-            get_opt(element, "position2", position2);
-
-            auto& position3 = shape.positions.emplace_back();
-            get_opt(element, "position3", position3);
-
-            auto& position4 = shape.positions.emplace_back();
-            get_opt(element, "position4", position4);
-
-            shape.quads.push_back({0, 1, 2, 3});
-
-            get_opt(element, "border_size", shape.border_radius);
-          } else {
-            type = "uri";
-            get_opt(element, "uri", uri);
-            get_opt(element, "border_size", border);
-          }
-        }
-      }
-      if (json.contains("instances")) {
-        auto& group = json.at("instances");
-        scene.instances.reserve(group.size());
-        scene.instance_names.reserve(group.size());
-        for (auto& element : group) {
-          auto& instance = scene.instances.emplace_back();
-          auto& name     = scene.instance_names.emplace_back();
-          get_opt(element, "name", name);
-          get_opt(element, "frame", instance.frame);
-          get_opt(element, "shape", instance.shape);
-          get_opt(element, "material", instance.material);
-        }
-      }
-    } catch (...) {
-      return parse_error();
-    }
-
-    // prepare data
-    auto dirname         = path_dirname(filename);
-    auto dependent_error = [&filename, &error]() {
-      error = "cannot load " + filename + " since " + error;
-      return false;
-    };
-
-    // load resources
-    if (noparallel) {
-      // load shapes
-      for (auto idx : range(scene.shapes.size())) {
-        if (shape_types[idx] == "uri") {
-          if (!load_shape(path_join(dirname, shape_filenames[idx]),
-                  scene.shapes[idx], error, true))
-            return dependent_error();
-          scene.shapes[idx].border_radius = shape_borders[idx];
-        }
-      }
-      // load textures
-      for (auto idx : range(scene.textures.size())) {
-        if (!load_texture(path_join(dirname, texture_filenames[idx]),
-                scene.textures[idx], error))
-          return dependent_error();
-      }
-    } else {
-      // load shapes
-      if (!parallel_for(
-              scene.shapes.size(), error, [&](size_t idx, string& error) {
-                if (shape_types[idx] == "uri") {
-                  if (!load_shape(path_join(dirname, shape_filenames[idx]),
-                          scene.shapes[idx], error, true))
-                    return false;
-                  scene.shapes[idx].border_radius = shape_borders[idx];
-                  return true;
-                } else
-                  return true;
-              }))
-        return dependent_error();
-      // load textures
-      if (!parallel_for(
-              scene.textures.size(), error, [&](size_t idx, string& error) {
-                return load_texture(path_join(dirname, texture_filenames[idx]),
-                    scene.textures[idx], error);
-              }))
-        return dependent_error();
-    }
-
-    // fix scene
-    add_missing_camera(scene);
-    add_missing_radius(scene);
-    add_missing_caps(scene);
-    trim_memory(scene);
-
-    // done
-    return true;
-  }
-
-  static bool load_dgram_json_scene(const string& filename, json_value& json,
-      scene_data& scene, string& error, bool noparallel) {
-    auto get_opt = [](const json_value& json, const string& key, auto& value) {
-      value = json.value(key, value);
-    };
-
-    // parsing values
-    try {
-      // hardcode selecting only first scene
-      auto& jscene = json.at("scenes")[0];
-      if (jscene.contains("shapes")) {
-        auto& group = jscene.at("shapes");
-        scene.shapes.reserve(group.size());
-        scene.shape_names.reserve(group.size());
-        for (auto& element : group) {
-          auto& shape = scene.shapes.emplace_back();
-          get_opt(element, "positions", shape.positions);
-
-          get_opt(element, "points", shape.points);
-
-          auto lines = vector<vec2i>{};
-          get_opt(element, "lines", lines);
-          auto arrows = vector<vec2i>{};
-          get_opt(element, "arrows", arrows);
-          lines.insert(lines.end(), arrows.begin(), arrows.end());
-          shape.lines = lines;
-
-          vector<line_end> ends(shape.positions.size(), line_end::cap);
-          for (auto arrow : arrows) {
-            ends[arrow.y] = line_end::arrow;
-          }
-          shape.ends = ends;
-
-          vector<float> rads(shape.positions.size(), 0.02f);
-          shape.radius = rads;
-
-          get_opt(element, "triangles", shape.triangles);
-          get_opt(element, "quads", shape.quads);
-
-          /*auto boundary = false;
-          get_opt(element, "boundary", boundary);
-          if (boundary) shape.border_radius = 0.001f;*/
-        }
-      }
-      if (jscene.contains("materials")) {
-        auto& group = jscene.at("materials");
-        scene.materials.reserve(group.size());
-        scene.material_names.reserve(group.size());
-        for (auto& element : group) {
-          auto& material = scene.materials.emplace_back();
-          auto& name     = scene.material_names.emplace_back();
-          get_opt(element, "fill", material.fill);
-          get_opt(element, "stroke", material.stroke);
-        }
-      }
-      if (jscene.contains("objects")) {
-        auto& group = jscene.at("objects");
-        scene.instances.reserve(group.size());
-        scene.instance_names.reserve(group.size());
-        for (auto& element : group) {
-          // auto& instance = scene.instances.emplace_back();
-          // auto& name     = scene.instance_names.emplace_back();
-          auto instance = instance_data{};
-          get_opt(element, "frame", instance.frame);
-          get_opt(element, "shape", instance.shape);
-          get_opt(element, "material", instance.material);
-          if (instance.shape != invalidid) {
-            scene.instances.push_back(instance);
-            auto& name = scene.instance_names.emplace_back();
-          }
-
-          /*if (scene.materials[instance.material].stroke.w > 0) {
-            scene.shapes[instance.shape].border_radius = 0.02f;
-          }*/
-        }
-      }
-      if (jscene.contains("cameras")) {
-        auto& group = jscene.at("cameras");
-        scene.cameras.reserve(group.size());
-        scene.camera_names.reserve(group.size());
-        for (auto& element : group) {
-          scene.camera_names.emplace_back("camera");
-          auto& camera        = scene.cameras.emplace_back();
-          camera.orthographic = false;
-          camera.film         = 0.036f;
-          camera.aspect       = (float)json.at("size")[0] /
-                          (float)json.at("size")[1];  //(float)16 / (float)9;
-          camera.aperture = 0;
-          camera.lens     = .050f;
-          get_opt(element, "lens", camera.lens);
-
-          auto bbox        = compute_bounds(scene);
-          auto center      = (bbox.max + bbox.min) / 2;
-          auto bbox_radius = length(bbox.max - bbox.min) / 2;
-          auto camera_dir  = vec3f{0, 0, 1};
-          auto camera_dist = bbox_radius * camera.lens /
-                             (camera.film / camera.aspect);
-          camera_dist *= 2.0f;  // correction for tracer camera implementation
-          auto from = camera_dir * camera_dist + center;
-          get_opt(element, "from", from);
-
-          auto fcenter = vec2f{0, 0};
-          get_opt(element, "center", fcenter);
-          auto to = vec3f{fcenter.x, fcenter.y, 0.0};
-
-          auto up      = vec3f{0, 1, 0};
-          camera.frame = lookat_frame(from, to, up);
-          camera.focus = length(from - to);
-        }
-      }
-
-    } catch (...) {
-      error = "cannot parse " + filename;
-      return false;
-    }
-
-    // fix scene
-    add_missing_camera(scene);
-    add_missing_radius(scene);
-    add_missing_caps(scene);
-    trim_memory(scene);
-
-    return true;
-  }
-
   // Load a scene in the builtin JSON format.
-  static bool load_json_scene(const string& filename, scene_data& scene,
+  static bool load_json_scene(const string& filename, dgram_data& dgram,
       string& error, bool noparallel) {
     // open file
     auto json = json_value{};
     if (!load_json(filename, json, error)) return false;
 
-    // check version
-    if (json.contains("scenes"))
-      return load_dgram_json_scene(filename, json, scene, error, noparallel);
-    if (json.contains("asset") && json.at("asset").contains("version") &&
-        json.at("asset").at("version") == "4.2")
-      return load_path_json_scene(filename, json, scene, error, noparallel);
-    return false;
-  }
-
-  // Save a scene in the builtin JSON format.
-  static bool save_json_scene(const string& filename, const scene_data& scene,
-      string& error, bool noparallel) {
-    // helpers to handel old code paths
-    auto add_object = [](json_value& json, const string& name) -> json_value& {
-      auto& item = json[name];
-      item       = json_value::object();
-      return item;
-    };
-    auto add_array = [](json_value& json, const string& name) -> json_value& {
-      auto& item = json[name];
-      item       = json_value::array();
-      return item;
-    };
-    auto append_object = [](json_value& json) -> json_value& {
-      auto& item = json.emplace_back();
-      item       = json_value::object();
-      return item;
-    };
-    auto set_val = [](json_value& json, const string& name, const auto& value,
-                       const auto& def) {
-      if (value == def) return;
-      json[name] = value;
-    };
-    auto reserve_values = [](json_value& json, size_t size) {
-      json.get_ptr<json_value::array_t*>()->reserve(size);
+    auto get_opt = [](const json_value& json, const string& key, auto& value) {
+      value = json.value(key, value);
     };
 
-    // names
-    auto get_name = [](const vector<string>& names, size_t idx) -> string {
-      return (idx < names.size()) ? names[idx] : "";
-    };
-    auto get_filename = [](const vector<string>& names, size_t idx,
-                            const string& basename,
-                            const string& extension) -> string {
-      if (idx < names.size()) {
-        return basename + "s/" + names[idx] + extension;
-      } else {
-        return basename + "s/" + basename + std::to_string(idx) + extension;
+    // parsing values
+    try {
+      get_opt(json, "size", dgram.size);
+      get_opt(json, "resolution", dgram.resolution);
+      if (json.contains("scenes")) {
+        for (auto& jscene : json.at("scenes")) {
+          auto& scene = dgram.scenes.emplace_back();
+          get_opt(jscene, "offset", scene.offset);
+          scene.offset /= dgram.size.x;
+          if (jscene.contains("materials")) {
+            auto& group = jscene.at("materials");
+            scene.materials.reserve(group.size());
+            for (auto idx = 0; idx < group.size(); idx++) {
+              auto& element  = group[idx];
+              auto& material = scene.materials.emplace_back();
+              get_opt(element, "fill", material.fill);
+              material.fill = srgb_to_rgb(material.fill);
+              get_opt(element, "stroke", material.stroke);
+              material.stroke = srgb_to_rgb(material.stroke);
+              get_opt(element, "thickness", material.thickness);
+            }
+          }
+          if (jscene.contains("objects")) {
+            auto& group = jscene.at("objects");
+            for (auto& element : group) {
+              auto instance = instance_data{};
+              get_opt(element, "frame", instance.frame);
+              get_opt(element, "shape", instance.shape);
+              get_opt(element, "material", instance.material);
+              get_opt(element, "labels", instance.labels);
+              if (instance.shape != invalidid) {
+                element    = jscene.at("shapes")[instance.shape];
+                auto shape = shape_data{};
+                get_opt(element, "positions", shape.positions);
+                get_opt(element, "fills", shape.colors);
+                get_opt(element, "cull", shape.cull);
+                get_opt(element, "boundary", shape.boundary);
+                get_opt(element, "cclips", shape.cclips);
+
+                get_opt(element, "points", shape.points);
+
+                auto lines = vector<vec2i>{};
+                get_opt(element, "lines", lines);
+                auto arrows = vector<vec2i>{};
+                get_opt(element, "arrows", arrows);
+                lines.insert(lines.end(), arrows.begin(), arrows.end());
+                shape.lines = lines;
+                vector<line_end> ends(shape.positions.size(), line_end::cap);
+                for (auto arrow : arrows) {
+                  ends[arrow.y] = line_end::arrow;
+                }
+                shape.ends = ends;
+
+                get_opt(element, "triangles", shape.triangles);
+                get_opt(element, "quads", shape.quads);
+
+                scene.instances.push_back(instance);
+                scene.shapes.push_back(shape);
+              }
+              if (instance.labels != invalidid && jscene.contains("labels") &&
+                  jscene.at("labels").size() > instance.labels) {
+                auto& element   = jscene.at("labels")[instance.labels];
+                auto  positions = vector<vec3f>{};
+                get_opt(element, "positions", positions);
+                if (positions.size() > 0) {
+                  auto& label = scene.labels.emplace_back();
+
+                  label.frame     = instance.frame;
+                  label.color     = scene.materials[instance.material].stroke;
+                  label.positions = positions;
+
+                  label.text.reserve(positions.size());
+                  label.offset.reserve(positions.size());
+                  label.alignment.reserve(positions.size());
+                  for (auto& elem : element.at("labels")) {
+                    auto& text      = label.text.emplace_back("");
+                    auto& offset    = label.offset.emplace_back(vec2f{0, 0});
+                    auto& alignment = label.alignment.emplace_back(vec2f{0, 0});
+                    get_opt(elem, "unprocessed", text);
+                    get_opt(elem, "offset", offset);
+                    get_opt(elem, "alignment", alignment);
+                  }
+                }
+              }
+            }
+          }
+          if (jscene.contains("cameras")) {
+            auto& group = jscene.at("cameras");
+            scene.cameras.reserve(group.size());
+            for (auto& element : group) {
+              auto& camera        = scene.cameras.emplace_back();
+              camera.orthographic = true;
+              get_opt(element, "orthographic", camera.orthographic);
+              camera.film     = 0.036f;
+              camera.aspect   = dgram.size.x / dgram.size.y;
+              camera.aperture = 0;
+              camera.lens     = .036f;
+              get_opt(element, "lens", camera.lens);
+              camera.lens /= (dgram.size.x / dgram.resolution);
+
+              auto from = vec3f{0, 0, 1};
+              get_opt(element, "from", from);
+
+              auto to = vec3f{0, 0, 0};
+              get_opt(element, "to", to);
+
+              auto up = vec3f{0, 1, 0};
+
+              auto center = vec2f{0, 0};
+              get_opt(element, "center", center);
+
+              to += vec3f{center.x, center.y, 0} * camera.film *
+                    dgram.resolution / 2;
+
+              camera.frame = lookat_frame(from, to, up);
+              camera.focus = length(from - to);
+            }
+          }
+        }
       }
-    };
 
-    // filenames
-    auto shape_filenames   = vector<string>(scene.shapes.size());
-    auto texture_filenames = vector<string>(scene.textures.size());
-    for (auto idx : range(shape_filenames.size())) {
-      shape_filenames[idx] = get_filename(
-          scene.shape_names, idx, "shape", ".ply");
-    }
-    for (auto idx : range(texture_filenames.size())) {
-      texture_filenames[idx] = get_filename(scene.texture_names, idx, "texture",
-          (scene.textures[idx].pixelsf.empty() ? ".png" : ".hdr"));
-    }
-
-    // save json file
-    auto json = json_value::object();
-
-    // asset
-    {
-      auto& element = add_object(json, "asset");
-      set_val(element, "copyright", scene.copyright, "");
-      set_val(element, "generator",
-          "Yocto/GL - https://github.com/xelatihy/yocto-gl"s, ""s);
-      set_val(element, "version", "4.2"s, ""s);
-    }
-
-    if (!scene.cameras.empty()) {
-      auto  default_ = camera_data{};
-      auto& group    = add_array(json, "cameras");
-      reserve_values(group, scene.cameras.size());
-      for (auto&& [idx, camera] : enumerate(scene.cameras)) {
-        auto& element = append_object(group);
-        set_val(element, "name", get_name(scene.camera_names, idx), "");
-        set_val(element, "frame", camera.frame, default_.frame);
-        set_val(element, "orthographic", camera.orthographic,
-            default_.orthographic);
-        set_val(element, "lens", camera.lens, default_.lens);
-        set_val(element, "aspect", camera.aspect, default_.aspect);
-        set_val(element, "film", camera.film, default_.film);
-        set_val(element, "focus", camera.focus, default_.focus);
-        set_val(element, "aperture", camera.aperture, default_.aperture);
-      }
-    }
-
-    if (!scene.textures.empty()) {
-      auto& group = add_array(json, "textures");
-      reserve_values(group, scene.textures.size());
-      for (auto&& [idx, texture] : enumerate(scene.textures)) {
-        auto& element = append_object(group);
-        set_val(element, "name", get_name(scene.texture_names, idx), "");
-        set_val(element, "uri", texture_filenames[idx], ""s);
-      }
-    }
-
-    if (!scene.materials.empty()) {
-      auto  default_ = material_data{};
-      auto& group    = add_array(json, "materials");
-      reserve_values(group, scene.materials.size());
-      for (auto&& [idx, material] : enumerate(scene.materials)) {
-        auto& element = append_object(group);
-        set_val(element, "name", get_name(scene.material_names, idx), "");
-        set_val(element, "color", xyz(material.fill), xyz(default_.fill));
-        set_val(element, "opacity", material.fill.w, default_.fill.w);
-        set_val(element, "color_tex", material.fill_tex, default_.fill_tex);
-      }
-    }
-
-    if (!scene.shapes.empty()) {
-      auto& group = add_array(json, "shapes");
-      reserve_values(group, scene.shapes.size());
-      for (auto&& [idx, shape] : enumerate(scene.shapes)) {
-        auto& element = append_object(group);
-        set_val(element, "name", get_name(scene.shape_names, idx), "");
-        set_val(element, "uri", shape_filenames[idx], "");
-      }
-    }
-
-    if (!scene.instances.empty()) {
-      auto  default_ = instance_data{};
-      auto& group    = add_array(json, "instances");
-      reserve_values(group, scene.instances.size());
-      for (auto&& [idx, instance] : enumerate(scene.instances)) {
-        auto& element = append_object(group);
-        set_val(element, "name", get_name(scene.instance_names, idx), "");
-        set_val(element, "frame", instance.frame, default_.frame);
-        set_val(element, "shape", instance.shape, default_.shape);
-        set_val(element, "material", instance.material, default_.material);
-      }
-    }
-
-    // save json
-    if (!save_json(filename, json, error)) return false;
-
-    // prepare data
-    auto dirname         = path_dirname(filename);
-    auto dependent_error = [&filename, &error]() {
-      error = "cannot save " + filename + " since " + error;
+    } catch (...) {
+      error = "cannot parse " + filename;
       return false;
-    };
-
-    // dirname
-    if (noparallel) {
-      // save shapes
-      for (auto idx : range(scene.shapes.size())) {
-        if (!save_shape(path_join(dirname, shape_filenames[idx]),
-                scene.shapes[idx], error, true))
-          return dependent_error();
-      }
-      // save textures
-      for (auto idx : range(scene.textures.size())) {
-        if (!save_texture(path_join(dirname, texture_filenames[idx]),
-                scene.textures[idx], error))
-          return dependent_error();
-      }
-    } else {
-      // save shapes
-      if (!parallel_for(
-              scene.shapes.size(), error, [&](auto idx, string& error) {
-                return save_shape(path_join(dirname, shape_filenames[idx]),
-                    scene.shapes[idx], error, true);
-              }))
-        return dependent_error();
-      // save textures
-      if (!parallel_for(
-              scene.textures.size(), error, [&](auto idx, string& error) {
-                return save_texture(path_join(dirname, texture_filenames[idx]),
-                    scene.textures[idx], error);
-              }))
-        return dependent_error();
     }
 
-    // done
+    // fix scene
+    // add_missing_camera(scene);
+    // add_missing_caps(scene);
+    // trim_memory(scene);
+
     return true;
   }
 

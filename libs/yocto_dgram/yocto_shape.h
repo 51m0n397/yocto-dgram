@@ -78,6 +78,8 @@ namespace yocto {
     vector<vec3i> triangles = {};
     vector<vec4i> quads     = {};
 
+    vector<vec2i> borders = {};
+
     // vertex data
     vector<vec3f>    positions = {};
     vector<vec3f>    normals   = {};
@@ -87,7 +89,10 @@ namespace yocto {
     vector<vec4f>    tangents  = {};
     vector<line_end> ends      = {};
 
-    float border_radius = 0;
+    bool cull     = false;
+    bool boundary = false;
+
+    vector<vec3f> cclips = {};
   };
 
   // Interpolate vertex data
