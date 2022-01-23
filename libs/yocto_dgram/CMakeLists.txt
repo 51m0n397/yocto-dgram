@@ -1,24 +1,18 @@
 add_library(yocto_dgram STATIC
-  yocto_math.h yocto_color.h yocto_geometry.h
-  yocto_noise.h yocto_sampling.h
-  yocto_modelio.h yocto_modelio.cpp
-  yocto_bvh.h yocto_bvh.cpp
-  yocto_shape.h yocto_shape.cpp
-  yocto_image.h yocto_image.cpp
-  yocto_scene.h yocto_scene.cpp
-  yocto_trace.h yocto_trace.cpp
-  yocto_sceneio.h yocto_sceneio.cpp
-  yocto_shading.h
-  yocto_gui.h yocto_gui.cpp
-  yocto_parallel.h yocto_cli.h
-  yocto_dgram.h
-  ext/stb_image.h ext/stb_image_resize.h ext/stb_image_write.h ext/stb_image.cpp
-  ext/tinyexr.h ext/tinyexr.cpp ext/json.hpp ext/fast_float.h ext/base64.h ext/base64.cpp
+  yocto_dgram.h yocto_dgram.cpp
+  yocto_dgramio.h yocto_dgramio.cpp 
+  yocto_dgram_bvh.h yocto_dgram_bvh.cpp
+  yocto_dgram_trace.h yocto_dgram_trace.cpp
+  yocto_dgram_shape.h yocto_dgram_shape.cpp
+  yocto_dgram_text.h yocto_dgram_text.cpp
+  ext/base64.h ext/base64.cpp
   ext/HTTPRequest.hpp
+  ext/earcut.hpp
 )
 
 set_target_properties(yocto_dgram PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED YES)
 target_include_directories(yocto_dgram PRIVATE ext/)
+target_include_directories(yocto_dgram PUBLIC ${CMAKE_SOURCE_DIR}/libs)
 
 if(UNIX AND NOT APPLE)
   find_package(Threads REQUIRED)

@@ -1,5 +1,5 @@
 //
-// # Yocto/Dgram: Diagram representation
+// # Yocto/Dgram shape: Dgram shape utilities
 //
 
 //
@@ -26,16 +26,14 @@
 // SOFTWARE.
 //
 
-#ifndef _YOCTO_DGRAM_H_
-#define _YOCTO_DGRAM_H_
+#ifndef _YOCTO_DGRAM_SHAPE_H_
+#define _YOCTO_DGRAM_SHAPE_H_
 
 // -----------------------------------------------------------------------------
 // INCLUDES
 // -----------------------------------------------------------------------------
 
-#include <yocto/yocto_geometry.h>
-#include <yocto/yocto_image.h>
-#include <yocto/yocto_math.h>
+#include "yocto_dgram.h"
 
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
@@ -47,84 +45,57 @@ namespace yocto {
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
-// DGRAM SCENES
+// SHAPE BUILD
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  enum class line_end : bool { cap = false, arrow = true };
+  enum class primitive_type { point, line, triangle, quad, border };
 
-  struct line_ends {
-    line_end a = line_end::cap;
-    line_end b = line_end::cap;
-  };
-
-  struct dgram_camera {
-    bool  orthographic = true;
-    vec2f center       = {0, 0};
-    vec3f from         = {0, 0, 1};
-    vec3f to           = {0, 0, 0};
-    float lens         = 0.036f;
-    float film         = 0.036f;
-  };
-
-  struct dgram_object {
-    frame3f frame    = identity3x4f;
-    int     shape    = -1;
-    int     material = -1;
-    int     labels   = -1;
-  };
-
-  struct dgram_material {
-    vec4f fill   = {0, 0, 0, 1};
-    vec4f stroke = {0, 0, 0, 1};
-
-    float thickness = 2;
-  };
-
-  struct dgram_shape {
+  struct trace_shape {
     vector<vec3f> positions = {};
 
     vector<int>   points    = {};
     vector<vec2i> lines     = {};
     vector<vec3i> triangles = {};
     vector<vec4i> quads     = {};
+    vector<vec2i> borders   = {};
 
-    // flll colors for quads
-    vector<vec4f> fills = {};
+    vector<vec4f>     fills = {};
+    vector<line_ends> ends  = {};
+    vector<float>     radii = {};
 
-    // end types for lines
-    vector<line_ends> ends = {};
+    vector<vec3f> cclip_positions = {};
+    vector<vec3i> cclip_indices   = {};
 
-    bool cull     = false;
-    bool boundary = false;
-
-    vector<vec3f> cclips = {};
+    int material = -1;
   };
 
-  struct dgram_label {
-    vector<vec3f>  positions  = {};
-    vector<string> texts      = {};
-    vector<vec2f>  offsets    = {};
-    vector<vec2f>  alignments = {};
+  struct trace_shapes {
+    vector<trace_shape> shapes = {};
   };
 
-  struct dgram_scene {
-    vec2f                  offset    = {0, 0};
-    vector<dgram_camera>   cameras   = {};
-    vector<dgram_object>   objects   = {};
-    vector<dgram_material> materials = {};
-    vector<dgram_shape>    shapes    = {};
-    vector<dgram_label>    labels    = {};
+  struct shape_element {
+    primitive_type primitive = primitive_type::point;
+    int            index     = -1;
+
+    bool operator<(const shape_element& x) const {
+      if (primitive != x.primitive) return primitive < x.primitive;
+      return index < x.index;
+    }
   };
 
-  struct dgram_scenes {
-    vec2f               size   = {720, 480};
-    float               scale  = 80;
-    vector<dgram_scene> scenes = {};
-  };
+  trace_shapes make_shapes(const dgram_scene& scene, const int& cam,
+      const vec2f& size, const float& scale, const bool noparallel = false);
 
-  ray3f eval_camera(const dgram_camera& camera, const vec2f& image_uv,
-      const vec2f& size, const float& scale);
+}  // namespace yocto
+
+// -----------------------------------------------------------------------------
+// SHAPE PROPERTY EVALUATION
+// -----------------------------------------------------------------------------
+namespace yocto {
+
+  vec4f eval_material(const trace_shape& shape, const dgram_material& material,
+      const shape_element& element, const vec2f& uv);
 
 }  // namespace yocto
 

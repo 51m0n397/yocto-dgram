@@ -1,14 +1,11 @@
 //
-// # Yocto/Trace: Path tracing
-//
-// Yocto/Trace is a simple path tracer written on the Yocto/Scene model.
-// Yocto/Trace is implemented in `yocto_trace.h` and `yocto_trace.cpp`.
+// # Yocto/Dgram trace: Path tracing
 //
 
 //
 // LICENSE:
 //
-// Copyright (c) 2016 -- 2021 Fabio Pellacini
+// Copyright (c) 2021 -- 2022 Simone Bartolini
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +25,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-//
 
-#ifndef _YOCTO_TRACE_H_
-#define _YOCTO_TRACE_H_
+#ifndef _YOCTO_DGRAM_TRACE_H_
+#define _YOCTO_DGRAM_TRACE_H_
 
 // -----------------------------------------------------------------------------
 // INCLUDES
 // -----------------------------------------------------------------------------
 
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
+#include <yocto/yocto_sampling.h>
 
-#include "yocto_bvh.h"
-#include "yocto_image.h"
-#include "yocto_math.h"
-#include "yocto_sampling.h"
-#include "yocto_scene.h"
+#include "yocto_dgram.h"
+#include "yocto_dgram_bvh.h"
+#include "yocto_dgram_shape.h"
+#include "yocto_dgram_text.h"
 
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
@@ -54,9 +46,6 @@
 namespace yocto {
 
   // using directives
-  using std::pair;
-  using std::string;
-  using std::vector;
 
 }  // namespace yocto
 
@@ -66,27 +55,24 @@ namespace yocto {
 namespace yocto {
 
   // Type of tracing algorithm
-  enum struct trace_sampler_type { color, normal, eyelight };
+  enum struct trace_sampler_type { color, normal, uv, eyelight };
 
   // Type of antialiasing
   enum struct antialiasing_type { random_sampling, super_sampling };
 
-  // Default trace seed
   const auto trace_default_seed = 961748941ull;
 
-  // Options for trace functions
   struct trace_params {
     int                camera       = 0;
-    int                resolution   = 1280;
+    float              scale        = 0.0f;
+    vec2f              size         = {0, 0};
+    int                width        = 0;
+    int                height       = 0;
+    int                samples      = 0;
+    uint64_t           seed         = trace_default_seed;
     trace_sampler_type sampler      = trace_sampler_type::color;
     antialiasing_type  antialiasing = antialiasing_type::super_sampling;
-    int                samples      = 9;
-    bool               transparent_background = false;
-    uint64_t           seed                   = trace_default_seed;
-    bool               highqualitybvh         = false;
-    bool               noparallel             = false;
-    int                pratio                 = 8;
-    int                batch                  = 1;
+    bool               noparallel   = false;
   };
 
 }  // namespace yocto
@@ -96,29 +82,23 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  // Trace state
   struct trace_state {
     int               width   = 0;
     int               height  = 0;
     int               samples = 0;
     vector<vec4f>     image   = {};
-    vector<int>       hits    = {};
     vector<rng_state> rngs    = {};
   };
 
-  // Initialize state.
-  trace_state make_state(const scene_data& scene, const trace_params& params);
+  trace_state make_state(const trace_params& params);
 
-  // Build the bvh acceleration structure.
-  scene_bvh make_bvh(const scene_data& scene, const trace_params& params);
-
-  // Progressively computes an image.
-  void trace_samples(trace_state& state, const scene_data& scene,
+  void trace_samples(trace_state& state, const dgram_scene& scene,
+      const trace_shapes& shapes, const trace_texts& texts,
       const scene_bvh& bvh, const trace_params& params);
-  void trace_sample(trace_state& state, const scene_data& scene,
+  void trace_sample(trace_state& state, const dgram_scene& scene,
+      const trace_shapes& shapes, const trace_texts& texts,
       const scene_bvh& bvh, int i, int j, const trace_params& params);
 
-  // Get resulting render
   image_data get_render(const trace_state& state);
   void       get_render(image_data& render, const trace_state& state);
 
@@ -131,13 +111,14 @@ namespace yocto {
 
   // trace sampler names
   inline const auto trace_sampler_names = vector<string>{
-      "color", "normal", "eyelight"};
+      "color", "normal", "uv", "eyelight"};
 
   // trace sampler labels
   inline const auto trace_sampler_labels =
       vector<pair<trace_sampler_type, string>>{
           {trace_sampler_type::color, "color"},
           {trace_sampler_type::normal, "normal"},
+          {trace_sampler_type::uv, "uv"},
           {trace_sampler_type::eyelight, "eyelight"}};
 
   // antialiasing names
@@ -151,5 +132,4 @@ namespace yocto {
           {antialiasing_type::super_sampling, "super_sampling"}};
 
 }  // namespace yocto
-
 #endif

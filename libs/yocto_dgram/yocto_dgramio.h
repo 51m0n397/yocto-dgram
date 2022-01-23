@@ -1,11 +1,11 @@
 //
-// Snippet to compile stb_image libraries.
+// # Yocto/Dgramio: Diagram loader
 //
 
 //
 // LICENSE:
 //
-// Copyright (c) 2016 -- 2019 Fabio Pellacini
+// Copyright (c) 2021 -- 2022 Simone Bartolini
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,28 +26,33 @@
 // SOFTWARE.
 //
 
-#if !defined(_WIN32) && !defined(_WIN64)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#ifndef __clang__
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
-#endif
+#ifndef _YOCTO_DGRAMIO_H_
+#define _YOCTO_DGRAMIO_H_
 
-// #ifndef _clang_analyzer__
+// -----------------------------------------------------------------------------
+// INCLUDES
+// -----------------------------------------------------------------------------
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <yocto/yocto_sceneio.h>
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "yocto_dgram.h"
 
-#define STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "stb_image_resize.h"
+// -----------------------------------------------------------------------------
+// USING DIRECTIVES
+// -----------------------------------------------------------------------------
+namespace yocto {
 
-// #endif
+  // using directives
 
-#if !defined(_WIN32) && !defined(_WIN64)
-#pragma GCC diagnostic pop
+}  // namespace yocto
+
+// -----------------------------------------------------------------------------
+// DGRAM SCENES LOADER
+// -----------------------------------------------------------------------------
+namespace yocto {
+
+  bool load_dgram(const string& filename, dgram_scenes& dgram, string& error);
+  dgram_scenes load_dgram(const string& filename);
+}  // namespace yocto
+
 #endif

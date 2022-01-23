@@ -26,16 +26,11 @@
 // SOFTWARE.
 //
 
-#ifndef _YOCTO_DGRAM_H_
-#define _YOCTO_DGRAM_H_
-
 // -----------------------------------------------------------------------------
 // INCLUDES
 // -----------------------------------------------------------------------------
 
-#include <yocto/yocto_geometry.h>
-#include <yocto/yocto_image.h>
-#include <yocto/yocto_math.h>
+#include "yocto_dgram.h"
 
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
@@ -51,81 +46,31 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  enum class line_end : bool { cap = false, arrow = true };
-
-  struct line_ends {
-    line_end a = line_end::cap;
-    line_end b = line_end::cap;
-  };
-
-  struct dgram_camera {
-    bool  orthographic = true;
-    vec2f center       = {0, 0};
-    vec3f from         = {0, 0, 1};
-    vec3f to           = {0, 0, 0};
-    float lens         = 0.036f;
-    float film         = 0.036f;
-  };
-
-  struct dgram_object {
-    frame3f frame    = identity3x4f;
-    int     shape    = -1;
-    int     material = -1;
-    int     labels   = -1;
-  };
-
-  struct dgram_material {
-    vec4f fill   = {0, 0, 0, 1};
-    vec4f stroke = {0, 0, 0, 1};
-
-    float thickness = 2;
-  };
-
-  struct dgram_shape {
-    vector<vec3f> positions = {};
-
-    vector<int>   points    = {};
-    vector<vec2i> lines     = {};
-    vector<vec3i> triangles = {};
-    vector<vec4i> quads     = {};
-
-    // flll colors for quads
-    vector<vec4f> fills = {};
-
-    // end types for lines
-    vector<line_ends> ends = {};
-
-    bool cull     = false;
-    bool boundary = false;
-
-    vector<vec3f> cclips = {};
-  };
-
-  struct dgram_label {
-    vector<vec3f>  positions  = {};
-    vector<string> texts      = {};
-    vector<vec2f>  offsets    = {};
-    vector<vec2f>  alignments = {};
-  };
-
-  struct dgram_scene {
-    vec2f                  offset    = {0, 0};
-    vector<dgram_camera>   cameras   = {};
-    vector<dgram_object>   objects   = {};
-    vector<dgram_material> materials = {};
-    vector<dgram_shape>    shapes    = {};
-    vector<dgram_label>    labels    = {};
-  };
-
-  struct dgram_scenes {
-    vec2f               size   = {720, 480};
-    float               scale  = 80;
-    vector<dgram_scene> scenes = {};
-  };
-
   ray3f eval_camera(const dgram_camera& camera, const vec2f& image_uv,
-      const vec2f& size, const float& scale);
+      const vec2f& size, const float& scale) {
+    auto aspect = size.x / size.y;
+    auto film   = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
+                              : vec2f{camera.film * aspect, camera.film};
+
+    auto frame   = lookat_frame(camera.from, camera.to, {0, 1, 0});
+    auto lens    = camera.lens / size.x * scale;
+    auto centerx = camera.center.x * scale / (size.x);
+    auto centery = camera.center.y * scale / (size.y);
+
+    if (!camera.orthographic) {
+      auto q = vec3f{film.x * (0.5f - image_uv.x - centerx),
+          film.y * (image_uv.y - 0.5f - centery), lens};
+      auto e = zero3f;
+      auto d = normalize(-q - e);
+      return ray3f{transform_point(frame, e), transform_direction(frame, d)};
+    } else {
+      auto s = length(camera.from - camera.to) / lens;
+      auto q = vec3f{film.x * (0.5f - image_uv.x - centerx) * s,
+          film.y * (image_uv.y - 0.5f - centery) * s, lens};
+      auto e = vec3f{-q.x, -q.y, 0};
+      auto d = normalize(-q - e);
+      return ray3f{transform_point(frame, e), transform_direction(frame, d)};
+    }
+  }
 
 }  // namespace yocto
-
-#endif
