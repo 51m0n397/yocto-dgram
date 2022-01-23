@@ -496,8 +496,6 @@ struct shape_intersection {
   int   element  = -1;
   vec2f uv       = {0, 0};
   float distance = 0;
-  vec3f position = {0, 0, 0};
-  vec3f normal = {0, 0, 0};
   bool  hit      = false;
 };
 

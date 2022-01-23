@@ -2237,7 +2237,7 @@ void update_quads_bvh(bvh_tree& bvh, const vector<vec4i>& quads,
 template <typename Intersect>
 static bool intersect_elements_bvh(const bvh_tree& bvh,
     Intersect&& intersect_element, const ray3f& ray_, int& element, vec2f& uv,
-    float& distance, vec3f& pos, vec3f& norm, bool find_any) {
+    float& distance, bool find_any) {
   // check empty
   if (bvh.nodes.empty()) return false;
 
@@ -2281,7 +2281,7 @@ static bool intersect_elements_bvh(const bvh_tree& bvh,
     } else {
       for (auto idx = 0; idx < node.num; idx++) {
         auto primitive = bvh.primitives[node.start + idx];
-        if (intersect_element(primitive, ray, uv, distance, pos, norm)) {
+        if (intersect_element(primitive, ray, uv, distance)) {
           hit      = true;
           element  = primitive;
           ray.tmax = distance;
@@ -2304,12 +2304,12 @@ shape_intersection intersect_points_bvh(const bvh_tree& bvh,
   intersection.hit  = intersect_elements_bvh(
       bvh,
       [&points, &positions, &radius](
-          int idx, const ray3f& ray, vec2f& uv, float& distance, vec3f& pos, vec3f& norm) {
+          int idx, const ray3f& ray, vec2f& uv, float& distance) {
         auto& p = points[idx];
-        return intersect_point(ray, positions[p], radius[p], uv, distance, pos, norm);
+        return intersect_point(ray, positions[p], radius[p], uv, distance);
       },
       ray, intersection.element, intersection.uv, intersection.distance,
-      intersection.position, intersection.normal, find_any);
+      find_any);
   return intersection;
 }
 shape_intersection intersect_lines_bvh(const bvh_tree& bvh,
@@ -2319,13 +2319,13 @@ shape_intersection intersect_lines_bvh(const bvh_tree& bvh,
   intersection.hit  = intersect_elements_bvh(
       bvh,
       [&lines, &positions, &radius](
-          int idx, const ray3f& ray, vec2f& uv, float& distance, vec3f& pos, vec3f& norm) {
+          int idx, const ray3f& ray, vec2f& uv, float& distance) {
         auto& l = lines[idx];
         return intersect_line(ray, positions[l.x], positions[l.y], radius[l.x],
-            radius[l.y], uv, distance, pos, norm);
+            radius[l.y], uv, distance);
       },
       ray, intersection.element, intersection.uv, intersection.distance,
-      intersection.position, intersection.normal, find_any);
+      find_any);
   return intersection;
 }
 shape_intersection intersect_triangles_bvh(const bvh_tree& bvh,
@@ -2335,13 +2335,13 @@ shape_intersection intersect_triangles_bvh(const bvh_tree& bvh,
   intersection.hit  = intersect_elements_bvh(
       bvh,
       [&triangles, &positions](
-          int idx, const ray3f& ray, vec2f& uv, float& distance, vec3f& pos, vec3f& norm) {
+          int idx, const ray3f& ray, vec2f& uv, float& distance) {
         auto& t = triangles[idx];
         return intersect_triangle(
-            ray, positions[t.x], positions[t.y], positions[t.z], uv, distance, pos, norm);
+            ray, positions[t.x], positions[t.y], positions[t.z], uv, distance);
       },
       ray, intersection.element, intersection.uv, intersection.distance,
-      intersection.position, intersection.normal, find_any);
+      find_any);
   return intersection;
 }
 shape_intersection intersect_quads_bvh(const bvh_tree& bvh,
@@ -2351,13 +2351,13 @@ shape_intersection intersect_quads_bvh(const bvh_tree& bvh,
   intersection.hit  = intersect_elements_bvh(
       bvh,
       [&quads, &positions](
-          int idx, const ray3f& ray, vec2f& uv, float& distance, vec3f& pos, vec3f& norm) {
+          int idx, const ray3f& ray, vec2f& uv, float& distance) {
         auto& t = quads[idx];
         return intersect_quad(ray, positions[t.x], positions[t.y],
-            positions[t.z], positions[t.w], uv, distance, pos, norm);
+            positions[t.z], positions[t.w], uv, distance);
       },
       ray, intersection.element, intersection.uv, intersection.distance,
-      intersection.position, intersection.normal, find_any);
+      find_any);
   return intersection;
 }
 

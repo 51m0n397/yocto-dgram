@@ -275,19 +275,19 @@ namespace yocto {
 
 // Intersect a ray with a point (approximate)
 inline bool intersect_point(
-    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
+    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist);
 
 // Intersect a ray with a line
 inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-    float r0, float r1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
+    float r0, float r1, vec2f& uv, float& dist);
 
 // Intersect a ray with a triangle
 inline bool intersect_triangle(const ray3f& ray, const vec3f& p0,
-    const vec3f& p1, const vec3f& p2, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
+    const vec3f& p1, const vec3f& p2, vec2f& uv, float& dist);
 
 // Intersect a ray with a quad.
 inline bool intersect_quad(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-    const vec3f& p2, const vec3f& p3, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
+    const vec3f& p2, const vec3f& p3, vec2f& uv, float& dist);
 
 // Intersect a ray with a axis-aligned bounding box
 inline bool intersect_bbox(const ray3f& ray, const bbox3f& bbox);
@@ -681,8 +681,7 @@ namespace yocto {
 
 // Intersect a ray with a point (approximate)
 inline bool intersect_point(
-    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
-
+    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist) {
   // find parameter for line-point minimum distance
   auto w = p - ray.o;
   auto t = dot(w, ray.d) / dot(ray.d, ray.d);
@@ -698,15 +697,12 @@ inline bool intersect_point(
   // intersection occurred: set params and exit
   uv   = {0, 0};
   dist = t;
-  pos  = ray.o + t*ray.d;
-  norm = normalize(pos-ray.o);
   return true;
-  
 }
 
 // Intersect a ray with a line
 inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-    float r0, float r1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+    float r0, float r1, vec2f& uv, float& dist) {
   // setup intersection params
   auto u = ray.d;
   auto v = p1 - p0;
@@ -747,15 +743,12 @@ inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
   // intersection occurred: set params and exit
   uv   = {s, sqrt(d2) / r};
   dist = t;
-  pos  = ray.o + t*ray.d;
-  norm = {0, 0, 0};//?
   return true;
-  
 }
 
 // Intersect a ray with a sphere
 inline bool intersect_sphere(
-    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+    const ray3f& ray, const vec3f& p, float r, vec2f& uv, float& dist) {
   // compute parameters
   auto a = dot(ray.d, ray.d);
   auto b = 2 * dot(ray.o - p, ray.d);
@@ -786,14 +779,12 @@ inline bool intersect_sphere(
   // intersection occurred: set params and exit
   uv   = {u, v};
   dist = t;
-  pos  = ray.o + t*ray.d;
-  norm = normalize(pos-ray.o);
   return true;
 }
 
 // Intersect a ray with a triangle
 inline bool intersect_triangle(const ray3f& ray, const vec3f& p0,
-    const vec3f& p1, const vec3f& p2, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+    const vec3f& p1, const vec3f& p2, vec2f& uv, float& dist) {
   // compute triangle edges
   auto edge1 = p1 - p0;
   auto edge2 = p2 - p0;
@@ -824,24 +815,22 @@ inline bool intersect_triangle(const ray3f& ray, const vec3f& p0,
   // intersection occurred: set params and exit
   uv   = {u, v};
   dist = t;
-  pos  = ray.o + t*ray.d;
-  norm = normalize(cross(edge1, edge2));
   return true;
 }
 
 // Intersect a ray with a quad.
 inline bool intersect_quad(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-    const vec3f& p2, const vec3f& p3, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+    const vec3f& p2, const vec3f& p3, vec2f& uv, float& dist) {
   if (p2 == p3) {
-    return intersect_triangle(ray, p0, p1, p3, uv, dist, pos, norm);
+    return intersect_triangle(ray, p0, p1, p3, uv, dist);
   }
   auto hit  = false;
   auto tray = ray;
-  if (intersect_triangle(tray, p0, p1, p3, uv, dist, pos, norm)) {
+  if (intersect_triangle(tray, p0, p1, p3, uv, dist)) {
     hit       = true;
     tray.tmax = dist;
   }
-  if (intersect_triangle(tray, p2, p3, p1, uv, dist, pos, norm)) {
+  if (intersect_triangle(tray, p2, p3, p1, uv, dist)) {
     hit       = true;
     uv        = 1 - uv;
     tray.tmax = dist;
