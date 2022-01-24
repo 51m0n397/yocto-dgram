@@ -31,6 +31,7 @@
 #include <yocto/yocto_math.h>
 #include <yocto_dgram/yocto_dgram.h>
 #include <yocto_dgram/yocto_dgram_bvh.h>
+#include <yocto_dgram/yocto_dgram_gui.h>
 #include <yocto_dgram/yocto_dgram_shape.h>
 #include <yocto_dgram/yocto_dgram_text.h>
 #include <yocto_dgram/yocto_dgram_trace.h>
@@ -50,7 +51,7 @@ struct render_params {
   int                samples                = 9;
   bool               highqualitybvh         = false;
   bool               noparallel             = false;
-  trace_sampler_type sampler                = trace_sampler_type::color;
+  dgram_sampler_type sampler                = dgram_sampler_type::color;
   antialiasing_type  antialiasing           = antialiasing_type::super_sampling;
 };
 
@@ -67,7 +68,7 @@ void add_options(cli_command& cli, render_params& params) {
   add_option(cli, "antialiasing", params.antialiasing, "antialiasing type",
       antialiasing_labels);
   add_option(
-      cli, "sampler", params.sampler, "sampler type", trace_sampler_labels);
+      cli, "sampler", params.sampler, "sampler type", dgram_sampler_labels);
 }
 
 // render diagram
@@ -99,7 +100,7 @@ void run_render(const render_params& params_) {
     auto& scene = dgram.scenes[idx];
     timer       = simple_timer{};
 
-    auto params_         = trace_params{};
+    auto params_         = dgram_trace_params{};
     params_.width        = width;
     params_.height       = height;
     params_.samples      = params.samples;
@@ -142,9 +143,68 @@ void run_render(const render_params& params_) {
   print_info("save image: {}", elapsed_formatted(timer));
 }
 
+// view params
+struct view_params {
+  string             scene                  = "scene.json";
+  int                resolution             = 0;
+  bool               transparent_background = false;
+  int                samples                = 9;
+  bool               highqualitybvh         = false;
+  bool               noparallel             = false;
+  dgram_sampler_type sampler                = dgram_sampler_type::color;
+  antialiasing_type  antialiasing           = antialiasing_type::super_sampling;
+};
+
+// Cli
+void add_options(cli_command& cli, view_params& params) {
+  add_option(cli, "scene", params.scene, "scene filename");
+  add_option(cli, "resolution", params.resolution, "image resolution");
+  add_option(cli, "transparent_background", params.transparent_background,
+      "hide background");
+  add_option(cli, "samples", params.samples, "number of samples");
+  add_option(cli, "highqualitybvh", params.highqualitybvh, "high quality bvh");
+  add_option(cli, "noparallel", params.noparallel, "disable threading");
+  add_option(cli, "antialiasing", params.antialiasing, "antialiasing type",
+      antialiasing_labels);
+  add_option(
+      cli, "sampler", params.sampler, "sampler type", dgram_sampler_labels);
+}
+
+void run_view(const view_params& params_) {
+  print_info("rendering {}", params_.scene);
+  auto timer = simple_timer{};
+
+  // scene loading
+  timer      = simple_timer{};
+  auto dgram = load_dgram(params_.scene);
+  print_info("load diagram: {}", elapsed_formatted(timer));
+
+  auto params         = dgram_trace_params{};
+  params.samples      = params_.samples;
+  params.noparallel   = params_.noparallel;
+  params.scale        = dgram.scale;
+  params.size         = dgram.size;
+  params.sampler      = params_.sampler;
+  params.antialiasing = params_.antialiasing;
+
+  auto res = params_.resolution;
+  if (res == 0) res = (int)round(dgram.size.x);
+
+  auto aspect = dgram.size.x / dgram.size.y;
+  auto width  = res;
+  auto height = (int)round(res / aspect);
+  if (aspect < 1) swap(width, height);
+
+  params.width  = width;
+  params.height = height;
+
+  show_dgram_gui(dgram, params, params_.transparent_background);
+}
+
 struct app_params {
   string        command = "render";
   render_params render  = {};
+  view_params   view    = {};
 };
 
 // Run
@@ -155,11 +215,14 @@ int main(int argc, const char* argv[]) {
     auto cli    = make_cli("dscene", "render and view diagrams");
     add_command_var(cli, params.command);
     add_command(cli, "render", params.render, "render diagrams");
+    add_command(cli, "view", params.view, "view diagrams");
     parse_cli(cli, argc, argv);
 
     // dispatch commands
     if (params.command == "render") {
       run_render(params.render);
+    } else if (params.command == "view") {
+      run_view(params.view);
     } else {
       throw io_error{"unknown command"};
     }

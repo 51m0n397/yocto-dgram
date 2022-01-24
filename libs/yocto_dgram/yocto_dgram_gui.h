@@ -1,5 +1,5 @@
 //
-// # Yocto/Dgram BVH: Accelerated ray-intersections
+// # Yocto/Dgram GUI: GUI viewer
 //
 
 //
@@ -26,15 +26,15 @@
 // SOFTWARE.
 //
 
-#ifndef _YOCTO_DGRAM_BVH_H_
-#define _YOCTO_DGRAM_BVH_H_
+#ifndef _YOCTO_DGRAM_GUI_H_
+#define _YOCTO_DGRAM_GUI_H_
 
 // -----------------------------------------------------------------------------
 // INCLUDES
 // -----------------------------------------------------------------------------
 
 #include "yocto_dgram.h"
-#include "yocto_dgram_shape.h"
+#include "yocto_dgram_trace.h"
 
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
@@ -46,59 +46,12 @@ namespace yocto {
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
-// BVH BUILD
+// VIEW
 // -----------------------------------------------------------------------------
 namespace yocto {
+  void show_dgram_gui(dgram_scenes& dgram, dgram_trace_params& params,
+      bool transparent_background = false);
 
-  struct dgram_bvh_node {
-    bbox3f  bbox     = invalidb3f;
-    int32_t start    = 0;
-    int16_t num      = 0;
-    int8_t  axis     = 0;
-    bool    internal = false;
-  };
-
-  struct dgram_shape_bvh {
-    vector<dgram_bvh_node> nodes      = {};
-    vector<int>            primitives = {};
-  };
-
-  struct dgram_scene_bvh {
-    vector<dgram_bvh_node>  nodes      = {};
-    vector<int>             primitives = {};
-    vector<dgram_shape_bvh> shapes     = {};
-  };
-
-  dgram_scene_bvh make_bvh(const trace_shapes& shapes, bool highquality = false,
-      bool noparallel = false);
-
-}  // namespace yocto
-
-// -----------------------------------------------------------------------------
-// BVH INTERSECTION
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-  struct bvh_intersection {
-    int           shape    = -1;
-    shape_element element  = {};
-    vec2f         uv       = {0, 0};
-    float         distance = 0;
-    vec3f         position = {0, 0, 0};
-    vec3f         normal   = {0, 0, 0};
-
-    bool operator<(const bvh_intersection& x) const {
-      if (shape != x.shape) return shape < x.shape;
-      return element < x.element;
-    }
-  };
-
-  struct bvh_intersections {
-    vector<bvh_intersection> intersections = {};
-  };
-
-  bvh_intersections intersect_bvh(const dgram_scene_bvh& bvh,
-      const trace_shapes& shapes, const ray3f& ray_);
 }  // namespace yocto
 
 #endif

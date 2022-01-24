@@ -91,14 +91,15 @@ namespace yocto {
   }
 
   static ray3f sample_camera(const dgram_camera& camera, const vec2i& ij,
-      const vec2i& image_size, const vec2f& puv, const trace_params& params) {
+      const vec2i& image_size, const vec2f& puv,
+      const dgram_trace_params& params) {
     auto uv = vec2f{
         (ij.x + puv.x) / image_size.x, (ij.y + puv.y) / image_size.y};
     return eval_camera(camera, uv, params.size, params.scale);
   }
 
-  trace_state make_state(const trace_params& params) {
-    auto state   = trace_state{};
+  dgram_trace_state make_state(const dgram_trace_params& params) {
+    auto state   = dgram_trace_state{};
     state.width  = params.width;
     state.height = params.height;
     state.image.assign(state.width * state.height, {0, 0, 0, 0});
@@ -112,7 +113,7 @@ namespace yocto {
   }
 
   static vec4f trace_text(const trace_texts& texts, const ray3f& ray,
-      rng_state& rng, const trace_params& params) {
+      rng_state& rng, const dgram_trace_params& params) {
     auto text_color = vec4f{0, 0, 0, 0};
     for (auto& text : texts.texts) {
       auto uv = zero2f;
@@ -123,8 +124,8 @@ namespace yocto {
   }
 
   static vec4f trace_color(const dgram_scene& scene, const trace_shapes& shapes,
-      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
-      const trace_params& params) {
+      const dgram_scene_bvh& bvh, const ray3f& ray, rng_state& rng,
+      const dgram_trace_params& params) {
     auto radiance = vec4f{0, 0, 0, 0};
 
     auto intersections = intersect_bvh(bvh, shapes, ray);
@@ -148,8 +149,8 @@ namespace yocto {
   }
 
   static vec4f trace_normal(const dgram_scene& scene,
-      const trace_shapes& shapes, const scene_bvh& bvh, const ray3f& ray,
-      rng_state& rng, const trace_params& params) {
+      const trace_shapes& shapes, const dgram_scene_bvh& bvh, const ray3f& ray,
+      rng_state& rng, const dgram_trace_params& params) {
     auto intersections = intersect_bvh(bvh, shapes, ray);
 
     if (!intersections.intersections.empty())
@@ -159,8 +160,8 @@ namespace yocto {
   }
 
   static vec4f trace_uv(const dgram_scene& scene, const trace_shapes& shapes,
-      const scene_bvh& bvh, const ray3f& ray, rng_state& rng,
-      const trace_params& params) {
+      const dgram_scene_bvh& bvh, const ray3f& ray, rng_state& rng,
+      const dgram_trace_params& params) {
     auto intersections = intersect_bvh(bvh, shapes, ray);
 
     if (!intersections.intersections.empty()) {
@@ -172,8 +173,8 @@ namespace yocto {
   }
 
   static vec4f trace_eyelight(const dgram_scene& scene,
-      const trace_shapes& shapes, const scene_bvh& bvh, const ray3f& ray,
-      rng_state& rng, const trace_params& params) {
+      const trace_shapes& shapes, const dgram_scene_bvh& bvh, const ray3f& ray,
+      rng_state& rng, const dgram_trace_params& params) {
     auto radiance = vec4f{0, 0, 0, 0};
 
     auto intersections = intersect_bvh(bvh, shapes, ray);
@@ -201,14 +202,14 @@ namespace yocto {
   }
 
   using sampler_func = vec4f (*)(const dgram_scene& scene,
-      const trace_shapes& shapes, const scene_bvh& bvh, const ray3f& ray,
-      rng_state& rng, const trace_params& params);
-  static sampler_func get_trace_sampler_func(const trace_params& params) {
+      const trace_shapes& shapes, const dgram_scene_bvh& bvh, const ray3f& ray,
+      rng_state& rng, const dgram_trace_params& params);
+  static sampler_func get_trace_sampler_func(const dgram_trace_params& params) {
     switch (params.sampler) {
-      case trace_sampler_type::color: return trace_color;
-      case trace_sampler_type::normal: return trace_normal;
-      case trace_sampler_type::uv: return trace_uv;
-      case trace_sampler_type::eyelight: return trace_eyelight;
+      case dgram_sampler_type::color: return trace_color;
+      case dgram_sampler_type::normal: return trace_normal;
+      case dgram_sampler_type::uv: return trace_uv;
+      case dgram_sampler_type::eyelight: return trace_eyelight;
       default: {
         throw std::runtime_error("sampler unknown");
         return nullptr;
@@ -216,9 +217,10 @@ namespace yocto {
     }
   }
 
-  void trace_sample(trace_state& state, const dgram_scene& scene,
+  void trace_sample(dgram_trace_state& state, const dgram_scene& scene,
       const trace_shapes& shapes, const trace_texts& texts,
-      const scene_bvh& bvh, int i, int j, const trace_params& params) {
+      const dgram_scene_bvh& bvh, int i, int j,
+      const dgram_trace_params& params) {
     auto& camera  = scene.cameras[params.camera];
     auto  sampler = get_trace_sampler_func(params);
     auto  idx     = state.width * j + i;
@@ -246,9 +248,9 @@ namespace yocto {
     state.image[idx] += radiance;
   }
 
-  void trace_samples(trace_state& state, const dgram_scene& scene,
+  void trace_samples(dgram_trace_state& state, const dgram_scene& scene,
       const trace_shapes& shapes, const trace_texts& texts,
-      const scene_bvh& bvh, const trace_params& params) {
+      const dgram_scene_bvh& bvh, const dgram_trace_params& params) {
     if (state.samples >= params.samples) return;
     if (params.noparallel) {
       for (auto j = 0; j < state.height; j++) {
@@ -273,12 +275,12 @@ namespace yocto {
           linear ? "expected linear image" : "expected srgb image"};
   }
 
-  image_data get_render(const trace_state& state) {
+  image_data get_render(const dgram_trace_state& state) {
     auto image = make_image(state.width, state.height, true);
     get_render(image, state);
     return image;
   }
-  void get_render(image_data& image, const trace_state& state) {
+  void get_render(image_data& image, const dgram_trace_state& state) {
     check_image(image, state.width, state.height, true);
     auto scale = 1.0f / (float)state.samples;
     for (auto idx = 0; idx < state.width * state.height; idx++) {

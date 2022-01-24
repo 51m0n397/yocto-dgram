@@ -5,6 +5,7 @@ add_library(yocto_dgram STATIC
   yocto_dgram_trace.h yocto_dgram_trace.cpp
   yocto_dgram_shape.h yocto_dgram_shape.cpp
   yocto_dgram_text.h yocto_dgram_text.cpp
+  yocto_dgram_gui.h yocto_dgram_gui.cpp
   ext/base64.h ext/base64.cpp
   ext/HTTPRequest.hpp
   ext/earcut.hpp

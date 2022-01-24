@@ -186,7 +186,7 @@ namespace yocto {
   const int bvh_max_prims = 4;
 
   // Build BVH nodes
-  static void build_bvh(vector<bvh_node>& nodes, vector<int>& primitives,
+  static void build_bvh(vector<dgram_bvh_node>& nodes, vector<int>& primitives,
       const vector<bbox3f>& bboxes, bool highquality) {
     // prepare to build nodes
     nodes.clear();
@@ -247,8 +247,8 @@ namespace yocto {
     nodes.shrink_to_fit();
   }
 
-  shape_bvh make_bvh(const trace_shape& shape, bool highquality) {
-    auto bvh = shape_bvh{};
+  dgram_shape_bvh make_bvh(const trace_shape& shape, bool highquality) {
+    auto bvh = dgram_shape_bvh{};
 
     auto bboxes = vector<bbox3f>{};
 
@@ -289,24 +289,24 @@ namespace yocto {
     return bvh;
   }
 
-  scene_bvh make_bvh(
+  dgram_scene_bvh make_bvh(
       const trace_shapes& shapes, bool highquality, bool noparallel) {
-    auto bvh    = scene_bvh{};
+    auto bvh    = dgram_scene_bvh{};
     auto bboxes = vector<bbox3f>{};
 
     bvh.shapes.resize(shapes.shapes.size());
     bboxes.resize(shapes.shapes.size());
     if (noparallel) {
       for (auto idx = (size_t)0; idx < shapes.shapes.size(); idx++) {
-        auto shape_bvh  = make_bvh(shapes.shapes[idx], highquality);
-        bvh.shapes[idx] = shape_bvh;
-        bboxes[idx]     = shape_bvh.nodes[0].bbox;
+        auto dgram_shape_bvh = make_bvh(shapes.shapes[idx], highquality);
+        bvh.shapes[idx]      = dgram_shape_bvh;
+        bboxes[idx]          = dgram_shape_bvh.nodes[0].bbox;
       }
     } else {
       parallel_for(shapes.shapes.size(), [&](size_t idx) {
-        auto shape_bvh  = make_bvh(shapes.shapes[idx], highquality);
-        bvh.shapes[idx] = shape_bvh;
-        bboxes[idx]     = shape_bvh.nodes[0].bbox;
+        auto dgram_shape_bvh = make_bvh(shapes.shapes[idx], highquality);
+        bvh.shapes[idx]      = dgram_shape_bvh;
+        bboxes[idx]          = dgram_shape_bvh.nodes[0].bbox;
       });
     }
 
@@ -321,8 +321,9 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  static void intersect_bvh(const shape_bvh& bvh, const trace_shape& shape,
-      const int& shape_id, ray3f& ray, bvh_intersections& intersections) {
+  static void intersect_bvh(const dgram_shape_bvh& bvh,
+      const trace_shape& shape, const int& shape_id, ray3f& ray,
+      bvh_intersections& intersections) {
     // check empty
     if (bvh.nodes.empty()) return;
 
@@ -472,8 +473,8 @@ namespace yocto {
     }
   }
 
-  bvh_intersections intersect_bvh(
-      const scene_bvh& bvh, const trace_shapes& shapes, const ray3f& ray_) {
+  bvh_intersections intersect_bvh(const dgram_scene_bvh& bvh,
+      const trace_shapes& shapes, const ray3f& ray_) {
     auto intersections = bvh_intersections{};
 
     // check empty
