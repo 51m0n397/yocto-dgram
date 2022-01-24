@@ -1,3 +1,31 @@
+//
+// # Text rendering server
+//
+
+//
+// LICENSE:
+//
+// Copyright (c) 2021 -- 2022 Simone Bartolini
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
 var port = 5500;
 var server = require('webserver').create();
 var service = server.listen(port, function (request, response) {
@@ -74,6 +102,23 @@ var service = server.listen(port, function (request, response) {
             page.open("text.html", function () {
                 page.evaluate(
                     function (text, width, style) {
+
+                        function format(text) {
+                            const bold = /\*([\s\S]*?)\*/gi;
+                            const italic = /_([\s\S]*?)_/gi;
+                            const subscript = /~([\s\S]*?)~/gi;
+                            const superscript = /\^([\s\S]*?)\^/gi;
+
+                            if (text.length < 2 || text[0] != '$' || text.slice(-1) != '$') {
+                                return text
+                                    .replace(bold, '<b>$1</b>')
+                                    .replace(italic, '<i>$1</i>')
+                                    .replace(subscript, '<sub>$1</sub>')
+                                    .replace(superscript, '<sup>$1</sup>');
+                            }
+                            return text;
+                        };
+
                         var div = document.createElement("div");
                         div.innerHTML = format(text);
                         div.style.cssText = style;
