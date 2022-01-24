@@ -89,53 +89,6 @@ inline void parallel_for(T num1, T num2, Func&& func) {
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
-// IMAGE DRAWING
-// -----------------------------------------------------------------------------
-namespace yocto {
-
-// OpenGL image data
-struct glimage_state {
-  // image properties
-  int width  = 0;
-  int height = 0;
-
-  // Opengl state
-  uint texture     = 0;  // texture
-  uint program     = 0;  // program
-  uint vertex      = 0;
-  uint fragment    = 0;
-  uint vertexarray = 0;  // vertex
-  uint positions   = 0;
-  uint triangles   = 0;  // elements
-};
-
-// create image drawing program
-static bool init_image(glimage_state& glimage);
-
-// clear image
-static void clear_image(glimage_state& glimage);
-
-// update image data
-static void set_image(glimage_state& glimage, const image_data& image);
-
-// OpenGL image drawing params
-struct glimage_params {
-  vec2i window      = {512, 512};
-  vec4i framebuffer = {0, 0, 512, 512};
-  vec2f center      = {0, 0};
-  float scale       = 1;
-  bool  fit         = true;
-  bool  checker     = true;
-  float border_size = 2;
-  vec4f background  = {0.15f, 0.15f, 0.15f, 1.0f};
-};
-
-// draw image
-static void draw_image(glimage_state& image, const glimage_params& params);
-
-}  // namespace yocto
-
-// -----------------------------------------------------------------------------
 // SCENE DRAWING
 // -----------------------------------------------------------------------------
 namespace yocto {
@@ -682,7 +635,7 @@ void show_trace_gui(const string& title, const string& name, scene_data& scene,
             if (render_stop) return;
             trace_sample(state, scene, bvh, lights, i, j, params);
           }
-        });
+         });
         state.samples += params.batch;
         if (!render_stop) {
           auto lock      = std::lock_guard{render_mutex};
@@ -697,7 +650,7 @@ void show_trace_gui(const string& title, const string& name, scene_data& scene,
           render_update = true;
         }
       }
-    });
+     });
   };
 
   // stop render
@@ -1052,7 +1005,7 @@ void main() {
 #endif
 
 // init image program
-static bool init_image(glimage_state& glimage) {
+bool init_image(glimage_state& glimage) {
   // program
   set_program(glimage.program, glimage.vertex, glimage.fragment, glimage_vertex,
       glimage_fragment);
@@ -1084,7 +1037,7 @@ static bool init_image(glimage_state& glimage) {
 }
 
 // clear an opengl image
-static void clear_image(glimage_state& glimage) {
+void clear_image(glimage_state& glimage) {
   if (glimage.texture) glDeleteTextures(1, &glimage.texture);
   if (glimage.program) glDeleteProgram(glimage.program);
   if (glimage.vertex) glDeleteProgram(glimage.vertex);
@@ -1095,7 +1048,7 @@ static void clear_image(glimage_state& glimage) {
   glimage = {};
 }
 
-static void set_image(glimage_state& glimage, const image_data& image) {
+void set_image(glimage_state& glimage, const image_data& image) {
   if (!glimage.texture || glimage.width != image.width ||
       glimage.height != image.height) {
     if (!glimage.texture) glGenTextures(1, &glimage.texture);
@@ -1114,7 +1067,7 @@ static void set_image(glimage_state& glimage, const image_data& image) {
 }
 
 // draw image
-static void draw_image(glimage_state& glimage, const glimage_params& params) {
+void draw_image(glimage_state& glimage, const glimage_params& params) {
   // check errors
   assert_glerror();
 
@@ -2283,6 +2236,31 @@ bool draw_gui_combobox(const char* lbl, int& idx, int num,
   }
   ImGui::EndCombo();
   return idx != old_idx;
+}
+
+bool draw_gui_combobox(
+    const char* lbl, int& value, string label, int size, bool include_null) {
+  if (!ImGui::BeginCombo(
+          lbl, value >= 0 ? (label + " " + std::to_string(value)).c_str()
+                          : "<none>"))
+    return false;
+  auto old_val = value;
+  if (include_null) {
+    ImGui::PushID(100000);
+    if (ImGui::Selectable("<none>", value < 0)) value = -1;
+    if (value < 0) ImGui::SetItemDefaultFocus();
+    ImGui::PopID();
+  }
+  for (auto i = 0; i < size; i++) {
+    ImGui::PushID(i);
+    if (ImGui::Selectable(
+            (label + " " + std::to_string(i)).c_str(), value == i))
+      value = i;
+    if (value == i) ImGui::SetItemDefaultFocus();
+    ImGui::PopID();
+  }
+  ImGui::EndCombo();
+  return value != old_val;
 }
 
 void draw_gui_progressbar(const char* lbl, float fraction) {
