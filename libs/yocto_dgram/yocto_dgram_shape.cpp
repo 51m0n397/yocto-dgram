@@ -207,9 +207,13 @@ namespace yocto {
           auto p1 = shape.positions[triangle.y];
           auto p2 = shape.positions[triangle.z];
 
-          auto fcenter = (p0 + p1 + p2) / 3;
-          if (dot(camera_origin - fcenter, cross(p1 - p0, p2 - p0)) < 0)
-            continue;
+          auto dir = plane_dir;
+          if (!orthographic) {
+            auto fcenter = (p0 + p1 + p2) / 3;
+            dir          = camera_origin - fcenter;
+          }
+
+          if (dot(dir, cross(p1 - p0, p2 - p0)) < 0) continue;
           shape.triangles.push_back(triangle);
         }
       }
@@ -233,9 +237,13 @@ namespace yocto {
           auto  p2   = shape.positions[quad.z];
           auto  p3   = shape.positions[quad.w];
 
-          auto fcenter = (p0 + p1 + p2 + p3) / 4;
-          if (dot(camera_origin - fcenter, cross(p1 - p0, p2 - p0)) < 0)
-            continue;
+          auto dir = plane_dir;
+          if (!orthographic) {
+            auto fcenter = (p0 + p1 + p2 + p3) / 4;
+            dir          = camera_origin - fcenter;
+          }
+
+          if (dot(dir, cross(p1 - p0, p2 - p0)) < 0) continue;
           shape.quads.push_back(quad);
           if (!dshape.fills.empty()) shape.fills.push_back(dshape.fills[idx]);
         }
