@@ -1,7 +1,8 @@
 for folder in scenes/*
 do
-    for file in "$folder"/*
+    for scene in "$folder"/*
     do
-        ./bin/dgram render --scene "$file" --output out/${file//\//__}.png --resolution 1280
+        scene_name="$(basename -- $scene)"
+        ./bin/dgram render --scene "${scene}/${scene_name}.json" --output out/${scene//\//__}.png --resolution 1280
     done
 done
