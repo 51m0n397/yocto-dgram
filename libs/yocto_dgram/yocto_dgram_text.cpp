@@ -136,7 +136,7 @@ namespace yocto {
       const float zoom, const vec2f& size, const float scale,
       const bool orthographic, const frame3f& camera_frame,
       const vec3f& camera_origin, const vec3f& plane_point,
-      const vec3f& plane_dir, const vec2f& film) {
+      const vec3f& plane_dir, const vec2f& film, const float lens) {
     auto text = trace_text{};
 
     auto& object   = scene.objects[i];
@@ -205,16 +205,17 @@ namespace yocto {
     vec3f p0, p1, p2, p3;
 
     if (orthographic) {
-      auto poff = p +
+      auto s    = size.x / (scale * lens);
+      auto poff = transform_point(inverse(camera_frame), p) +
                   vec3f{offset.x / scale, (-baseline - offset.y) / scale, 0};
-      p0 = poff -
-           vec3f{align_x0 * size.x / scale, align_y0 * size.y / scale, 0};
-      p1 = poff -
-           vec3f{align_x1 * size.x / scale, align_y1 * size.y / scale, 0};
-      p2 = poff -
-           vec3f{align_x2 * size.x / scale, align_y2 * size.y / scale, 0};
-      p3 = poff -
-           vec3f{align_x3 * size.x / scale, align_y3 * size.y / scale, 0};
+      p0 = poff - vec3f{align_x0 * film.x * s, align_y0 * film.y * s, 0};
+      p1 = poff - vec3f{align_x1 * film.x * s, align_y1 * film.y * s, 0};
+      p2 = poff - vec3f{align_x2 * film.x * s, align_y2 * film.y * s, 0};
+      p3 = poff - vec3f{align_x3 * film.x * s, align_y3 * film.y * s, 0};
+      p0 = transform_point(camera_frame, p0);
+      p1 = transform_point(camera_frame, p1);
+      p2 = transform_point(camera_frame, p2);
+      p3 = transform_point(camera_frame, p3);
     } else {
       auto po = normalize(p - camera_origin);
 
@@ -277,7 +278,7 @@ namespace yocto {
           for (auto j = 0; j < label.texts.size(); j++) {
             auto text = make_text(i, j, scene, width, height, zoom, size, scale,
                 camera.orthographic, camera_frame, camera_origin, plane_point,
-                plane_dir, film);
+                plane_dir, film, camera.lens);
             texts.texts.push_back(text);
           }
         }
@@ -300,7 +301,7 @@ namespace yocto {
         auto j    = idxs[idx].second;
         auto text = make_text(i, j, scene, width, height, zoom, size, scale,
             camera.orthographic, camera_frame, camera_origin, plane_point,
-            plane_dir, film);
+            plane_dir, film, camera.lens);
         texts.texts[idx] = text;
       });
     }
