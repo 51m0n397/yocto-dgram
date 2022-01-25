@@ -207,7 +207,8 @@ namespace yocto {
     if (orthographic) {
       auto s    = size.x / (scale * lens);
       auto poff = transform_point(inverse(camera_frame), p) +
-                  vec3f{offset.x / scale, (-baseline - offset.y) / scale, 0};
+                  vec3f{offset.x * film.x / (scale * lens),
+                      (-baseline - offset.y) * film.x / (scale * lens), 0};
       p0 = poff - vec3f{align_x0 * film.x * s, align_y0 * film.y * s, 0};
       p1 = poff - vec3f{align_x1 * film.x * s, align_y1 * film.y * s, 0};
       p2 = poff - vec3f{align_x2 * film.x * s, align_y2 * film.y * s, 0};
