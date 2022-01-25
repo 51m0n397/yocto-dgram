@@ -128,8 +128,8 @@ namespace yocto {
   trace_shape make_shape(const dgram_scene& scene, const dgram_object& object,
       const frame3f& camera_frame, const vec3f& camera_origin,
       const float camera_distance, const bool orthographic, const vec2f& film,
-      const vec3f& plane_point, const vec3f& plane_dir, const vec2f& size,
-      const float scale) {
+      const float lens, const vec3f& plane_point, const vec3f& plane_dir,
+      const vec2f& size, const float scale) {
     auto shape = trace_shape{};
 
     auto& dshape   = scene.shapes[object.shape];
@@ -143,7 +143,7 @@ namespace yocto {
       // radius
       if (orthographic)
         shape.radii.push_back(
-            material.thickness / (scale * 2) * camera_distance);
+            material.thickness * film.x * camera_distance / (scale * 2 * lens));
       else {
         auto thickness = material.thickness / size.x * film.x / 2;
 
@@ -282,8 +282,8 @@ namespace yocto {
         auto& object = scene.objects[idx];
         if (object.shape != -1) {
           auto shape = make_shape(scene, object, camera_frame, camera_origin,
-              camera_distance, camera.orthographic, film, plane_point,
-              plane_dir, size, scale);
+              camera_distance, camera.orthographic, film, camera.lens,
+              plane_point, plane_dir, size, scale);
           shapes.shapes.push_back(shape);
         }
       }
@@ -303,8 +303,8 @@ namespace yocto {
         auto& object = scene.objects[idx];
         if (object.shape != -1) {
           auto shape = make_shape(scene, object, camera_frame, camera_origin,
-              camera_distance, camera.orthographic, film, plane_point,
-              plane_dir, size, scale);
+              camera_distance, camera.orthographic, film, camera.lens,
+              plane_point, plane_dir, size, scale);
           shapes.shapes[i] = shape;
         }
       });
