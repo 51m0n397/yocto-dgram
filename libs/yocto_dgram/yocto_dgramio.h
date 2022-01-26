@@ -36,6 +36,7 @@
 #include <yocto/yocto_sceneio.h>
 
 #include "yocto_dgram.h"
+#include "yocto_dgram_text.h"
 
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
@@ -53,6 +54,19 @@ namespace yocto {
 
   bool load_dgram(const string& filename, dgram_scenes& dgram, string& error);
   dgram_scenes load_dgram(const string& filename);
+
+}  // namespace yocto
+
+// -----------------------------------------------------------------------------
+// DGRAM TEXT
+// -----------------------------------------------------------------------------
+namespace yocto {
+
+  bool save_texts(const string& filename, const dgram_scenes& dgram,
+      const int res, string& error);
+  void save_texts(
+      const string& filename, const dgram_scenes& dgram, const int res);
+
 }  // namespace yocto
 
 #endif

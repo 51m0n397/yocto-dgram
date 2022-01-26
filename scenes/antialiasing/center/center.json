@@ -1204,6 +1204,7 @@
           ],
           "labels": [
             {
+              "name": "samples",
               "unprocessed": "samples!!t",
               "spans": [
                 {
@@ -1753,6 +1754,7 @@
           ],
           "labels": [
             {
+              "name": "reconstruction",
               "unprocessed": "reconstruction!!t",
               "spans": [
                 {

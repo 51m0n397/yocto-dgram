@@ -50,6 +50,7 @@ namespace yocto {
 namespace yocto {
 
   struct trace_text {
+    string        name      = {};
     vector<vec3f> positions = {};
     image_data    image     = {};
   };
@@ -58,9 +59,23 @@ namespace yocto {
     vector<trace_text> texts = {};
   };
 
-  trace_texts make_texts(const dgram_scene& scene, const int& cam,
-      const vec2f& size, const float& scale, const int width, const int height,
-      const bool noparallel = false);
+  struct text_image {
+    string     name  = {};
+    image_data image = {};
+  };
+
+  struct text_images {
+    vector<text_image> images = {};
+  };
+
+  string escape_string(const string& value);
+
+  text_images make_text_images(const dgram_scene& scene, const vec2f& size,
+      const float& scale, const int width, const int height);
+
+  trace_texts make_texts(dgram_scene& scene, const int& cam, const vec2f& size,
+      const float& scale, const int width, const int height,
+      const bool noparallel = false, const bool rerender = false);
 
   bool intersect_text(const trace_text& text, const ray3f& ray, vec2f& uv);
 

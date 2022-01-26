@@ -201,10 +201,40 @@ void run_view(const view_params& params_) {
   show_dgram_gui(dgram, params, params_.transparent_background);
 }
 
+// text params
+struct text_params {
+  string scene      = "scene.json";
+  int    resolution = 0;
+  bool   noparallel = false;
+};
+
+// Cli
+void add_options(cli_command& cli, text_params& params) {
+  add_option(cli, "scene", params.scene, "scene filename");
+  add_option(cli, "resolution", params.resolution, "image resolution");
+  add_option(cli, "noparallel", params.noparallel, "disable threading");
+}
+
+void run_text(const text_params& params_) {
+  print_info("rendering {}", params_.scene);
+  auto timer = simple_timer{};
+
+  // scene loading
+  timer      = simple_timer{};
+  auto dgram = load_dgram(params_.scene);
+  print_info("load diagram: {}", elapsed_formatted(timer));
+
+  auto resolution = params_.resolution;
+  if (resolution == 0) resolution = (int)round(dgram.size.x);
+
+  save_texts(params_.scene, dgram, resolution);
+}
+
 struct app_params {
   string        command = "render";
   render_params render  = {};
   view_params   view    = {};
+  text_params   text    = {};
 };
 
 // Run
@@ -216,6 +246,7 @@ int main(int argc, const char* argv[]) {
     add_command_var(cli, params.command);
     add_command(cli, "render", params.render, "render diagrams");
     add_command(cli, "view", params.view, "view diagrams");
+    add_command(cli, "render_text", params.text, "render text for diagrams");
     parse_cli(cli, argc, argv);
 
     // dispatch commands
@@ -223,6 +254,8 @@ int main(int argc, const char* argv[]) {
       run_render(params.render);
     } else if (params.command == "view") {
       run_view(params.view);
+    } else if (params.command == "render_text") {
+      run_text(params.text);
     } else {
       throw io_error{"unknown command"};
     }

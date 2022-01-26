@@ -181,6 +181,7 @@ namespace yocto {
     auto state_v  = vector<dgram_trace_state>(dgram.scenes.size());
 
     auto needs_rendering = vector<bool>(dgram.scenes.size(), true);
+    auto text_edited     = true;
 
     auto renders = vector<image_data>(
         dgram.scenes.size(), make_image(params.width, params.height, true));
@@ -249,7 +250,7 @@ namespace yocto {
           render_worker = std::async(std::launch::async, [&]() {
             // make texts
             texts = make_texts(scene, params.camera, params.size, params.scale,
-                 params.width, params.height, params.noparallel);
+                 params.width, params.height, params.noparallel, text_edited);
 
             for (auto sample = 0; sample < params.samples; sample++) {
               if (render_stop) return;
@@ -322,6 +323,7 @@ namespace yocto {
     callbacks.widgets = [&](const gui_input& input) {
       auto one_edited = 0;
       auto all_edited = 0;
+      text_edited     = false;
 
       auto current = (int)render_current;
       draw_gui_progressbar("sample", current, params.samples);
@@ -334,7 +336,10 @@ namespace yocto {
           tparams.height = (int)round(
               (float)tparams.width * params.size.y / params.size.x);
         }
-        all_edited += ImGui::IsItemDeactivated();
+        if (ImGui::IsItemDeactivated()) {
+          text_edited = true;
+          all_edited++;
+        }
 
         draw_gui_slider("samples", tparams.samples, 1, 100);
         all_edited += ImGui::IsItemDeactivated();
@@ -480,7 +485,10 @@ namespace yocto {
           one_edited += ImGui::IsItemDeactivated();
 
           draw_gui_textinput("text", labels.texts[selection.label]);
-          one_edited += ImGui::IsItemDeactivated();
+          if (ImGui::IsItemDeactivated()) {
+            text_edited = true;
+            one_edited++;
+          }
 
           auto alignments = vector<string>{"left", "center", "right"};
           auto idx        = 1;
@@ -489,7 +497,10 @@ namespace yocto {
           else if (labels.alignments[selection.label].x < 0)
             idx = 2;
 
-          one_edited += draw_gui_combobox("alignment", idx, alignments);
+          if (draw_gui_combobox("alignment", idx, alignments)) {
+            text_edited = true;
+            one_edited++;
+          }
 
           if (idx == 0)
             labels.alignments[selection.label].x = 1.0f;

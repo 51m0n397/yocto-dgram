@@ -34,7 +34,9 @@
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
 // -----------------------------------------------------------------------------
-namespace yocto {}  // namespace yocto
+namespace yocto {
+  // using directives
+}  // namespace yocto
 
 // -----------------------------------------------------------------------------
 // PATH UTILITIES
@@ -46,9 +48,46 @@ namespace yocto {
     return std::filesystem::u8path(filename);
   }
 
+  // Get directory name (not including /)
+  static string path_dirname(const string& filename) {
+    return make_path(filename).parent_path().generic_u8string();
+  }
+
   // Get extension (including .)
   static string path_extension(const string& filename) {
     return make_path(filename).extension().u8string();
+  }
+
+  // Joins paths
+  static string path_join(const string& patha, const string& pathb) {
+    return (make_path(patha) / make_path(pathb)).generic_u8string();
+  }
+  static string path_join(
+      const string& patha, const string& pathb, const string& pathc) {
+    return (make_path(patha) / make_path(pathb) / make_path(pathc))
+        .generic_u8string();
+  }
+
+  // Check if a file can be opened for reading.
+  static bool path_exists(const string& filename) {
+    return exists(make_path(filename));
+  }
+
+  // Create a directory and all missing parent directories if needed
+  static bool make_directory(
+      const string& dirname, string& error, const bool rewrite = false) {
+    if (path_exists(dirname)) {
+      if (!rewrite) return true;
+      remove_all(make_path(dirname));
+    }
+
+    try {
+      create_directories(make_path(dirname));
+      return true;
+    } catch (...) {
+      error = dirname + ": cannot create directory";
+      return false;
+    }
   }
 
 }  // namespace yocto
@@ -270,19 +309,38 @@ namespace yocto {
             auto& jlabels = jscene.at("labels");
             scene.labels.reserve(jlabels.size());
 
-            for (auto& jlabel : jlabels) {
-              auto& label = scene.labels.emplace_back();
+            for (auto i = 0; i < jlabels.size(); i++) {
+              auto& jlabel = jlabels[i];
+              auto& label  = scene.labels.emplace_back();
 
               get_opt(jlabel, "positions", label.positions);
 
               if (jlabel.contains("labels")) {
-                for (auto& elem : jlabel.at("labels")) {
-                  auto& texts      = label.texts.emplace_back("");
-                  auto& offsets    = label.offsets.emplace_back(vec2f{0, 0});
-                  auto& alignments = label.alignments.emplace_back(vec2f{0, 0});
-                  get_opt(elem, "unprocessed", texts);
-                  get_opt(elem, "offset", offsets);
-                  get_opt(elem, "alignment", alignments);
+                for (auto j = 0; j < jlabel.at("labels").size(); j++) {
+                  auto& elem = jlabel.at("labels")[j];
+
+                  auto text = string("");
+                  get_opt(elem, "unprocessed", text);
+
+                  if (text != "") {
+                    label.texts.emplace_back(text);
+                    auto& offset    = label.offsets.emplace_back(vec2f{0, 0});
+                    auto& alignment = label.alignments.emplace_back(
+                        vec2f{0, 0});
+                    auto& image = label.images.emplace_back();
+                    auto& name  = label.names.emplace_back(escape_string(text));
+
+                    get_opt(elem, "offset", offset);
+                    get_opt(elem, "alignment", alignment);
+                    get_opt(elem, "name", name);
+
+                    try {
+                      load_image(path_join(path_dirname(filename), "labels",
+                                     name + ".png"),
+                          image);
+                    } catch (const io_error& e) {
+                    }
+                  }
                 }
               }
             }
@@ -313,6 +371,43 @@ namespace yocto {
     auto dgram = dgram_scenes{};
     if (!load_dgram(filename, dgram, error)) throw io_error{error};
     return dgram;
+  }
+
+}  // namespace yocto
+
+// -----------------------------------------------------------------------------
+// DGRAM TEXT
+// -----------------------------------------------------------------------------
+namespace yocto {
+
+  bool save_texts(const string& filename, const dgram_scenes& dgram,
+      const int res, string& error) {
+    if (!make_directory(
+            path_join(path_dirname(filename), "labels"), error, true))
+      return false;
+
+    auto aspect = dgram.size.x / dgram.size.y;
+    auto width  = res;
+    auto height = (int)round(res / aspect);
+    if (aspect < 1) swap(width, height);
+
+    for (auto& scene : dgram.scenes) {
+      auto images = make_text_images(
+          scene, dgram.size, dgram.scale, width, height);
+      for (auto& image : images.images) {
+        if (!save_image(path_join(path_dirname(filename), "labels",
+                            image.name + ".png"),
+                image.image, error))
+          return false;
+      }
+    }
+    return true;
+  }
+
+  void save_texts(
+      const string& filename, const dgram_scenes& dgram, const int res) {
+    auto error = string{};
+    if (!save_texts(filename, dgram, res, error)) throw io_error{error};
   }
 
 }  // namespace yocto

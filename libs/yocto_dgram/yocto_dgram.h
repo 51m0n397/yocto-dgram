@@ -102,10 +102,13 @@ namespace yocto {
   };
 
   struct dgram_label {
+    vector<string> names      = {};
     vector<vec3f>  positions  = {};
     vector<string> texts      = {};
     vector<vec2f>  offsets    = {};
     vector<vec2f>  alignments = {};
+
+    vector<image_data> images = {};
   };
 
   struct dgram_scene {
