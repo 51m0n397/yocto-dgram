@@ -391,7 +391,7 @@ namespace yocto {
 namespace yocto {
 
   vec4f eval_text(const trace_text& text, const vec2f& uv) {
-    return eval_image(text.image, uv);
+    return eval_image(text.image, uv, true);
   }
 
 }  // namespace yocto
