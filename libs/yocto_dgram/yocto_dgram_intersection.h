@@ -65,8 +65,8 @@ namespace yocto {
 
   // Intersect a ray with a line
   inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-      float r0, float r1, line_end e0, line_end e1, vec2f& uv, float& dist,
-      vec3f& pos, vec3f& norm);
+      float r0, float r1, line_end e0, line_end e1, const vec3f& arrow_dir,
+      vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
 
   // Intersect a ray with a triangle
   inline bool intersect_triangle(const ray3f& ray, const vec3f& p0,
@@ -440,10 +440,22 @@ namespace yocto {
     return true;
   }
 
+  inline static bool intersect_arrow_plane(
+      const ray3f& ray, const vec3f& p, const vec3f& dir) {
+    auto o   = ray.o - p;
+    auto den = dot(ray.d, ray.d);
+    auto t   = -dot(ray.d, o) / den;
+    auto q   = ray.o + ray.d * t;
+
+    if (dot(dir, q - p) < 0) return true;
+
+    return false;
+  }
+
   // Intersect a ray with a line
   inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-      float r0, float r1, line_end e0, line_end e1, vec2f& uv, float& dist,
-      vec3f& pos, vec3f& norm) {
+      float r0, float r1, line_end e0, line_end e1, const vec3f& arrow_dir,
+      vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
     // TODO(simone): cleanup
 
     if (p0 == p1) return false;
@@ -455,6 +467,7 @@ namespace yocto {
     auto rb   = r1;
     auto eb   = e1;
     auto sign = 1;
+    auto adir = arrow_dir;
 
     if (r1 < r0) {
       pa   = p1;
@@ -464,6 +477,7 @@ namespace yocto {
       rb   = r0;
       eb   = e0;
       sign = -1;
+      adir = normalize(-arrow_dir);
     }
 
     auto dir = normalize(pb - pa);  // The direction of the line
@@ -492,14 +506,16 @@ namespace yocto {
     auto rbc = rb;
     auto pac = pa;
     auto pbc = pb;
+    auto paa = pa;
+    auto pba = pb;
 
     // Computing ends' parameters
     if (ea == line_end::arrow) {
-      pa  = pa + 6 * ra * dir;
+      paa = pa + 6 * ra * adir;
       rac = ra * 3;
     }
     if (eb == line_end::arrow) {
-      pb  = pb - 6 * rb * dir;
+      pba = pb - 6 * rb * adir;
       rbc = rb * 3;
     }
 
@@ -507,11 +523,13 @@ namespace yocto {
     frame.y    = -frame.y;
     frame.x    = frame.z.z < 0 ? frame.x : -frame.x;
 
-    auto la  = distance(pa, pac);
-    auto la1 = rac - ra;
-    auto lc  = distance(pa, pb);
-    auto lb1 = rbc - rb;
-    auto lb  = distance(pb, pbc);
+    auto aframe = frame_fromz({0, 0, 0}, arrow_dir);
+    aframe.y    = -aframe.y;
+    aframe.x    = aframe.z.z < 0 ? aframe.x : -aframe.x;
+
+    auto la = distance(paa, pac);
+    auto lc = distance(pa, pb);
+    auto lb = distance(pba, pbc);
 
     if (ea == line_end::cap) {
       la = sqrt(ra * ra + rac * rac);
@@ -521,34 +539,38 @@ namespace yocto {
       lb = sqrt(rb * rb + rbc * rbc);
     }
 
-    if (ra == rb) {
-      if (intersect_cylinder(ray, pa, pb, ra, dir, frame, tuv, t, p, n)) {
-        tuv = {tuv.x, (lb + lb1 + tuv.y * lc) / (lb + lb1 + lc + la1 + la)};
-        hit = true;
-      }
-    } else {
-      auto cosa = sqrt(ob * ob - rb * rb) / ob;
-
-      // Computing ends' parameters
-      if (ea == line_end::cap) {
-        rac = ra / cosa;
-        pac = o + dir * ((double)oa + (double)tga * (double)rac);
-        la  = sqrt(ra * ra + rac * rac);
-      }
-
-      if (eb == line_end::cap) {
-        rbc = rb / cosa;
-        pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
-        lb  = sqrt(rb * rb + rbc * rbc);
-      }
-
-      if (intersect_cone(ray, pa, pb, ra, rb, dir, frame, sign, tuv, t, p, n)) {
-        if (sign > 0) {
-          tuv = {tuv.x, (lb + lb1 + tuv.y * lc) / (lb + lb1 + lc + la1 + la)};
-        } else {
-          tuv = {tuv.x, (la + la1 + tuv.y * lc) / (lb + lb1 + lc + la1 + la)};
+    if ((ea == line_end::cap || !intersect_arrow_plane(ray, paa, adir)) &&
+        (eb == line_end::cap || !intersect_arrow_plane(ray, pba, -adir))) {
+      if (ra == rb) {
+        if (intersect_cylinder(ray, pa, pb, ra, dir, frame, tuv, t, p, n)) {
+          tuv = {tuv.x, (lb + tuv.y * lc) / (lb + lc + la)};
+          hit = true;
         }
-        hit = true;
+      } else {
+        auto cosa = sqrt(ob * ob - rb * rb) / ob;
+
+        // Computing ends' parameters
+        if (ea == line_end::cap) {
+          rac = ra / cosa;
+          pac = o + dir * ((double)oa + (double)tga * (double)rac);
+          la  = sqrt(ra * ra + rac * rac);
+        }
+
+        if (eb == line_end::cap) {
+          rbc = rb / cosa;
+          pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
+          lb  = sqrt(rb * rb + rbc * rbc);
+        }
+
+        if (intersect_cone(
+                ray, pa, pb, ra, rb, dir, frame, sign, tuv, t, p, n)) {
+          if (sign > 0) {
+            tuv = {tuv.x, (lb + tuv.y * lc) / (lb + lc + la)};
+          } else {
+            tuv = {tuv.x, (la + tuv.y * lc) / (lb + lc + la)};
+          }
+          hit = true;
+        }
       }
     }
 
@@ -556,32 +578,20 @@ namespace yocto {
       if (intersect_cap(
               ray, pa, pb, pac, rac, dir, frame, sign, tuv, t, p, n)) {
         if (sign > 0) {
-          tuv = {tuv.x, (lb + lb1 + lc + 2 * (tuv.y - 0.5f) * la) /
-                            (lb + lb1 + lc + la1 + la)};
+          tuv = {tuv.x, (lb + lc + 2 * (tuv.y - 0.5f) * la) / (lb + lc + la)};
         } else {
-          tuv = {tuv.x, (2 * tuv.y * la) / (lb + lb1 + lc + la1 + la)};
+          tuv = {tuv.x, (2 * tuv.y * la) / (lb + lc + la)};
         }
         hit = true;
       }
 
     } else {
-      if (intersect_disk(ray, pa, ra, rac, dir, frame, sign, tuv, t, p, n)) {
-        if (sign > 0) {
-          tuv = {tuv.x,
-              (lb + lb1 + lc + tuv.y * la1) / (lb + lb1 + lc + la1 + la)};
-        } else {
-          tuv = {tuv.x, (la + tuv.y * la1) / (lb + lb1 + lc + la1 + la)};
-        }
-        hit = true;
-      }
-
       if (intersect_cone(
-              ray, pac, pa, 0, rac, dir, frame, sign, tuv, t, p, n)) {
+              ray, pac, paa, 0, rac, adir, aframe, sign, tuv, t, p, n)) {
         if (sign > 0) {
-          tuv = {tuv.x,
-              (lb + lb1 + lc + la1 + tuv.y * la) / (lb + lb1 + lc + la1 + la)};
+          tuv = {tuv.x, (lb + lc + tuv.y * la) / (lb + lc + la)};
         } else {
-          tuv = {tuv.x, (tuv.y * la) / (lb + lb1 + lc + la1 + la)};
+          tuv = {tuv.x, (tuv.y * la) / (lb + lc + la)};
         }
         hit = true;
       }
@@ -591,32 +601,20 @@ namespace yocto {
       if (intersect_cap(
               ray, pb, pa, pbc, rbc, -dir, frame, -sign, tuv, t, p, n)) {
         if (sign > 0) {
-          tuv = {tuv.x, (2 * tuv.y * lb) / (lb + lb1 + lc + la1 + la)};
+          tuv = {tuv.x, (2 * tuv.y * lb) / (lb + lc + la)};
         } else {
-          tuv = {tuv.x, (la + la1 + lc + 2 * (tuv.y - 0.5f) * lb) /
-                            (lb + lb1 + lc + la1 + la)};
+          tuv = {tuv.x, (la + lc + 2 * (tuv.y - 0.5f) * lb) / (lb + lc + la)};
         }
         hit = true;
       }
     } else {
-      if (intersect_disk(ray, pb, rb, rbc, -dir, frame, -sign, tuv, t, p, n)) {
-        if (sign > 0) {
-          tuv = {tuv.x, (lb + tuv.y * lb1) / (lb + lb1 + lc + la1 + la)};
-
-        } else {
-          tuv = {tuv.x,
-              (la + la1 + lc + tuv.y * lb1) / (lb + lb1 + lc + la1 + la)};
-        }
-        hit = true;
-      }
       if (intersect_cone(
-              ray, pbc, pb, 0, rbc, -dir, frame, -sign, tuv, t, p, n)) {
+              ray, pbc, pba, 0, rbc, -adir, aframe, -sign, tuv, t, p, n)) {
         if (sign > 0) {
-          tuv = {tuv.x, (tuv.y * lb) / (lb + lb1 + lc + la1 + la)};
+          tuv = {tuv.x, (tuv.y * lb) / (lb + lc + la)};
 
         } else {
-          tuv = {tuv.x,
-              (la + la1 + lc + lb1 + tuv.y * lb) / (lb + lb1 + lc + la1 + la)};
+          tuv = {tuv.x, (la + lc + tuv.y * lb) / (lb + lc + la)};
         }
         hit = true;
       }

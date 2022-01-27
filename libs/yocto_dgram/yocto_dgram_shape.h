@@ -60,9 +60,10 @@ namespace yocto {
     vector<vec4i> quads     = {};
     vector<vec2i> borders   = {};
 
-    vector<vec4f>     fills = {};
-    vector<line_ends> ends  = {};
-    vector<float>     radii = {};
+    vector<vec4f>     fills      = {};
+    vector<line_ends> ends       = {};
+    vector<float>     radii      = {};
+    vector<vec3f>     arrow_dirs = {};
 
     vector<vec3f> cclip_positions = {};
     vector<vec3i> cclip_indices   = {};

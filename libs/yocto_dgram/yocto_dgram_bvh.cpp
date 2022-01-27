@@ -388,11 +388,12 @@ namespace yocto {
             }
           } else if (i -= shape.points.size(), size += shape.lines.size();
                      prim < size) {
-            auto& l   = shape.lines[i];
-            auto& end = shape.ends[i];
+            auto& l         = shape.lines[i];
+            auto& end       = shape.ends[i];
+            auto& arrow_dir = shape.arrow_dirs[i];
             if (intersect_line(ray, shape.positions[l.x], shape.positions[l.y],
-                    shape.radii[l.x], shape.radii[l.y], end.a, end.b, uv, dist,
-                    pos, norm)) {
+                    shape.radii[l.x], shape.radii[l.y], end.a, end.b, arrow_dir,
+                    uv, dist, pos, norm)) {
               if (dist < ray.tmax - ray_eps)
                 intersections.intersections.clear();
               ray.tmax = dist;
@@ -449,10 +450,11 @@ namespace yocto {
             }
           } else if (i -= shape.quads.size(), size += shape.borders.size();
                      prim < size) {
-            auto& b = shape.borders[i];
+            auto& b   = shape.borders[i];
+            auto  dir = normalize(shape.positions[b.y] - shape.positions[b.x]);
             if (intersect_line(ray, shape.positions[b.x], shape.positions[b.y],
                     shape.radii[b.x], shape.radii[b.y], line_end::cap,
-                    line_end::cap, uv, dist, pos, norm)) {
+                    line_end::cap, dir, uv, dist, pos, norm)) {
               if (dist < ray.tmax - ray_eps)
                 intersections.intersections.clear();
               ray.tmax = dist;

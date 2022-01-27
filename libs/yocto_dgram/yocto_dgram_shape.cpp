@@ -266,6 +266,24 @@ namespace yocto {
       }*/
     }
 
+    // arrow dirs
+    for (auto& line : shape.lines) {
+      auto& p0 = shape.positions[line.x];
+      auto& p1 = shape.positions[line.y];
+      if (orthographic) {
+        auto line_dir  = transform_direction(inverse(camera_frame), p1 - p0);
+        auto arrow_dir = transform_direction(
+            camera_frame, vec3f{line_dir.x, line_dir.y, 0});
+        shape.arrow_dirs.push_back(arrow_dir);
+      } else {
+        auto p0_on_plane = intersect_plane(
+            ray3f{camera_origin, p0 - camera_origin}, plane_point, plane_dir);
+        auto p1_on_plane = intersect_plane(
+            ray3f{camera_origin, p1 - camera_origin}, plane_point, plane_dir);
+        shape.arrow_dirs.push_back(normalize(p0_on_plane - p1_on_plane));
+      }
+    }
+
     return shape;
   }
 
