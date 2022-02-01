@@ -270,17 +270,69 @@ namespace yocto {
     for (auto& line : shape.lines) {
       auto& p0 = shape.positions[line.x];
       auto& p1 = shape.positions[line.y];
+
       if (orthographic) {
-        auto line_dir  = transform_direction(inverse(camera_frame), p1 - p0);
+        auto dir       = normalize(p1 - p0);
+        auto line_dir  = transform_direction(inverse(camera_frame), dir);
         auto arrow_dir = transform_direction(
             camera_frame, vec3f{line_dir.x, line_dir.y, 0});
+
         shape.arrow_dirs.push_back(arrow_dir);
+
+        shape.arrow_points0.push_back(p0 + 6 * dir);
+        shape.arrow_points1.push_back(p1 - 6 * dir);
+
+        shape.arrow_rads0.push_back(3 * dot(dir, arrow_dir));
+        shape.arrow_rads1.push_back(3 * dot(dir, arrow_dir));
       } else {
         auto p0_on_plane = intersect_plane(
             ray3f{camera_origin, p0 - camera_origin}, plane_point, plane_dir);
         auto p1_on_plane = intersect_plane(
             ray3f{camera_origin, p1 - camera_origin}, plane_point, plane_dir);
         shape.arrow_dirs.push_back(normalize(p0_on_plane - p1_on_plane));
+
+        auto ap0_on_p = p0_on_plane + 6 * material.thickness / size.x * film.x /
+                                          2 *
+                                          normalize(p1_on_plane - p0_on_plane);
+        auto ap1_on_p = p1_on_plane + 6 * material.thickness / size.x * film.x /
+                                          2 *
+                                          normalize(p0_on_plane - p1_on_plane);
+
+        auto rp0 = ray3f{camera_origin, ap0_on_p - camera_origin};
+        auto ap0 = intersect_plane(
+            rp0, p0, orthonormalize(rp0.d, normalize(p1 - p0)));
+
+        auto rp1 = ray3f{camera_origin, ap1_on_p - camera_origin};
+        auto ap1 = intersect_plane(
+            rp1, p1, orthonormalize(rp1.d, normalize(p0 - p1)));
+
+        shape.arrow_points0.push_back(ap0);
+        shape.arrow_points1.push_back(ap1);
+
+        auto ap0c = transform_point(inverse(camera_frame), ap0_on_p);
+        auto ap1c = transform_point(inverse(camera_frame), ap1_on_p);
+
+        auto ad0c = transform_direction(
+            inverse(camera_frame), p1_on_plane - p0_on_plane);
+        auto ad1c = transform_direction(
+            inverse(camera_frame), p0_on_plane - p1_on_plane);
+
+        auto adp0c = vec3f{ad0c.y, -ad0c.x, 0};
+        auto adp1c = vec3f{ad1c.y, -ad1c.x, 0};
+
+        auto ar0_on_p = transform_point(camera_frame,
+            ap0c + 3 * material.thickness / size.x * film.x / 2 * adp0c);
+        auto ar1_on_p = transform_point(camera_frame,
+            ap1c + 3 * material.thickness / size.x * film.x / 2 * adp1c);
+
+        auto rr0 = ray3f{camera_origin, ar0_on_p - camera_origin};
+        auto ar0 = intersect_plane(rr0, ap0, plane_dir);
+
+        auto rr1 = ray3f{camera_origin, ar1_on_p - camera_origin};
+        auto ar1 = intersect_plane(rr1, ap1, plane_dir);
+
+        shape.arrow_rads0.push_back(distance(ap0, ar0));
+        shape.arrow_rads1.push_back(distance(ap1, ar1));
       }
     }
 
