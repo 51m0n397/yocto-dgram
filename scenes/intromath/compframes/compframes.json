@@ -285,6 +285,7 @@
           ],
           "labels": [
             {
+              "name": "x1",
               "unprocessed": "$\\mathbf{x}$!!b",
               "spans": [
                 {},
@@ -317,6 +318,7 @@
               ]
             },
             {
+              "name": "y1",
               "unprocessed": "$\\mathbf{y}$!!r",
               "spans": [
                 {},
@@ -353,6 +355,7 @@
               ]
             },
             {
+              "name": "z1",
               "unprocessed": "$\\mathbf{z}$!!b",
               "spans": [
                 {},
@@ -385,6 +388,7 @@
               ]
             },
             {
+              "name": "o1",
               "unprocessed": "$\\mathbf{o}$!!b",
               "spans": [
                 {},
@@ -443,6 +447,7 @@
           ],
           "labels": [
             {
+              "name": "x2",
               "unprocessed": "$\\mathbf{x}$!!b",
               "spans": [
                 {},
@@ -475,6 +480,7 @@
               ]
             },
             {
+              "name": "y2",
               "unprocessed": "$\\mathbf{y}$!!r",
               "spans": [
                 {},
@@ -511,6 +517,7 @@
               ]
             },
             {
+              "name": "z2",
               "unprocessed": "$\\mathbf{z}$!!b",
               "spans": [
                 {},
@@ -543,6 +550,7 @@
               ]
             },
             {
+              "name": "o2",
               "unprocessed": "$\\mathbf{o}$!!b",
               "spans": [
                 {},
