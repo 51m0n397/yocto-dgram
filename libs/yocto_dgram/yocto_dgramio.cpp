@@ -395,10 +395,21 @@ namespace yocto {
       auto images = make_text_images(
           scene, dgram.size, dgram.scale, width, height);
       for (auto& image : images.images) {
-        if (!save_image(path_join(path_dirname(filename), "labels",
-                            image.name + ".png"),
-                image.image, error))
+        auto name = image.name + ".png";
+        auto path = path_join(path_dirname(filename), "labels", name);
+
+        if (name.length() > 255) {
+          error = "cannot create label " + path + ", filename too long";
           return false;
+        }
+
+        if (path_exists(path)) {
+          error = "cannot create label " + path +
+                  ", another label with the same name already exists";
+          return false;
+        }
+
+        if (!save_image(path, image.image, error)) return false;
       }
     }
     return true;
