@@ -362,10 +362,16 @@ namespace yocto {
           tparams.height = (int)round(
               (float)tparams.width * dgram.size.y / dgram.size.x);
         }
-        all_edited += ImGui::IsItemDeactivated();
+        if (ImGui::IsItemDeactivated()) {
+          text_edited = true;
+          all_edited++;
+        }
         if (draw_gui_slider("scale", dgram.scale, 0.1f, 1000.0f))
           tparams.scale = dgram.scale;
-        all_edited += ImGui::IsItemDeactivated();
+        if (ImGui::IsItemDeactivated()) {
+          text_edited = true;
+          all_edited++;
+        }
 
         end_gui_header();
       }
