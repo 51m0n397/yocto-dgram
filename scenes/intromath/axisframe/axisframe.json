@@ -200,6 +200,7 @@
           ],
           "labels": [
             {
+              "name": "a_0",
               "unprocessed": "$\\mathbf{a}$!!r",
               "spans": [
                 {},
@@ -466,6 +467,7 @@
           ],
           "labels": [
             {
+              "name": "a_1",
               "unprocessed": "$\\mathbf{a}$!!r",
               "spans": [
                 {},
@@ -974,6 +976,7 @@
           ],
           "labels": [
             {
+              "name": "a_2",
               "unprocessed": "$\\mathbf{a}$!!r",
               "spans": [
                 {},

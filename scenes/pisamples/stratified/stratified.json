@@ -13243,6 +13243,7 @@
           ],
           "labels": [
             {
+              "name": "samples_0",
               "unprocessed": "samples: 1024!!r",
               "spans": [
                 {
@@ -13401,6 +13402,7 @@
           ],
           "labels": [
             {
+              "name": "samples_1",
               "unprocessed": "samples: 1024!!r",
               "spans": [
                 {

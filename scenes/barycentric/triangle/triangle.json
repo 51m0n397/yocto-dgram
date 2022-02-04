@@ -148,6 +148,7 @@
           ],
           "labels": [
             {
+              "name": "p1_0",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -194,6 +195,7 @@
               ]
             },
             {
+              "name": "p2_0",
               "unprocessed": "$\\mathbf{p}_2$!!r",
               "spans": [
                 {},
@@ -240,6 +242,7 @@
               ]
             },
             {
+              "name": "p3_0",
               "unprocessed": "$\\mathbf{p}_3$!!r",
               "spans": [
                 {},
@@ -297,6 +300,7 @@
           ],
           "labels": [
             {
+              "name": "puv_0",
               "unprocessed": "$\\mathbf{p}(u,v)$!!t",
               "spans": [
                 {},
@@ -636,6 +640,7 @@
           ],
           "labels": [
             {
+              "name": "p1_1",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -698,6 +703,7 @@
           ],
           "labels": [
             {
+              "name": "e21_0",
               "unprocessed": "$\\mathbf{e}_{2,1}$!!r",
               "spans": [
                 {},
@@ -750,6 +756,7 @@
               ]
             },
             {
+              "name": "e31_0",
               "unprocessed": "$\\mathbf{e}_{3,1}$!!r",
               "spans": [
                 {},
@@ -869,6 +876,7 @@
           ],
           "labels": [
             {
+              "name": "puv_1",
               "unprocessed": "$\\mathbf{p}(u,v)$!!t",
               "spans": [
                 {},
@@ -1487,6 +1495,7 @@
           ],
           "labels": [
             {
+              "name": "p1_2",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -1544,6 +1553,7 @@
           ],
           "labels": [
             {
+              "name": "e21_1",
               "unprocessed": "$\\mathbf{e}_{2,1}$!!r",
               "spans": [
                 {},
@@ -1607,6 +1617,7 @@
           ],
           "labels": [
             {
+              "name": "e31_1",
               "unprocessed": "$\\mathbf{e}_{3,1}$!!l",
               "spans": [
                 {},

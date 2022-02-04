@@ -137,6 +137,7 @@
           ],
           "labels": [
             {
+              "name": "p1_0",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -240,6 +241,7 @@
           ],
           "labels": [
             {
+              "name": "pu_0",
               "unprocessed": "$\\mathbf{p}(u)$!!l",
               "spans": [
                 {},
@@ -534,6 +536,7 @@
           ],
           "labels": [
             {
+              "name": "p1_1",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -702,6 +705,7 @@
           ],
           "labels": [
             {
+              "name": "pu_1",
               "unprocessed": "$\\mathbf{p}(u)$!!l",
               "spans": [
                 {},

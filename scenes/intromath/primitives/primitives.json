@@ -88,6 +88,7 @@
           ],
           "labels": [
             {
+              "name": "p_0",
               "unprocessed": "$\\mathbf{p}$!!r",
               "spans": [
                 {},
@@ -284,6 +285,7 @@
           ],
           "labels": [
             {
+              "name": "p_1",
               "unprocessed": "$\\mathbf{p}$!!r",
               "spans": [
                 {},
@@ -367,6 +369,7 @@
           ],
           "labels": [
             {
+              "name": "v_0",
               "unprocessed": "$\\mathbf{v}$!!r",
               "spans": [
                 {},
@@ -564,6 +567,7 @@
           ],
           "labels": [
             {
+              "name": "v_1",
               "unprocessed": "$\\mathbf{v}$!!r",
               "spans": [
                 {},

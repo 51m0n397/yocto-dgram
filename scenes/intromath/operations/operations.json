@@ -152,6 +152,7 @@
           ],
           "labels": [
             {
+              "name": "v_0",
               "unprocessed": "$\\mathbf{v}$!!r",
               "spans": [
                 {},
@@ -199,6 +200,7 @@
           ],
           "labels": [
             {
+              "name": "u_0",
               "unprocessed": "$\\mathbf{u}$!!r",
               "spans": [
                 {},
@@ -403,6 +405,7 @@
           ],
           "labels": [
             {
+              "name": "v_1",
               "unprocessed": "$\\mathbf{v}$!!r",
               "spans": [
                 {},
@@ -605,6 +608,7 @@
           ],
           "labels": [
             {
+              "name": "v_2",
               "unprocessed": "$\\mathbf{v}$!!r",
               "spans": [
                 {},
@@ -845,6 +849,7 @@
           ],
           "labels": [
             {
+              "name": "v_3",
               "unprocessed": "$\\mathbf{v}$!!r",
               "spans": [
                 {},
@@ -892,6 +897,7 @@
           ],
           "labels": [
             {
+              "name": "u_1",
               "unprocessed": "$\\mathbf{u}$!!t",
               "spans": [
                 {},

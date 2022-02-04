@@ -821,6 +821,7 @@
           ],
           "labels": [
             {
+              "name": "int f(x)dx_0",
               "unprocessed": "$\\int f(x)dx$",
               "spans": [
                 {},
@@ -2963,6 +2964,7 @@
           ],
           "labels": [
             {
+              "name": "int f(x)dx_1",
               "unprocessed": "$\\int f(x)dx$!!b",
               "spans": [
                 {},
@@ -3197,6 +3199,7 @@
               ]
             },
             {
+              "name": "plus_0",
               "unprocessed": "$+$!!b",
               "spans": [
                 {},
@@ -3311,6 +3314,7 @@
               ]
             },
             {
+              "name": "plus_1",
               "unprocessed": "$+$!!b",
               "spans": [
                 {},
@@ -3425,6 +3429,7 @@
               ]
             },
             {
+              "name": "plus_2",
               "unprocessed": "$+$!!b",
               "spans": [
                 {},

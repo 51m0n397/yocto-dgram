@@ -464,6 +464,7 @@
           ],
           "labels": [
             {
+              "name": "p1_0",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -510,6 +511,7 @@
               ]
             },
             {
+              "name": "p2_0",
               "unprocessed": "$\\mathbf{p}_2$!!l",
               "spans": [
                 {},
@@ -556,6 +558,7 @@
               ]
             },
             {
+              "name": "p3_0",
               "unprocessed": "$\\mathbf{p}_3$!!r",
               "spans": [
                 {},
@@ -602,6 +605,7 @@
               ]
             },
             {
+              "name": "p4_0",
               "unprocessed": "$\\mathbf{p}_4$!!r",
               "spans": [
                 {},
@@ -1111,6 +1115,7 @@
           ],
           "labels": [
             {
+              "name": "p1_1",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -1157,6 +1162,7 @@
               ]
             },
             {
+              "name": "p2_1",
               "unprocessed": "$\\mathbf{p}_2$!!r",
               "spans": [
                 {},
@@ -1203,6 +1209,7 @@
               ]
             },
             {
+              "name": "p3_1",
               "unprocessed": "$\\mathbf{p}_3$!!l",
               "spans": [
                 {},
@@ -1249,6 +1256,7 @@
               ]
             },
             {
+              "name": "p4_1",
               "unprocessed": "$\\mathbf{p}_4$!!r",
               "spans": [
                 {},

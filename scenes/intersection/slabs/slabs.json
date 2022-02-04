@@ -265,6 +265,7 @@
           ],
           "labels": [
             {
+              "name": "zm_0",
               "unprocessed": "$z_M$",
               "spans": [
                 {},
@@ -320,6 +321,7 @@
           ],
           "labels": [
             {
+              "name": "zm_1",
               "unprocessed": "$z_m$",
               "spans": [
                 {},
@@ -627,6 +629,7 @@
           ],
           "labels": [
             {
+              "name": "ym_0",
               "unprocessed": "$y_m$",
               "spans": [
                 {},
@@ -682,6 +685,7 @@
           ],
           "labels": [
             {
+              "name": "ym_1",
               "unprocessed": "$y_M$",
               "spans": [
                 {},
@@ -989,6 +993,7 @@
           ],
           "labels": [
             {
+              "name": "xm_0",
               "unprocessed": "$x_m$",
               "spans": [
                 {},
@@ -1044,6 +1049,7 @@
           ],
           "labels": [
             {
+              "name": "xm_1",
               "unprocessed": "$x_M$",
               "spans": [
                 {},

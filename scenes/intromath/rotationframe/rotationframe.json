@@ -326,6 +326,7 @@
           ],
           "labels": [
             {
+              "name": "theta_0",
               "unprocessed": "$\\theta$!!r",
               "spans": [
                 {},
@@ -372,6 +373,7 @@
           ],
           "labels": [
             {
+              "name": "formula_0",
               "unprocessed": "$\\mathbf{F} = (c \\mathbf{x} + s \\mathbf{y}, s \\mathbf{y} + c \\mathbf{z}, \\mathbf{o})$",
               "spans": [
                 {},
@@ -840,6 +842,7 @@
           ],
           "labels": [
             {
+              "name": "theta_1",
               "unprocessed": "$\\theta$!!t",
               "spans": [
                 {},
@@ -882,6 +885,7 @@
           ],
           "labels": [
             {
+              "name": "formula_1",
               "unprocessed": "$\\mathbf{F} = (c \\mathbf{x} + s \\mathbf{y}, s \\mathbf{y} + c \\mathbf{z}, \\mathbf{o})$",
               "spans": [
                 {},
@@ -1451,6 +1455,7 @@
           ],
           "labels": [
             {
+              "name": "formula_2",
               "unprocessed": "$\\mathbf{F} = (c \\mathbf{x} + s \\mathbf{y}, s \\mathbf{y} + c \\mathbf{z}, \\mathbf{o})$",
               "spans": [
                 {},

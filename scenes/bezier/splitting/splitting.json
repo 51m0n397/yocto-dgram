@@ -502,6 +502,7 @@
           ],
           "labels": [
             {
+              "name": "q1(t)_0",
               "unprocessed": "$\\mathbf{q}_1(t)$!!l",
               "spans": [
                 {},
@@ -642,6 +643,7 @@
           ],
           "labels": [
             {
+              "name": "p1_0",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -688,6 +690,7 @@
               ]
             },
             {
+              "name": "p2_0",
               "unprocessed": "$\\mathbf{p}_2$!!lt",
               "spans": [
                 {},
@@ -1402,6 +1405,7 @@
           ],
           "labels": [
             {
+              "name": "q1(t)_1",
               "unprocessed": "$\\mathbf{q}_1(t)$!!l",
               "spans": [
                 {},
@@ -1736,6 +1740,7 @@
           ],
           "labels": [
             {
+              "name": "p1_1",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -1782,6 +1787,7 @@
               ]
             },
             {
+              "name": "p2_1",
               "unprocessed": "$\\mathbf{p}_2$!!lt",
               "spans": [
                 {},

@@ -236,6 +236,7 @@
           ],
           "labels": [
             {
+              "name": "s_0",
               "unprocessed": "$s$!!t",
               "spans": [
                 {},
@@ -268,6 +269,7 @@
               ]
             },
             {
+              "name": "s_1",
               "unprocessed": "$s$!!r",
               "spans": [
                 {},
@@ -304,6 +306,7 @@
               ]
             },
             {
+              "name": "s_2",
               "unprocessed": "$s$!!t",
               "spans": [
                 {},

@@ -2265,6 +2265,7 @@
               ]
             },
             {
+              "name": "normals0",
               "unprocessed": "normals!!b",
               "spans": [
                 {
@@ -3479,6 +3480,7 @@
               ]
             },
             {
+              "name": "normals1",
               "unprocessed": "normals!!b",
               "spans": [
                 {

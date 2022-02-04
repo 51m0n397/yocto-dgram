@@ -849,6 +849,7 @@
           ],
           "labels": [
             {
+              "name": "p1_0",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -895,6 +896,7 @@
               ]
             },
             {
+              "name": "p2_0",
               "unprocessed": "$\\mathbf{p}_2$!!lt",
               "spans": [
                 {},
@@ -941,6 +943,7 @@
               ]
             },
             {
+              "name": "p3_0",
               "unprocessed": "$\\mathbf{p}_3$!!r",
               "spans": [
                 {},
@@ -1008,6 +1011,7 @@
           ],
           "labels": [
             {
+              "name": "p21_0",
               "unprocessed": "$\\mathbf{p}_{2,1}$!!r",
               "spans": [
                 {},
@@ -1060,6 +1064,7 @@
               ]
             },
             {
+              "name": "p22_0",
               "unprocessed": "$\\mathbf{p}_{2,2}$!!l",
               "spans": [
                 {},
@@ -1112,6 +1117,7 @@
               ]
             },
             {
+              "name": "p23_0",
               "unprocessed": "$\\mathbf{p}_{2,3}$!!l",
               "spans": [
                 {},
@@ -2047,6 +2053,7 @@
           ],
           "labels": [
             {
+              "name": "p1_1",
               "unprocessed": "$\\mathbf{p}_1$!!l",
               "spans": [
                 {},
@@ -2093,6 +2100,7 @@
               ]
             },
             {
+              "name": "p2_1",
               "unprocessed": "$\\mathbf{p}_2$!!lt",
               "spans": [
                 {},
@@ -2139,6 +2147,7 @@
               ]
             },
             {
+              "name": "p3_1",
               "unprocessed": "$\\mathbf{p}_3$!!rt",
               "spans": [
                 {},
@@ -2257,6 +2266,7 @@
           ],
           "labels": [
             {
+              "name": "p21_1",
               "unprocessed": "$\\mathbf{p}_{2,1}$!!r",
               "spans": [
                 {},
@@ -2309,6 +2319,7 @@
               ]
             },
             {
+              "name": "p22_1",
               "unprocessed": "$\\mathbf{p}_{2,2}$!!l",
               "spans": [
                 {},
@@ -2361,6 +2372,7 @@
               ]
             },
             {
+              "name": "p23_1",
               "unprocessed": "$\\mathbf{p}_{2,3}$!!r",
               "spans": [
                 {},

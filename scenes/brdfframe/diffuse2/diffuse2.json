@@ -1399,6 +1399,7 @@
           ],
           "labels": [
             {
+              "name": "formula_1_0",
               "unprocessed": "$\\mathbf{i} = \\mathrm{random}(\\mathbf{n})$!!br",
               "spans": [
                 {},
@@ -1517,6 +1518,7 @@
           ],
           "labels": [
             {
+              "name": "formula_q_0",
               "unprocessed": "$\\mathbf{q} = \\mathrm{raytrace}(\\mathbf{p}, \\mathbf{i})$!!R",
               "spans": [
                 {},
@@ -1596,6 +1598,7 @@
           ],
           "labels": [
             {
+              "name": "formula_i_1",
               "unprocessed": "$\\mathbf{i} = \\mathrm{random}(\\mathbf{n})$!!br",
               "spans": [
                 {},
@@ -1667,6 +1670,7 @@
           ],
           "labels": [
             {
+              "name": "formula_q_1",
               "unprocessed": "$\\mathbf{q} = \\mathrm{raytrace}(\\mathbf{p}, \\mathbf{i})$!!R",
               "spans": [
                 {},

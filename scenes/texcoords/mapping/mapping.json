@@ -123,6 +123,7 @@
           ],
           "labels": [
             {
+              "name": "s_1,t_1_0",
               "unprocessed": "$(s_1,t_1)$!!l",
               "spans": [
                 {},
@@ -189,6 +190,7 @@
               ]
             },
             {
+              "name": "s_2,t_2_0",
               "unprocessed": "$(s_2,t_2)$!!r",
               "spans": [
                 {},
@@ -255,6 +257,7 @@
               ]
             },
             {
+              "name": "s_3,t_3_0",
               "unprocessed": "$(s_3,t_3)$!!r",
               "spans": [
                 {},
@@ -5045,6 +5048,7 @@
           ],
           "labels": [
             {
+              "name": "s_1,t_1_1",
               "unprocessed": "$(s_1,t_1)$!!l",
               "spans": [
                 {},
@@ -5111,6 +5115,7 @@
               ]
             },
             {
+              "name": "s_2,t_2_1",
               "unprocessed": "$(s_2,t_2)$!!r",
               "spans": [
                 {},
@@ -5177,6 +5182,7 @@
               ]
             },
             {
+              "name": "s_3,t_3_1",
               "unprocessed": "$(s_3,t_3)$!!r",
               "spans": [
                 {},

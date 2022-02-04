@@ -187,6 +187,7 @@
           ],
           "labels": [
             {
+              "name": "alpha_A_0",
               "unprocessed": "$\\alpha_A$",
               "spans": [
                 {},
@@ -971,6 +972,7 @@
           ],
           "labels": [
             {
+              "name": "alpha_A_1",
               "unprocessed": "$\\alpha_A$",
               "spans": [
                 {},
@@ -1085,6 +1087,7 @@
           ],
           "labels": [
             {
+              "name": "1-alpha_A_0",
               "unprocessed": "$(1 - \\alpha_A)$",
               "spans": [
                 {},
@@ -1237,6 +1240,7 @@
           ],
           "labels": [
             {
+              "name": "1-alpha_A_1",
               "unprocessed": "$(1 - \\alpha_A)$",
               "spans": [
                 {},
