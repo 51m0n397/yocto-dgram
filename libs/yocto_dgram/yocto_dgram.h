@@ -51,7 +51,7 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  enum class line_end : bool { cap = false, arrow = true };
+  enum class line_end { cap, stealth_arrow, triangle_arrow };
 
   struct line_ends {
     line_end a = line_end::cap;

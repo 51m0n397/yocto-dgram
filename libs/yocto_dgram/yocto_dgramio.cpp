@@ -296,7 +296,8 @@ namespace yocto {
               auto arrows = vector<vec2i>{};
               get_opt(jshape, "arrows", arrows);
               for (auto idx = 0; idx < arrows.size(); idx++)
-                shape.ends.push_back(line_ends{line_end::cap, line_end::arrow});
+                shape.ends.push_back(
+                    line_ends{line_end::cap, line_end::stealth_arrow});
 
               lines.insert(lines.end(), arrows.begin(), arrows.end());
               shape.lines = lines;

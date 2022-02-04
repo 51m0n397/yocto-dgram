@@ -272,29 +272,51 @@ namespace yocto {
       auto& p1 = shape.positions[line.y];
 
       if (orthographic) {
-        auto dir       = normalize(p1 - p0);
-        auto line_dir  = transform_direction(inverse(camera_frame), dir);
+        auto dir      = normalize(p1 - p0);
+        auto line_dir = transform_direction(inverse(camera_frame), dir);
+
         auto arrow_dir = transform_direction(
             camera_frame, vec3f{line_dir.x, line_dir.y, 0});
+        auto arrow_dir0 = transform_direction(camera_frame,
+            vec3f{line_dir.x + line_dir.y, line_dir.y - line_dir.x, 0});
+        auto arrow_dir1 = transform_direction(camera_frame,
+            vec3f{line_dir.x - line_dir.y, line_dir.y + line_dir.x, 0});
 
         shape.arrow_dirs.push_back(arrow_dir);
+        shape.arrow_dirs0.push_back(arrow_dir0);
+        shape.arrow_dirs1.push_back(arrow_dir1);
 
-        shape.arrow_points0.push_back(p0 + 6 * dir);
-        shape.arrow_points1.push_back(p1 - 6 * dir);
+        auto thickness = material.thickness * film.x * camera_distance /
+                         (scale * 2 * lens);
 
-        shape.arrow_rads0.push_back(3 * dot(dir, arrow_dir));
-        shape.arrow_rads1.push_back(3 * dot(dir, arrow_dir));
+        shape.arrow_points0.push_back(p0 + 8 * thickness * dir);
+        shape.arrow_points1.push_back(p1 - 8 * thickness * dir);
+
+        shape.arrow_rads0.push_back(
+            4 / sqrt(2.0) * thickness * dot(dir, arrow_dir));
+        shape.arrow_rads1.push_back(
+            4 / sqrt(2.0) * thickness * dot(dir, arrow_dir));
       } else {
         auto p0_on_plane = intersect_plane(
             ray3f{camera_origin, p0 - camera_origin}, plane_point, plane_dir);
         auto p1_on_plane = intersect_plane(
             ray3f{camera_origin, p1 - camera_origin}, plane_point, plane_dir);
-        shape.arrow_dirs.push_back(normalize(p0_on_plane - p1_on_plane));
 
-        auto ap0_on_p = p0_on_plane + 6 * material.thickness / size.x * film.x /
+        auto arrow_dir  = normalize(p0_on_plane - p1_on_plane);
+        auto dir_camera = transform_direction(inverse(camera_frame), arrow_dir);
+        auto arrow_dir0 = transform_direction(camera_frame,
+            vec3f{dir_camera.x + dir_camera.y, dir_camera.y - dir_camera.x, 0});
+        auto arrow_dir1 = transform_direction(camera_frame,
+            vec3f{dir_camera.x - dir_camera.y, dir_camera.y + dir_camera.x, 0});
+
+        shape.arrow_dirs.push_back(arrow_dir);
+        shape.arrow_dirs0.push_back(arrow_dir0);
+        shape.arrow_dirs1.push_back(arrow_dir1);
+
+        auto ap0_on_p = p0_on_plane + 8 * material.thickness / size.x * film.x /
                                           2 *
                                           normalize(p1_on_plane - p0_on_plane);
-        auto ap1_on_p = p1_on_plane + 6 * material.thickness / size.x * film.x /
+        auto ap1_on_p = p1_on_plane + 8 * material.thickness / size.x * film.x /
                                           2 *
                                           normalize(p0_on_plane - p1_on_plane);
 
@@ -320,10 +342,12 @@ namespace yocto {
         auto adp0c = vec3f{ad0c.y, -ad0c.x, 0};
         auto adp1c = vec3f{ad1c.y, -ad1c.x, 0};
 
-        auto ar0_on_p = transform_point(camera_frame,
-            ap0c + 3 * material.thickness / size.x * film.x / 2 * adp0c);
-        auto ar1_on_p = transform_point(camera_frame,
-            ap1c + 3 * material.thickness / size.x * film.x / 2 * adp1c);
+        auto ar0_on_p = transform_point(
+            camera_frame, ap0c + 4 / sqrt(2.0) * material.thickness / size.x *
+                                     film.x / 2 * adp0c);
+        auto ar1_on_p = transform_point(
+            camera_frame, ap1c + 4 / sqrt(2.0) * material.thickness / size.x *
+                                     film.x / 2 * adp1c);
 
         auto rr0 = ray3f{camera_origin, ar0_on_p - camera_origin};
         auto ar0 = intersect_plane(rr0, ap0, plane_dir);
@@ -347,11 +371,10 @@ namespace yocto {
     auto  camera_distance = length(camera.from - camera.to);
     auto  plane_point     = transform_point(
              camera_frame, {0, 0, camera.lens / size.x * scale});
-    auto plane_dir = transform_normal(
-        camera_frame, {0, 0, camera.lens / size.x * scale});
-    auto aspect = size.x / size.y;
-    auto film   = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
-                              : vec2f{camera.film * aspect, camera.film};
+    auto plane_dir = transform_normal(camera_frame, {0, 0, 1});
+    auto aspect    = size.x / size.y;
+    auto film      = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
+                                 : vec2f{camera.film * aspect, camera.film};
 
     auto shapes = trace_shapes{};
 

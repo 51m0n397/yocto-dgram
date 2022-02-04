@@ -64,6 +64,8 @@ namespace yocto {
     vector<line_ends> ends          = {};
     vector<float>     radii         = {};
     vector<vec3f>     arrow_dirs    = {};
+    vector<vec3f>     arrow_dirs0   = {};
+    vector<vec3f>     arrow_dirs1   = {};
     vector<float>     arrow_rads0   = {};
     vector<float>     arrow_rads1   = {};
     vector<vec3f>     arrow_points0 = {};
