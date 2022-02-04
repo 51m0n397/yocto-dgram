@@ -84,7 +84,7 @@ void run_render(const render_params& params_) {
   auto dgram = load_dgram(params.scene);
   print_info("load diagram: {}", elapsed_formatted(timer));
 
-  if (params.resolution == 0) params.resolution = (int)round(dgram.size.x);
+  if (params.resolution == 0) params.resolution = 2 * (int)round(dgram.size.x);
 
   auto aspect = dgram.size.x / dgram.size.y;
   auto width  = params.resolution;
@@ -188,7 +188,7 @@ void run_view(const view_params& params_) {
   params.antialiasing = params_.antialiasing;
 
   auto res = params_.resolution;
-  if (res == 0) res = (int)round(dgram.size.x);
+  if (res == 0) res = 2 * (int)round(dgram.size.x);
 
   auto aspect = dgram.size.x / dgram.size.y;
   auto width  = res;
@@ -225,7 +225,7 @@ void run_text(const text_params& params_) {
   print_info("load diagram: {}", elapsed_formatted(timer));
 
   auto resolution = params_.resolution;
-  if (resolution == 0) resolution = (int)round(dgram.size.x);
+  if (resolution == 0) resolution = 2 * (int)round(dgram.size.x);
 
   save_texts(params_.scene, dgram, resolution);
 }
