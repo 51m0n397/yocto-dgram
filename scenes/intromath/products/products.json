@@ -979,7 +979,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{u} \\cross \\mathbf{v}$!!t",
+              "unprocessed": "$\\mathbf{u} \\times \\mathbf{v}$!!t",
               "spans": [
                 {},
                 {
@@ -1035,7 +1035,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$|\\mathbf{u} \\cross \\mathbf{v}| = |\\mathbf{u}| |\\mathbf{v}| \\sin \\theta$",
+              "unprocessed": "$|\\mathbf{u} \\times \\mathbf{v}| = |\\mathbf{u}| |\\mathbf{v}| \\sin \\theta$",
               "spans": [
                 {},
                 {

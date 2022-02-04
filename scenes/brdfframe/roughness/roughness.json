@@ -1243,7 +1243,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{i} = \\mathrm{reflect}(\\mathbf{o}, \\mathbf{h}) with \\mathbf{h} = \\mathrm{random}(\\mathbf{n}, r)$!!br",
+              "unprocessed": "$\\mathbf{i} = \\mathrm{reflect}(\\mathbf{o}, \\mathbf{h})\\:with\\:\\mathbf{h} = \\mathrm{random}(\\mathbf{n}, r)$!!br",
               "spans": [
                 {},
                 {

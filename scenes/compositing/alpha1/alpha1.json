@@ -864,7 +864,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$A \\mathrm{over} B$!!t",
+              "unprocessed": "$A\\:\\mathrm{over}\\:B$!!t",
               "spans": [
                 {},
                 {

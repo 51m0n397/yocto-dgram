@@ -1026,7 +1026,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\alpha_A \\cross$",
+              "unprocessed": "$\\alpha_A \\times$",
               "spans": [
                 {},
                 {
@@ -1160,7 +1160,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$(1 - \\alpha_B) \\cross$",
+              "unprocessed": "$(1 - \\alpha_B) \\times$",
               "spans": [
                 {},
                 {
@@ -1313,7 +1313,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$A \\mathrm{over} B \\mathrm{over} C$!!t",
+              "unprocessed": "$A \\mathrm{over}\\:B\\:\\mathrm{over}\\:C$!!t",
               "spans": [
                 {},
                 {
