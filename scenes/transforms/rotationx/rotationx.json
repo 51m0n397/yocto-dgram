@@ -407,6 +407,7 @@
           ],
           "labels": [
             {
+              "name": "formula",
               "unprocessed": "$\\mathbf{F}(\\mathbf{x}, \\cos(\\theta) \\mathbf{y} + \\sin(\\theta) \\mathbf{z}, \\cos(\\theta) \\mathbf{y} + \\sin(\\theta) \\mathbf{z}, \\mathbf{o})$!!t",
               "spans": [
                 {},
