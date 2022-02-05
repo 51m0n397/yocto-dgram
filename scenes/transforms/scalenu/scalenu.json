@@ -107,7 +107,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -119,6 +119,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -145,7 +156,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -157,6 +168,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -499,7 +521,7 @@
               1.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
@@ -511,6 +533,17 @@
             [
               4,
               5
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }
@@ -703,7 +736,7 @@
               1.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
@@ -715,6 +748,17 @@
             [
               4,
               5
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }

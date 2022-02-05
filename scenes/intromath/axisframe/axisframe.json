@@ -113,7 +113,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -125,6 +125,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -151,7 +162,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -163,6 +174,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -179,10 +201,15 @@
               -0.2357022762298584
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }
@@ -368,7 +395,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -380,6 +407,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -406,7 +444,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -418,6 +456,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -434,10 +483,15 @@
               -0.3857022821903229
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -692,7 +746,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -704,6 +758,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -730,7 +795,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -742,6 +807,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -899,6 +975,57 @@
               16
             ]
           ]
+        ,
+"ends": [
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ]
+          ]
         },
         {
           "positions": [
@@ -913,10 +1040,15 @@
               -0.2357022762298584
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }
@@ -1163,7 +1295,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -1175,6 +1307,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -1201,7 +1344,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -1213,6 +1356,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -1257,6 +1411,12 @@
             [
               0,
               1
+            ]
+          ]
+        ,
+"ends": [
+            [
+              "cap", "cap"
             ]
           ]
         }

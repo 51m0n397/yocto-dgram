@@ -341,6 +341,12 @@
               1
             ]
           ]
+        ,
+"ends": [
+            [
+              "cap", "cap"
+            ]
+          ]
         },
         {
           "positions": [
@@ -845,6 +851,45 @@
             [
               22,
               23
+            ]
+          ]
+        ,
+"ends": [
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
             ]
           ]
         },
@@ -2248,7 +2293,7 @@
               -2.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
@@ -2268,6 +2313,23 @@
             [
               8,
               9
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }

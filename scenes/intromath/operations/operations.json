@@ -93,10 +93,15 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -113,10 +118,15 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -133,10 +143,15 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }
@@ -366,10 +381,15 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -386,10 +406,15 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }
@@ -569,10 +594,15 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -589,10 +619,15 @@
               -0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }
@@ -790,10 +825,15 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -810,10 +850,15 @@
               -0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -830,10 +875,15 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }

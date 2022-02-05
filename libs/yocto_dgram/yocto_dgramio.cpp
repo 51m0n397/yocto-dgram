@@ -195,6 +195,17 @@ namespace yocto {
     nlohmann::from_json(json, (array<float, 16>&)value);
   }
 
+  inline void from_json(const json_value& json, line_ends& value) {
+    nlohmann::from_json(json, (array<line_end, 2>&)value);
+  }
+
+  NLOHMANN_JSON_SERIALIZE_ENUM(
+      line_end, {
+                    {line_end::cap, "cap"},
+                    {line_end::stealth_arrow, "stealth_arrow"},
+                    {line_end::triangle_arrow, "triangle_arrow"},
+                })
+
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
@@ -288,19 +299,8 @@ namespace yocto {
               get_opt(jshape, "cull", shape.cull);
               get_opt(jshape, "boundary", shape.boundary);
 
-              auto lines = vector<vec2i>{};
-              get_opt(jshape, "lines", lines);
-              for (auto idx = 0; idx < lines.size(); idx++)
-                shape.ends.push_back(line_ends{line_end::cap, line_end::cap});
-
-              auto arrows = vector<vec2i>{};
-              get_opt(jshape, "arrows", arrows);
-              for (auto idx = 0; idx < arrows.size(); idx++)
-                shape.ends.push_back(
-                    line_ends{line_end::cap, line_end::stealth_arrow});
-
-              lines.insert(lines.end(), arrows.begin(), arrows.end());
-              shape.lines = lines;
+              get_opt(jshape, "lines", shape.lines);
+              get_opt(jshape, "ends", shape.ends);
 
               get_opt(jshape, "cclips", shape.cclips);
             }

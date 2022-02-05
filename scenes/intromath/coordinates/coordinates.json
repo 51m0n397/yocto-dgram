@@ -126,7 +126,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -138,6 +138,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -270,6 +281,36 @@
             [
               16,
               17
+            ]
+          ]
+        ,
+"ends": [
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
+            ],
+            [
+              "cap", "cap"
             ]
           ]
         },

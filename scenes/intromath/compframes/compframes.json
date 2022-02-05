@@ -166,7 +166,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -178,6 +178,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },
@@ -204,7 +215,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               3,
               0
@@ -216,6 +227,17 @@
             [
               3,
               2
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         },

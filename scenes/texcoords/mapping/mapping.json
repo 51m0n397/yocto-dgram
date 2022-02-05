@@ -4991,7 +4991,7 @@
               0.0
             ]
           ],
-          "arrows": [
+          "lines": [
             [
               0,
               1
@@ -4999,6 +4999,14 @@
             [
               2,
               3
+            ]
+          ],
+"ends": [
+            [
+              "cap", "stealth_arrow"
+            ],
+            [
+              "cap", "stealth_arrow"
             ]
           ]
         }
