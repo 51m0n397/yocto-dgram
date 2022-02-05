@@ -141,9 +141,10 @@
               1
             ]
           ],
-"ends": [
+          "ends": [
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ]
           ]
         },
@@ -165,11 +166,11 @@
               0,
               1
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },

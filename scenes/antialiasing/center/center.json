@@ -608,44 +608,55 @@
               22,
               23
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },

@@ -5001,12 +5001,14 @@
               3
             ]
           ],
-"ends": [
+          "ends": [
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ]
           ]
         }

@@ -109,17 +109,19 @@
               4,
               5
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },
@@ -169,17 +171,19 @@
               4,
               5
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },

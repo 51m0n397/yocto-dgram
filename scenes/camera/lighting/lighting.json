@@ -1088,56 +1088,71 @@
               30,
               31
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },
@@ -1369,56 +1384,71 @@
               30,
               31
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },
@@ -1650,56 +1680,71 @@
               30,
               31
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },
@@ -2900,21 +2945,26 @@
               9
             ]
           ],
-"ends": [
+          "ends": [
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ]
           ]
         }

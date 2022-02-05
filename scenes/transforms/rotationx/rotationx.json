@@ -28,10 +28,18 @@
         },
         {
           "frame": [
-            0.0, 0.0, 0.5,
-            0.0, 0.5, 0.0,
-            0.5, 0.0, 0.0,
-            0.0, 0.0, 0.0
+            0.0,
+            0.0,
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
           ],
           "shape": 1,
           "labels": 1,
@@ -140,15 +148,18 @@
               2
             ]
           ],
-"ends": [
+          "ends": [
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ]
           ]
         },
@@ -305,56 +316,71 @@
               15,
               16
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },
@@ -395,15 +421,18 @@
               2
             ]
           ],
-"ends": [
+          "ends": [
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ]
           ]
         },
@@ -841,15 +870,18 @@
               5
             ]
           ],
-"ends": [
+          "ends": [
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ]
           ]
         }
@@ -1056,15 +1088,18 @@
               5
             ]
           ],
-"ends": [
+          "ends": [
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ]
           ]
         }

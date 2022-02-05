@@ -140,15 +140,18 @@
               2
             ]
           ],
-"ends": [
+          "ends": [
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ],
             [
-              "cap", "stealth_arrow"
+              "cap",
+              "stealth_arrow"
             ]
           ]
         },
@@ -282,35 +285,43 @@
               16,
               17
             ]
-          ]
-        ,
-"ends": [
+          ],
+          "ends": [
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ],
             [
-              "cap", "cap"
+              "cap",
+              "cap"
             ]
           ]
         },
