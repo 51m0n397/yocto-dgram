@@ -449,6 +449,18 @@ namespace yocto {
         draw_gui_slider("thickness", material.thickness, 0.0f, 100.0f);
         one_edited += ImGui::IsItemDeactivated();
 
+        draw_gui_slider("dash_period", material.dash_period, 0.0f, 100.0f);
+        one_edited += ImGui::IsItemDeactivated();
+
+        draw_gui_slider("dash_phase", material.dash_phase, 0.0f, 100.0f);
+        one_edited += ImGui::IsItemDeactivated();
+
+        draw_gui_slider("dash_on", material.dash_on, 0.0f, 100.0f);
+        one_edited += ImGui::IsItemDeactivated();
+
+        one_edited += draw_gui_combobox(
+            "dashed", (int&)material.dashed, dashed_line_names);
+
         end_gui_header();
       }
 

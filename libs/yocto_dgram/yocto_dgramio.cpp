@@ -206,6 +206,13 @@ namespace yocto {
                     {line_end::triangle_arrow, "triangle_arrow"},
                 })
 
+  NLOHMANN_JSON_SERIALIZE_ENUM(
+      dashed_line, {
+                       {dashed_line::always, "always"},
+                       {dashed_line::never, "never"},
+                       {dashed_line::transparency, "transparency"},
+                   })
+
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
@@ -277,7 +284,14 @@ namespace yocto {
               material.fill = srgb_to_rgb(material.fill);
               get_opt(jmaterial, "stroke", material.stroke);
               material.stroke = srgb_to_rgb(material.stroke);
+
               get_opt(jmaterial, "thickness", material.thickness);
+
+              get_opt(jmaterial, "dash_period", material.dash_period);
+              get_opt(jmaterial, "dash_phase", material.dash_phase);
+              get_opt(jmaterial, "dash_on", material.dash_on);
+
+              get_opt(jmaterial, "dashed", material.dashed);
             }
           }
 

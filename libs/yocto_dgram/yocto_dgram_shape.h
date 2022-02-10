@@ -60,16 +60,18 @@ namespace yocto {
     vector<vec4i> quads     = {};
     vector<vec2i> borders   = {};
 
-    vector<vec4f>     fills         = {};
-    vector<line_ends> ends          = {};
-    vector<float>     radii         = {};
-    vector<vec3f>     arrow_dirs    = {};
-    vector<vec3f>     arrow_dirs0   = {};
-    vector<vec3f>     arrow_dirs1   = {};
-    vector<float>     arrow_rads0   = {};
-    vector<float>     arrow_rads1   = {};
-    vector<vec3f>     arrow_points0 = {};
-    vector<vec3f>     arrow_points1 = {};
+    vector<vec4f>     fills          = {};
+    vector<line_ends> ends           = {};
+    vector<float>     radii          = {};
+    vector<vec3f>     arrow_dirs     = {};
+    vector<vec3f>     arrow_dirs0    = {};
+    vector<vec3f>     arrow_dirs1    = {};
+    vector<float>     arrow_rads0    = {};
+    vector<float>     arrow_rads1    = {};
+    vector<vec3f>     arrow_points0  = {};
+    vector<vec3f>     arrow_points1  = {};
+    vector<float>     line_lengths   = {};
+    vector<float>     border_lengths = {};
 
     vector<vec3f> cclip_positions = {};
     vector<vec3i> cclip_indices   = {};
@@ -103,6 +105,10 @@ namespace yocto {
 
   vec4f eval_material(const trace_shape& shape, const dgram_material& material,
       const shape_element& element, const vec2f& uv);
+
+  bool eval_dashes(const vec3f& p, const trace_shape& shape,
+      const dgram_material& material, const shape_element& element,
+      const dgram_camera& camera, const vec2f& size, const float& scale);
 
 }  // namespace yocto
 

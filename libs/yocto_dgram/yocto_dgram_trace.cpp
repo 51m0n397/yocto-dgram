@@ -90,6 +90,25 @@ namespace yocto {
         shape, material, intersection.element, intersection.uv);
   }
 
+  static bool eval_dashes(const dgram_scene& scene, const trace_shapes& shapes,
+      const bvh_intersection& intersection, const dgram_trace_params& params,
+      const bool first) {
+    auto& shape    = shapes.shapes[intersection.shape];
+    auto& camera   = scene.cameras[params.camera];
+    auto& material = scene.materials[shape.material];
+
+    if (!intersection.hit_arrow &&
+        (material.dashed == dashed_line::always ||
+            (material.dashed == dashed_line::transparency && !first)) &&
+        (intersection.element.primitive == primitive_type::line ||
+            intersection.element.primitive == primitive_type::border)) {
+      return eval_dashes(intersection.position, shape, material,
+          intersection.element, camera, params.size, params.scale);
+    }
+
+    return true;
+  }
+
   static ray3f sample_camera(const dgram_camera& camera, const vec2i& ij,
       const vec2i& image_size, const vec2f& puv,
       const dgram_trace_params& params) {
@@ -125,7 +144,7 @@ namespace yocto {
 
   static vec4f trace_color(const dgram_scene& scene, const trace_shapes& shapes,
       const dgram_scene_bvh& bvh, const ray3f& ray, rng_state& rng,
-      const dgram_trace_params& params) {
+      const dgram_trace_params& params, const bool first) {
     auto radiance = vec4f{0, 0, 0, 0};
 
     auto intersections = intersect_bvh(bvh, shapes, ray);
@@ -135,13 +154,14 @@ namespace yocto {
     for (auto& intersection : intersections.intersections) {
       hit        = true;
       auto color = eval_material(scene, shapes, intersection);
+      color.w *= eval_dashes(scene, shapes, intersection, params, first);
 
       radiance = composite(color, radiance);
     }
 
     if (hit && radiance.w < 1) {
       auto back_color = trace_color(scene, shapes, bvh,
-          {intersections.intersections[0].position, ray.d}, rng, params);
+          {intersections.intersections[0].position, ray.d}, rng, params, false);
       return composite(radiance, back_color);
     }
 
@@ -150,7 +170,7 @@ namespace yocto {
 
   static vec4f trace_normal(const dgram_scene& scene,
       const trace_shapes& shapes, const dgram_scene_bvh& bvh, const ray3f& ray,
-      rng_state& rng, const dgram_trace_params& params) {
+      rng_state& rng, const dgram_trace_params& params, const bool first) {
     auto intersections = intersect_bvh(bvh, shapes, ray);
 
     if (!intersections.intersections.empty())
@@ -161,7 +181,7 @@ namespace yocto {
 
   static vec4f trace_uv(const dgram_scene& scene, const trace_shapes& shapes,
       const dgram_scene_bvh& bvh, const ray3f& ray, rng_state& rng,
-      const dgram_trace_params& params) {
+      const dgram_trace_params& params, const bool first) {
     auto intersections = intersect_bvh(bvh, shapes, ray);
 
     if (!intersections.intersections.empty()) {
@@ -174,7 +194,7 @@ namespace yocto {
 
   static vec4f trace_eyelight(const dgram_scene& scene,
       const trace_shapes& shapes, const dgram_scene_bvh& bvh, const ray3f& ray,
-      rng_state& rng, const dgram_trace_params& params) {
+      rng_state& rng, const dgram_trace_params& params, const bool first) {
     auto radiance = vec4f{0, 0, 0, 0};
 
     auto intersections = intersect_bvh(bvh, shapes, ray);
@@ -188,13 +208,14 @@ namespace yocto {
       color.x        = rgb_color.x;
       color.y        = rgb_color.y;
       color.z        = rgb_color.z;
+      color.w *= eval_dashes(scene, shapes, intersection, params, first);
 
       radiance = composite(color, radiance);
     }
 
     if (hit && radiance.w < 1) {
       auto back_color = trace_eyelight(scene, shapes, bvh,
-          {intersections.intersections[0].position, ray.d}, rng, params);
+          {intersections.intersections[0].position, ray.d}, rng, params, false);
       return composite(radiance, back_color);
     }
 
@@ -203,7 +224,7 @@ namespace yocto {
 
   using sampler_func = vec4f (*)(const dgram_scene& scene,
       const trace_shapes& shapes, const dgram_scene_bvh& bvh, const ray3f& ray,
-      rng_state& rng, const dgram_trace_params& params);
+      rng_state& rng, const dgram_trace_params& params, const bool first);
   static sampler_func get_trace_sampler_func(const dgram_trace_params& params) {
     switch (params.sampler) {
       case dgram_sampler_type::color: return trace_color;
@@ -241,9 +262,10 @@ namespace yocto {
 
     auto ray = sample_camera(
         camera, {ii, ij}, {state.width, state.height}, puv, params);
-    auto radiance = sampler(scene, shapes, bvh, ray, state.rngs[idx], params);
-    auto text     = trace_text(texts, ray, state.rngs[idx], params);
-    radiance      = composite(text, radiance);
+    auto radiance = sampler(
+        scene, shapes, bvh, ray, state.rngs[idx], params, true);
+    auto text = trace_text(texts, ray, state.rngs[idx], params);
+    radiance  = composite(text, radiance);
     if (!isfinite(radiance)) radiance = {0, 0, 0};
     state.image[idx] += radiance;
   }

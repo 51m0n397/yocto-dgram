@@ -333,10 +333,11 @@ namespace yocto {
     node_stack[node_cur++] = 0;
 
     // shared variables
-    vec2f uv   = {0, 0};
-    float dist = 0;
-    vec3f pos  = {0, 0, 0};
-    vec3f norm = {0, 0, 0};
+    vec2f uv        = {0, 0};
+    float dist      = 0;
+    vec3f pos       = {0, 0, 0};
+    vec3f norm      = {0, 0, 0};
+    bool  hit_arrow = false;
 
     // prepare ray for fast queries
     auto ray_dinv  = vec3f{1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z};
@@ -400,19 +401,18 @@ namespace yocto {
             if (intersect_line(ray, shape.positions[l.x], shape.positions[l.y],
                     shape.radii[l.x], shape.radii[l.y], end.a, end.b, arrow_dir,
                     arrow_dir0, arrow_dir1, arrow_point0, arrow_point1,
-                    arrow_rad0, arrow_rad1, uv, dist, pos, norm)) {
+                    arrow_rad0, arrow_rad1, uv, dist, pos, norm, hit_arrow)) {
               if (dist < ray.tmax - ray_eps)
                 intersections.intersections.clear();
               ray.tmax = dist;
 
-              auto intersection = bvh_intersection{
-                  .shape    = shape_id,
-                  .element  = shape_element{primitive_type::line, i},
-                  .uv       = uv,
-                  .distance = dist,
-                  .position = pos,
-                  .normal   = norm,
-              };
+              auto intersection = bvh_intersection{.shape = shape_id,
+                  .element   = shape_element{primitive_type::line, i},
+                  .uv        = uv,
+                  .distance  = dist,
+                  .position  = pos,
+                  .normal    = norm,
+                  .hit_arrow = hit_arrow};
               intersections.intersections.push_back(intersection);
             }
           } else if (i -= shape.lines.size(), size += shape.triangles.size();

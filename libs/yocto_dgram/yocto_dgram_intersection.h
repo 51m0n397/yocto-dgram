@@ -67,7 +67,8 @@ namespace yocto {
   inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
       float r0, float r1, line_end e0, line_end e1, const vec3f& ad,
       const vec3f& ad0, const vec3f& ad1, const vec3f& ap0, const vec3f& ap1,
-      float ar0, float ar1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
+      float ar0, float ar1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm,
+      bool& hit_arrow);
   inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
       float r0, float r1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
 
@@ -523,7 +524,8 @@ namespace yocto {
   inline bool intersect_line(const ray3f& ray, const vec3f& p0, const vec3f& p1,
       float r0, float r1, line_end e0, line_end e1, const vec3f& ad,
       const vec3f& ad0, const vec3f& ad1, const vec3f& ap0, const vec3f& ap1,
-      float ar0, float ar1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+      float ar0, float ar1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm,
+      bool& hit_arrow) {
     // TODO(simone): cleanup
 
     if (p0 == p1) return false;
@@ -576,11 +578,12 @@ namespace yocto {
       rb = ra;
     }
 
-    auto hit = false;
-    auto t   = ray.tmax;
-    auto p   = vec3f{0, 0, 0};
-    auto n   = vec3f{0, 0, 0};
-    auto tuv = vec2f{0, 0};
+    hit_arrow = false;
+    auto hit  = false;
+    auto t    = ray.tmax;
+    auto p    = vec3f{0, 0, 0};
+    auto n    = vec3f{0, 0, 0};
+    auto tuv  = vec2f{0, 0};
 
     auto rac = ra;
     auto rbc = rb;
@@ -668,7 +671,8 @@ namespace yocto {
           } else {
             tuv = {tuv.x, (tuv.y * laa) / (lb + lc + la)};
           }
-          hit = true;
+          hit       = true;
+          hit_arrow = true;
         }
       }
     }
@@ -681,7 +685,8 @@ namespace yocto {
         } else {
           tuv = {tuv.x, (la + lc + 2 * (tuv.y - 0.5f) * lb) / (lb + lc + la)};
         }
-        hit = true;
+        hit       = true;
+        hit_arrow = false;
       }
     } else {
       if ((eb == line_end::stealth_arrow &&
@@ -697,7 +702,8 @@ namespace yocto {
           } else {
             tuv = {tuv.x, (la + lc - (1 - tuv.y) * lba) / (lb + lc + la)};
           }
-          hit = true;
+          hit       = true;
+          hit_arrow = true;
         }
       }
     }

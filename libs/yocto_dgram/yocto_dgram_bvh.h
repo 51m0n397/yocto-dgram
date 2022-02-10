@@ -80,12 +80,13 @@ namespace yocto {
 namespace yocto {
 
   struct bvh_intersection {
-    int           shape    = -1;
-    shape_element element  = {};
-    vec2f         uv       = {0, 0};
-    float         distance = 0;
-    vec3f         position = {0, 0, 0};
-    vec3f         normal   = {0, 0, 0};
+    int           shape     = -1;
+    shape_element element   = {};
+    vec2f         uv        = {0, 0};
+    float         distance  = 0;
+    vec3f         position  = {0, 0, 0};
+    vec3f         normal    = {0, 0, 0};
+    bool          hit_arrow = false;
 
     bool operator<(const bvh_intersection& x) const {
       if (shape != x.shape) return shape < x.shape;

@@ -53,6 +53,10 @@ namespace yocto {
 
   enum class line_end { cap, stealth_arrow, triangle_arrow };
 
+  enum class dashed_line { always, never, transparency };
+  inline const auto dashed_line_names = vector<string>{
+      "always", "never", "transparency"};
+
   struct line_ends {
     line_end a = line_end::cap;
     line_end b = line_end::cap;
@@ -79,6 +83,12 @@ namespace yocto {
     vec4f stroke = {0, 0, 0, 1};
 
     float thickness = 2;
+
+    float dash_period = 20.0f;
+    float dash_phase  = 5.0f;
+    float dash_on     = 12.0f;
+
+    dashed_line dashed = dashed_line::transparency;
   };
 
   struct dgram_shape {
