@@ -213,6 +213,12 @@ namespace yocto {
                        {dashed_line::transparency, "transparency"},
                    })
 
+  NLOHMANN_JSON_SERIALIZE_ENUM(
+      dash_cap_type, {
+                         {dash_cap_type::round, "round"},
+                         {dash_cap_type::square, "square"},
+                     })
+
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
@@ -290,6 +296,7 @@ namespace yocto {
               get_opt(jmaterial, "dash_period", material.dash_period);
               get_opt(jmaterial, "dash_phase", material.dash_phase);
               get_opt(jmaterial, "dash_on", material.dash_on);
+              get_opt(jmaterial, "dash_cap", material.dash_cap);
 
               get_opt(jmaterial, "dashed", material.dashed);
             }

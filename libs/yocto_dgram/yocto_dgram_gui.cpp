@@ -459,6 +459,9 @@ namespace yocto {
         one_edited += ImGui::IsItemDeactivated();
 
         one_edited += draw_gui_combobox(
+            "dash_cap", (int&)material.dash_cap, dash_cap_type_names);
+
+        one_edited += draw_gui_combobox(
             "dashed", (int&)material.dashed, dashed_line_names);
 
         end_gui_header();

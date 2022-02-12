@@ -57,6 +57,9 @@ namespace yocto {
   inline const auto dashed_line_names = vector<string>{
       "always", "never", "transparency"};
 
+  enum class dash_cap_type { round, square };
+  inline const auto dash_cap_type_names = vector<string>{"round", "square"};
+
   struct line_ends {
     line_end a = line_end::cap;
     line_end b = line_end::cap;
@@ -84,9 +87,10 @@ namespace yocto {
 
     float thickness = 2;
 
-    float dash_period = 20.0f;
-    float dash_phase  = 5.0f;
-    float dash_on     = 12.0f;
+    float         dash_period = 20.0f;
+    float         dash_phase  = 5.0f;
+    float         dash_on     = 12.0f;
+    dash_cap_type dash_cap    = dash_cap_type::square;
 
     dashed_line dashed = dashed_line::transparency;
   };

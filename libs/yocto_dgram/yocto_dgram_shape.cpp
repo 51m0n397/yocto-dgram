@@ -511,7 +511,8 @@ namespace yocto {
     auto film      = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
                                  : vec2f{camera.film * aspect, camera.film};
 
-    auto dist = 0.0f;
+    auto u = 0.0f;
+    auto v = 0.0f;
 
     auto& lines   = element.primitive == primitive_type::line ? shape.lines
                                                               : shape.borders;
@@ -523,7 +524,7 @@ namespace yocto {
     auto& p1 = shape.positions[lines[element.index].y];
 
     for (auto idx = 0; idx < element.index; idx++) {
-      dist += lengths[idx];
+      u += lengths[idx];
     }
 
     if (camera.orthographic) {
@@ -544,8 +545,11 @@ namespace yocto {
       auto p_sign = sign(
           dot(p1_on_plane - p0_on_plane, p_on_line - p0_on_plane));
 
-      dist += p_sign * distance(p_on_line, p0_on_plane);
-      dist *= scale * camera.lens / (camera_distance * film.x);
+      u += p_sign * distance(p_on_line, p0_on_plane);
+      u *= scale * camera.lens / (camera_distance * film.x);
+
+      v = distance(p_on_line, p_on_plane);
+      v *= scale * camera.lens / (camera_distance * film.x);
     } else {
       auto p_on_plane = intersect_plane(
           ray3f{camera_origin, p - camera_origin}, plane_point, plane_dir);
@@ -560,12 +564,33 @@ namespace yocto {
       auto p_sign = sign(
           dot(p1_on_plane - p0_on_plane, p_on_line - p0_on_plane));
 
-      dist += p_sign * distance(p_on_line, p0_on_plane);
-      dist *= size.x / film.x;
+      u += p_sign * distance(p_on_line, p0_on_plane);
+      u *= size.x / film.x;
+
+      v = distance(p_on_line, p_on_plane);
+      v *= size.x / film.x;
     }
 
-    return fmod(dist + material.dash_phase, material.dash_period) <
-           material.dash_on;
+    auto r  = material.thickness / 2;
+    auto on = material.dash_on;
+    if (material.dash_cap == dash_cap_type::round) on = max(on, 2 * r);
+
+    if (material.dash_period < on) return true;
+
+    auto fm = fmod(u + material.dash_phase, material.dash_period);
+
+    if (material.dash_cap == dash_cap_type::square) return fm < on;
+
+    if (fm < r) {
+      auto x = r - fm;
+      auto y = v;
+      return pow(x, 2) + pow(y, 2) < pow(r, 2);
+    } else if (fm < on && fm > on - r) {
+      auto x = r - on + fm;
+      auto y = v;
+      return pow(x, 2) + pow(y, 2) < pow(r, 2);
+    } else
+      return fm < on;
   }
 
 }  // namespace yocto
