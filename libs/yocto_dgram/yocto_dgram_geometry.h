@@ -26,8 +26,8 @@
 // SOFTWARE.
 //
 
-#ifndef _YOCTO_DGRAM_INTERSECTIONS_H_
-#define _YOCTO_DGRAM_INTERSECTIONS_H_
+#ifndef _YOCTO_DGRAM_GEOMETRY_H_
+#define _YOCTO_DGRAM_GEOMETRY_H_
 
 // -----------------------------------------------------------------------------
 // INCLUDES
@@ -42,6 +42,34 @@ namespace yocto {
 
   // using directives
 
+}  // namespace yocto
+
+// -----------------------------------------------------------------------------
+// GEOMETRY UTILITIES
+// -----------------------------------------------------------------------------
+namespace yocto {
+  // Interpolates values over a line from p0 to p1 parameterized from a to b by
+  // u using perspective correct interpolation. The coordinates p0 and p1 must
+  // be in camera coordinates.
+  template <typename T>
+  inline T perspective_line_interpolation(
+      const vec3f& p0, const vec3f& p1, const T& a, const T& b, float u);
+
+  // Interpolates position over a line from p0 to p1 parameterized from p0 to p1
+  // by u using perspective correct interpolation. The coordinates p0 and p1
+  // must be in camera coordinates.
+  inline vec3f perspective_line_point(
+      const vec3f& p0, const vec3f& p1, float u);
+
+  // Computes screen-space position using triangles similarity, d is the
+  // distance of the image plane from the camera. p must be in camera
+  // coordinates.
+  inline vec3f screen_space_point(const vec3f& p, const float d);
+
+  // Computes world-space position from screen-space using triangles similarity,
+  // d is the distance of the depth of the result point. p must be in camera
+  // coordinates.
+  inline vec3f world_space_point(const vec3f& p, const float d);
 }  // namespace yocto
 
 // -----------------------------------------------------------------------------
@@ -91,6 +119,31 @@ namespace yocto {
 //
 //
 // -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// GEOMETRY UTILITIES
+// -----------------------------------------------------------------------------
+namespace yocto {
+  template <typename T>
+  inline T perspective_line_interpolation(
+      const vec3f& p0, const vec3f& p1, const T& a, const T& b, float u) {
+    auto z = 1 / (1 / p0.z + u * (1 / p1.z - 1 / p0.z));
+    return z * (a / p0.z + u * (b / p1.z - a / p0.z));
+  }
+
+  inline vec3f perspective_line_point(
+      const vec3f& p0, const vec3f& p1, float u) {
+    return perspective_line_interpolation(p0, p1, p0, p1, u);
+  }
+
+  inline vec3f screen_space_point(const vec3f& p, const float d) {
+    return vec3f{p.x / p.z * d, p.y / p.z * d, d};
+  }
+
+  inline vec3f world_space_point(const vec3f& p, const float d) {
+    return vec3f{p.x / p.z * d, p.y / p.z * d, d};
+  }
+}  // namespace yocto
 
 // -----------------------------------------------------------------------------
 // BOUNDS
@@ -473,37 +526,6 @@ namespace yocto {
     uv   = {u, v};
     dist = t;
     pos  = p;
-    norm = n;
-    return true;
-  }
-
-  inline bool intersect_disk(const ray3f& ray, const vec3f& p, float r1,
-      float r2, const vec3f& n, const frame3f& frame, const int sign, vec2f& uv,
-      float& dist, vec3f& pos, vec3f& norm) {
-    auto o = ray.o - p;
-
-    auto den = dot(ray.d, n);
-    if (den == 0) return false;
-
-    auto t = -dot(n, o) / den;
-
-    auto q  = o + ray.d * t;
-    auto q2 = sqrt(dot(q, q));
-    if (q2 <= r1 || q2 >= r2) return false;
-
-    if (t < ray.tmin || t > dist) return false;
-
-    auto d = normalize(ray.o + ray.d * t - p);
-
-    auto tn = transform_normal(frame, d);
-    auto u  = (pif - atan2(tn.y, tn.x)) / (2 * pif);
-    auto v  = (q2 - r1) / (r2 - r1);
-    if (sign < 0) v = 1 - v;
-
-    // intersection occurred: set params and exit
-    uv   = {u, v};
-    dist = t;
-    pos  = ray.o + t * ray.d;
     norm = n;
     return true;
   }

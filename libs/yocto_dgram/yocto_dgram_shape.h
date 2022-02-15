@@ -60,18 +60,18 @@ namespace yocto {
     vector<vec4i> quads     = {};
     vector<vec2i> borders   = {};
 
-    vector<vec4f>     fills          = {};
-    vector<line_ends> ends           = {};
-    vector<float>     radii          = {};
-    vector<vec3f>     arrow_dirs     = {};
-    vector<vec3f>     arrow_dirs0    = {};
-    vector<vec3f>     arrow_dirs1    = {};
-    vector<float>     arrow_rads0    = {};
-    vector<float>     arrow_rads1    = {};
-    vector<vec3f>     arrow_points0  = {};
-    vector<vec3f>     arrow_points1  = {};
-    vector<float>     line_lengths   = {};
-    vector<float>     border_lengths = {};
+    vector<vec4f>     fills                 = {};
+    vector<line_ends> ends                  = {};
+    vector<float>     radii                 = {};
+    vector<vec3f>     screen_line_dirs      = {};
+    vector<vec3f>     screen_line_dirs_45_0 = {};
+    vector<vec3f>     screen_line_dirs_45_1 = {};
+    vector<float>     arrow_radii0          = {};
+    vector<float>     arrow_radii1          = {};
+    vector<vec3f>     arrow_centers0        = {};
+    vector<vec3f>     arrow_centers1        = {};
+    vector<float>     line_lengths          = {};
+    vector<float>     border_lengths        = {};
 
     vector<vec3f> cclip_positions = {};
     vector<vec3i> cclip_indices   = {};

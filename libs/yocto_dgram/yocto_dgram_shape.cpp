@@ -38,6 +38,7 @@
 #include <future>
 
 #include "ext/earcut.hpp"
+#include "yocto_dgram_geometry.h"
 
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
@@ -91,18 +92,26 @@ namespace yocto {
 // -----------------------------------------------------------------------------
 namespace yocto {
 
-  static vec3f intersect_plane(
-      const ray3f& ray, const vec3f& p, const vec3f& n) {
-    auto o = ray.o - p;
+  // Computes ordered triangle mesh boundary
+  static vector<vec2i> get_boundary(vector<vec3i> triangles, int num_vertices) {
+    auto boundary   = vector<vec2i>{};
+    auto adiac      = face_adjacencies(triangles);
+    auto ord_bounds = ordered_boundaries(triangles, adiac, num_vertices);
+    if (!ord_bounds.empty()) {
+      auto ord_bound = ord_bounds[0];
+      for (auto idx = 0; idx < ord_bound.size() - 1; idx++) {
+        boundary.push_back(vec2i{ord_bound[idx], ord_bound[idx + 1]});
+      }
+      boundary.push_back(vec2i{ord_bound[ord_bound.size() - 1], ord_bound[0]});
+    }
 
-    auto den = dot(ray.d, n);
-    if (den == 0) return vec3f{0, 0, 0};
+    return boundary;
+  }
 
-    auto t = -dot(n, o) / den;
-
-    auto q = ray.o + ray.d * t;
-
-    return q;
+  // Computes ordered quad mesh boundary
+  static vector<vec2i> get_boundary(vector<vec4i> quads, int num_vertices) {
+    auto triangles = quads_to_triangles(quads);
+    return get_boundary(triangles, num_vertices);
   }
 
   static vector<vec3i> triangularize_cclips(const vector<vec3f>& cclips) {
@@ -126,14 +135,18 @@ namespace yocto {
   }
 
   trace_shape make_shape(const dgram_scene& scene, const dgram_object& object,
-      const frame3f& camera_frame, const vec3f& camera_origin,
-      const float camera_distance, const bool orthographic, const vec2f& film,
-      const float lens, const vec3f& plane_point, const vec3f& plane_dir,
+      const frame3f& camera_frame, const float camera_distance,
+      const bool orthographic, const vec2f& film, const float lens,
       const vec2f& size, const float scale) {
     auto shape = trace_shape{};
 
     auto& dshape   = scene.shapes[object.shape];
     auto& material = scene.materials[object.material];
+
+    auto thickness      = orthographic ? material.thickness * film.x *
+                                        camera_distance / (2 * lens * scale)
+                                       : material.thickness * film.x / (2 * size.x);
+    auto plane_distance = lens * scale / size.x;
 
     for (auto& pos : dshape.positions) {
       // position
@@ -142,51 +155,13 @@ namespace yocto {
 
       // radius
       if (orthographic)
-        shape.radii.push_back(
-            material.thickness * film.x * camera_distance / (scale * 2 * lens));
+        shape.radii.push_back(thickness);
       else {
-        auto thickness = material.thickness / size.x * film.x / 2;
+        // compuing world-space radius from screen-space radius using triangles
+        // similarities
+        auto camera_p = transform_point(inverse(camera_frame), p);
 
-        auto po = normalize(p - camera_origin);
-
-        auto p_on_plane = intersect_plane(
-            ray3f{camera_origin, po}, plane_point, plane_dir);
-
-        auto trans_p = transform_point(inverse(camera_frame), p_on_plane);
-
-        auto radius = 0.0f;
-
-        auto trasl_p        = trans_p + vec3f{0, thickness, 0};
-        auto traslated_p    = transform_point(camera_frame, trasl_p);
-        auto translated_dir = normalize(traslated_p - camera_origin);
-        auto new_p          = intersect_plane(
-                     ray3f{camera_origin, translated_dir}, p, plane_dir);
-        radius += distance(p, new_p);
-
-        trasl_p        = trans_p + vec3f{0, -thickness, 0};
-        traslated_p    = transform_point(camera_frame, trasl_p);
-        translated_dir = normalize(traslated_p - camera_origin);
-        new_p          = intersect_plane(
-                     ray3f{camera_origin, translated_dir}, p, plane_dir);
-        radius += distance(p, new_p);
-
-        trasl_p        = trans_p + vec3f{thickness, 0, 0};
-        traslated_p    = transform_point(camera_frame, trasl_p);
-        translated_dir = normalize(traslated_p - camera_origin);
-        new_p          = intersect_plane(
-                     ray3f{camera_origin, translated_dir}, p, plane_dir);
-        radius += distance(p, new_p);
-
-        trasl_p        = trans_p + vec3f{-thickness, 0, 0};
-        traslated_p    = transform_point(camera_frame, trasl_p);
-        translated_dir = normalize(traslated_p - camera_origin);
-        new_p          = intersect_plane(
-                     ray3f{camera_origin, translated_dir}, p, plane_dir);
-        radius += distance(p, new_p);
-
-        radius /= 4;
-
-        shape.radii.push_back(radius);
+        shape.radii.push_back(thickness * -camera_p.z / plane_distance);
       }
     }
 
@@ -202,15 +177,16 @@ namespace yocto {
       if (!dshape.cull)
         shape.triangles = dshape.triangles;
       else {
+        // culling triangles
         for (auto& triangle : dshape.triangles) {
           auto p0 = shape.positions[triangle.x];
           auto p1 = shape.positions[triangle.y];
           auto p2 = shape.positions[triangle.z];
 
-          auto dir = plane_dir;
+          auto dir = camera_frame.z;
           if (!orthographic) {
             auto fcenter = (p0 + p1 + p2) / 3;
-            dir          = camera_origin - fcenter;
+            dir          = camera_frame.o - fcenter;
           }
 
           if (dot(dir, cross(p1 - p0, p2 - p0)) < 0) continue;
@@ -218,19 +194,10 @@ namespace yocto {
         }
       }
 
-      // triangle borders
-      auto emap    = make_edge_map(shape.triangles);
-      auto borders = dshape.boundary ? vector<vec2i>{} : get_edges(emap);
-
-      if (dshape.boundary) {
-        auto adiac     = face_adjacencies(shape.triangles);
-        auto ord_bound = ordered_boundaries(
-            shape.triangles, adiac, (int)shape.positions.size())[0];
-        for (auto idx = 0; idx < ord_bound.size() - 1; idx++) {
-          borders.push_back(vec2i{ord_bound[idx], ord_bound[idx + 1]});
-        }
-        borders.push_back(vec2i{ord_bound[ord_bound.size() - 1], ord_bound[0]});
-      }
+      // computing triangles borders
+      auto borders = dshape.boundary ? get_boundary(shape.triangles,
+                                           (int)shape.positions.size())
+                                     : get_edges(shape.triangles);
 
       shape.borders.insert(shape.borders.end(), borders.begin(), borders.end());
     }
@@ -241,6 +208,7 @@ namespace yocto {
         shape.quads = dshape.quads;
         shape.fills = dshape.fills;
       } else {
+        // culling quads
         for (auto idx = 0; idx < dshape.quads.size(); idx++) {
           auto& quad = dshape.quads[idx];
           auto  p0   = shape.positions[quad.x];
@@ -248,10 +216,10 @@ namespace yocto {
           auto  p2   = shape.positions[quad.z];
           auto  p3   = shape.positions[quad.w];
 
-          auto dir = plane_dir;
+          auto dir = camera_frame.z;
           if (!orthographic) {
             auto fcenter = (p0 + p1 + p2 + p3) / 4;
-            dir          = camera_origin - fcenter;
+            dir          = camera_frame.o - fcenter;
           }
 
           if (dot(dir, cross(p1 - p0, p2 - p0)) < 0) continue;
@@ -260,20 +228,10 @@ namespace yocto {
         }
       }
 
-      // quad borders
-      auto emap    = make_edge_map(shape.quads);
-      auto borders = dshape.boundary ? vector<vec2i>{} : get_edges(emap);
-
-      if (dshape.boundary) {
-        auto tri       = quads_to_triangles(shape.quads);
-        auto adiac     = face_adjacencies(tri);
-        auto ord_bound = ordered_boundaries(
-            tri, adiac, (int)shape.positions.size())[0];
-        for (auto idx = 0; idx < ord_bound.size() - 1; idx++) {
-          borders.push_back(vec2i{ord_bound[idx], ord_bound[idx + 1]});
-        }
-        borders.push_back(vec2i{ord_bound[ord_bound.size() - 1], ord_bound[0]});
-      }
+      // computing quads borders
+      auto borders = dshape.boundary ? get_boundary(shape.quads,
+                                           (int)shape.positions.size())
+                                     : get_edges(shape.quads);
 
       shape.borders.insert(shape.borders.end(), borders.begin(), borders.end());
     }
@@ -294,104 +252,90 @@ namespace yocto {
       auto& p0 = shape.positions[line.x];
       auto& p1 = shape.positions[line.y];
 
+      auto camera_p0 = transform_point(inverse(camera_frame), p0);
+      auto camera_p1 = transform_point(inverse(camera_frame), p1);
+
       if (orthographic) {
-        auto dir      = normalize(p1 - p0);
-        auto line_dir = transform_direction(inverse(camera_frame), dir);
+        // computing the line scree-space length
+        auto screen_p0 = transform_point(
+            camera_frame, vec3f{camera_p0.x, camera_p0.y, 0});
+        auto screen_p1 = transform_point(
+            camera_frame, vec3f{camera_p1.x, camera_p1.y, 0});
 
-        auto arrow_dir = transform_direction(
-            camera_frame, vec3f{line_dir.x, line_dir.y, 0});
-        auto arrow_dir0 = transform_direction(camera_frame,
-            vec3f{line_dir.x + line_dir.y, line_dir.y - line_dir.x, 0});
-        auto arrow_dir1 = transform_direction(camera_frame,
-            vec3f{line_dir.x - line_dir.y, line_dir.y + line_dir.x, 0});
+        shape.line_lengths.push_back(distance(screen_p0, screen_p1));
 
-        shape.arrow_dirs.push_back(arrow_dir);
-        shape.arrow_dirs0.push_back(arrow_dir0);
-        shape.arrow_dirs1.push_back(arrow_dir1);
+        // computing the line direction in screen-space
+        auto world_dir  = normalize(p1 - p0);
+        auto camera_dir = transform_direction(inverse(camera_frame), world_dir);
 
-        auto thickness = material.thickness * film.x * camera_distance /
-                         (scale * 2 * lens);
+        auto screen_dir = transform_direction(
+            camera_frame, vec3f{camera_dir.x, camera_dir.y, 0});
+        auto screen_dir_45_0 = transform_direction(camera_frame,
+            vec3f{camera_dir.x + camera_dir.y, camera_dir.y - camera_dir.x, 0});
+        auto screen_dir_45_1 = transform_direction(camera_frame,
+            vec3f{camera_dir.x - camera_dir.y, camera_dir.y + camera_dir.x, 0});
 
-        shape.arrow_points0.push_back(p0 + 8 * thickness * dir);
-        shape.arrow_points1.push_back(p1 - 8 * thickness * dir);
+        shape.screen_line_dirs.push_back(screen_dir);
+        shape.screen_line_dirs_45_0.push_back(screen_dir_45_0);
+        shape.screen_line_dirs_45_1.push_back(screen_dir_45_1);
 
-        shape.arrow_rads0.push_back(
-            4 / sqrt(2.0) * thickness * dot(dir, arrow_dir));
-        shape.arrow_rads1.push_back(
-            4 / sqrt(2.0) * thickness * dot(dir, arrow_dir));
+        // computing the arrow-head base center
+        shape.arrow_centers0.push_back(
+            p0 + 8 * thickness / dot(world_dir, screen_dir) * world_dir);
+        shape.arrow_centers1.push_back(
+            p1 - 8 * thickness / dot(world_dir, screen_dir) * world_dir);
 
-        auto p0_camera = transform_point(inverse(camera_frame), p0);
-        auto p1_camera = transform_point(inverse(camera_frame), p1);
-
-        auto p0_on_plane = transform_point(
-            camera_frame, vec3f{p0_camera.x, p0_camera.y, 0});
-        auto p1_on_plane = transform_point(
-            camera_frame, vec3f{p1_camera.x, p1_camera.y, 0});
-
-        shape.line_lengths.push_back(distance(p0_on_plane, p1_on_plane));
+        // computing the arrow-head base radius
+        shape.arrow_radii0.push_back(4 / sqrt(2.0) * thickness);
+        shape.arrow_radii1.push_back(4 / sqrt(2.0) * thickness);
       } else {
-        auto p0_on_plane = intersect_plane(
-            ray3f{camera_origin, p0 - camera_origin}, plane_point, plane_dir);
-        auto p1_on_plane = intersect_plane(
-            ray3f{camera_origin, p1 - camera_origin}, plane_point, plane_dir);
+        // computing the line scree-space length
+        auto screen_camera_p0 = screen_space_point(camera_p0, plane_distance);
+        auto screen_camera_p1 = screen_space_point(camera_p1, plane_distance);
 
-        auto arrow_dir  = normalize(p0_on_plane - p1_on_plane);
-        auto dir_camera = transform_direction(inverse(camera_frame), arrow_dir);
-        auto arrow_dir0 = transform_direction(camera_frame,
-            vec3f{dir_camera.x + dir_camera.y, dir_camera.y - dir_camera.x, 0});
-        auto arrow_dir1 = transform_direction(camera_frame,
-            vec3f{dir_camera.x - dir_camera.y, dir_camera.y + dir_camera.x, 0});
+        auto screen_p0 = transform_point(camera_frame, screen_camera_p0);
+        auto screen_p1 = transform_point(camera_frame, screen_camera_p1);
 
-        shape.arrow_dirs.push_back(arrow_dir);
-        shape.arrow_dirs0.push_back(arrow_dir0);
-        shape.arrow_dirs1.push_back(arrow_dir1);
+        auto screen_length = distance(screen_p0, screen_p1);
 
-        auto ap0_on_p = p0_on_plane + 8 * material.thickness / size.x * film.x /
-                                          2 *
-                                          normalize(p1_on_plane - p0_on_plane);
-        auto ap1_on_p = p1_on_plane + 8 * material.thickness / size.x * film.x /
-                                          2 *
-                                          normalize(p0_on_plane - p1_on_plane);
+        shape.line_lengths.push_back(screen_length);
 
-        auto rp0 = ray3f{camera_origin, ap0_on_p - camera_origin};
-        auto ap0 = intersect_plane(
-            rp0, p0, orthonormalize(rp0.d, normalize(p1 - p0)));
+        // computing the line direction in screen-space
+        auto screen_camera_dir = normalize(screen_camera_p0 - screen_camera_p1);
+        auto screen_dir        = normalize(screen_p0 - screen_p1);
+        auto screen_dir_45_0   = transform_direction(
+              camera_frame, vec3f{screen_camera_dir.x + screen_camera_dir.y,
+                              screen_camera_dir.y - screen_camera_dir.x, 0});
+        auto screen_dir_45_1 = transform_direction(
+            camera_frame, vec3f{screen_camera_dir.x - screen_camera_dir.y,
+                              screen_camera_dir.y + screen_camera_dir.x, 0});
 
-        auto rp1 = ray3f{camera_origin, ap1_on_p - camera_origin};
-        auto ap1 = intersect_plane(
-            rp1, p1, orthonormalize(rp1.d, normalize(p0 - p1)));
+        shape.screen_line_dirs.push_back(screen_dir);
+        shape.screen_line_dirs_45_0.push_back(screen_dir_45_0);
+        shape.screen_line_dirs_45_1.push_back(screen_dir_45_1);
 
-        shape.arrow_points0.push_back(ap0);
-        shape.arrow_points1.push_back(ap1);
+        // computing the arrow-head base center
+        auto camera_arrow_center0 = perspective_line_point(
+            camera_p0, camera_p1, 8 * thickness / screen_length);
+        auto camera_arrow_center1 = perspective_line_point(
+            camera_p1, camera_p0, 8 * thickness / screen_length);
 
-        auto ap0c = transform_point(inverse(camera_frame), ap0_on_p);
-        auto ap1c = transform_point(inverse(camera_frame), ap1_on_p);
+        auto arrow_center0 = transform_point(
+            camera_frame, camera_arrow_center0);
+        auto arrow_center1 = transform_point(
+            camera_frame, camera_arrow_center1);
 
-        auto ad0c = transform_direction(
-            inverse(camera_frame), p1_on_plane - p0_on_plane);
-        auto ad1c = transform_direction(
-            inverse(camera_frame), p0_on_plane - p1_on_plane);
+        shape.arrow_centers0.push_back(arrow_center0);
+        shape.arrow_centers1.push_back(arrow_center1);
 
-        auto adp0c = vec3f{ad0c.y, -ad0c.x, 0};
-        auto adp1c = vec3f{ad1c.y, -ad1c.x, 0};
+        // computing the arrow-head base radius
+        auto arrow_radius0 = thickness * 4 / sqrt(2.0) *
+                             abs(camera_arrow_center0.z) / plane_distance;
+        auto arrow_radius1 = thickness * 4 / sqrt(2.0) *
+                             abs(camera_arrow_center1.z) / plane_distance;
 
-        auto ar0_on_p = transform_point(
-            camera_frame, ap0c + 4 / sqrt(2.0) * material.thickness / size.x *
-                                     film.x / 2 * adp0c);
-        auto ar1_on_p = transform_point(
-            camera_frame, ap1c + 4 / sqrt(2.0) * material.thickness / size.x *
-                                     film.x / 2 * adp1c);
-
-        auto rr0 = ray3f{camera_origin, ar0_on_p - camera_origin};
-        auto ar0 = intersect_plane(rr0, ap0, plane_dir);
-
-        auto rr1 = ray3f{camera_origin, ar1_on_p - camera_origin};
-        auto ar1 = intersect_plane(rr1, ap1, plane_dir);
-
-        shape.arrow_rads0.push_back(distance(ap0, ar0));
-        shape.arrow_rads1.push_back(distance(ap1, ar1));
-
-        shape.line_lengths.push_back(distance(p0_on_plane, p1_on_plane));
+        shape.arrow_radii0.push_back(arrow_radius0);
+        shape.arrow_radii1.push_back(arrow_radius1);
       }
     }
 
@@ -399,23 +343,23 @@ namespace yocto {
       auto& p0 = shape.positions[border.x];
       auto& p1 = shape.positions[border.y];
 
+      auto camera_p0 = transform_point(inverse(camera_frame), p0);
+      auto camera_p1 = transform_point(inverse(camera_frame), p1);
+
       if (orthographic) {
-        auto p0_camera = transform_point(inverse(camera_frame), p0);
-        auto p1_camera = transform_point(inverse(camera_frame), p1);
+        auto screen_p0 = transform_point(
+            camera_frame, vec3f{camera_p0.x, camera_p0.y, 0});
+        auto screen_p1 = transform_point(
+            camera_frame, vec3f{camera_p1.x, camera_p1.y, 0});
 
-        auto p0_on_plane = transform_point(
-            camera_frame, vec3f{p0_camera.x, p0_camera.y, 0});
-        auto p1_on_plane = transform_point(
-            camera_frame, vec3f{p1_camera.x, p1_camera.y, 0});
-
-        shape.border_lengths.push_back(distance(p0_on_plane, p1_on_plane));
+        shape.border_lengths.push_back(distance(screen_p0, screen_p1));
       } else {
-        auto p0_on_plane = intersect_plane(
-            ray3f{camera_origin, p0 - camera_origin}, plane_point, plane_dir);
-        auto p1_on_plane = intersect_plane(
-            ray3f{camera_origin, p1 - camera_origin}, plane_point, plane_dir);
+        auto screen_p0 = transform_point(
+            camera_frame, screen_space_point(camera_p0, plane_distance));
+        auto screen_p1 = transform_point(
+            camera_frame, screen_space_point(camera_p1, plane_distance));
 
-        shape.border_lengths.push_back(distance(p0_on_plane, p1_on_plane));
+        shape.border_lengths.push_back(distance(screen_p0, screen_p1));
       }
     }
 
@@ -426,14 +370,10 @@ namespace yocto {
       const vec2f& size, const float& scale, const bool noparallel) {
     auto& camera          = scene.cameras[cam];
     auto  camera_frame    = lookat_frame(camera.from, camera.to, {0, 1, 0});
-    auto  camera_origin   = camera.from;
     auto  camera_distance = length(camera.from - camera.to);
-    auto  plane_point     = transform_point(
-             camera_frame, {0, 0, camera.lens / size.x * scale});
-    auto plane_dir = transform_normal(camera_frame, {0, 0, 1});
-    auto aspect    = size.x / size.y;
-    auto film      = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
-                                 : vec2f{camera.film * aspect, camera.film};
+    auto  aspect          = size.x / size.y;
+    auto  film = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
+                             : vec2f{camera.film * aspect, camera.film};
 
     auto shapes = trace_shapes{};
 
@@ -441,9 +381,8 @@ namespace yocto {
       for (auto idx = 0; idx < scene.objects.size(); idx++) {
         auto& object = scene.objects[idx];
         if (object.shape != -1) {
-          auto shape = make_shape(scene, object, camera_frame, camera_origin,
-              camera_distance, camera.orthographic, film, camera.lens,
-              plane_point, plane_dir, size, scale);
+          auto shape = make_shape(scene, object, camera_frame, camera_distance,
+              camera.orthographic, film, camera.lens, size, scale);
           shapes.shapes.push_back(shape);
         }
       }
@@ -462,9 +401,8 @@ namespace yocto {
         auto  idx    = idxs[i];
         auto& object = scene.objects[idx];
         if (object.shape != -1) {
-          auto shape = make_shape(scene, object, camera_frame, camera_origin,
-              camera_distance, camera.orthographic, film, camera.lens,
-              plane_point, plane_dir, size, scale);
+          auto shape = make_shape(scene, object, camera_frame, camera_distance,
+              camera.orthographic, film, camera.lens, size, scale);
           shapes.shapes[i] = shape;
         }
       });
@@ -502,14 +440,12 @@ namespace yocto {
       const dgram_material& material, const shape_element& element,
       const dgram_camera& camera, const vec2f& size, const float& scale) {
     auto camera_frame    = lookat_frame(camera.from, camera.to, {0, 1, 0});
-    auto camera_origin   = camera.from;
     auto camera_distance = length(camera.from - camera.to);
-    auto plane_point     = transform_point(
-            camera_frame, {0, 0, camera.lens / size.x * scale});
-    auto plane_dir = transform_normal(camera_frame, {0, 0, 1});
-    auto aspect    = size.x / size.y;
-    auto film      = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
-                                 : vec2f{camera.film * aspect, camera.film};
+    auto aspect          = size.x / size.y;
+    auto film = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
+                            : vec2f{camera.film * aspect, camera.film};
+
+    auto plane_distance = camera.lens * scale / size.x;
 
     auto u = 0.0f;
     auto v = 0.0f;
@@ -523,51 +459,51 @@ namespace yocto {
     auto& p0 = shape.positions[lines[element.index].x];
     auto& p1 = shape.positions[lines[element.index].y];
 
+    auto camera_p  = transform_point(inverse(camera_frame), p);
+    auto camera_p0 = transform_point(inverse(camera_frame), p0);
+    auto camera_p1 = transform_point(inverse(camera_frame), p1);
+
     for (auto idx = 0; idx < element.index; idx++) {
       u += lengths[idx];
     }
 
     if (camera.orthographic) {
-      auto p_camera  = transform_point(inverse(camera_frame), p);
-      auto p0_camera = transform_point(inverse(camera_frame), p0);
-      auto p1_camera = transform_point(inverse(camera_frame), p1);
+      auto screen_p = transform_point(
+          camera_frame, vec3f{camera_p.x, camera_p.y, 0});
+      auto screen_p0 = transform_point(
+          camera_frame, vec3f{camera_p0.x, camera_p0.y, 0});
+      auto screen_p1 = transform_point(
+          camera_frame, vec3f{camera_p1.x, camera_p1.y, 0});
 
-      auto p_on_plane = transform_point(
-          camera_frame, vec3f{p_camera.x, p_camera.y, 0});
-      auto p0_on_plane = transform_point(
-          camera_frame, vec3f{p0_camera.x, p0_camera.y, 0});
-      auto p1_on_plane = transform_point(
-          camera_frame, vec3f{p1_camera.x, p1_camera.y, 0});
+      auto screen_dir = normalize(screen_p1 - screen_p0);
+      auto line_p     = screen_p0 +
+                    dot(screen_p - screen_p0, screen_dir) * screen_dir;
 
-      auto dir       = normalize(p1_on_plane - p0_on_plane);
-      auto p_on_line = p0_on_plane + dot(p_on_plane - p0_on_plane, dir) * dir;
+      auto p_sign = sign(dot(screen_p1 - screen_p0, line_p - screen_p0));
 
-      auto p_sign = sign(
-          dot(p1_on_plane - p0_on_plane, p_on_line - p0_on_plane));
-
-      u += p_sign * distance(p_on_line, p0_on_plane);
+      u += p_sign * distance(line_p, screen_p0);
       u *= scale * camera.lens / (camera_distance * film.x);
 
-      v = distance(p_on_line, p_on_plane);
+      v = distance(line_p, screen_p);
       v *= scale * camera.lens / (camera_distance * film.x);
     } else {
-      auto p_on_plane = intersect_plane(
-          ray3f{camera_origin, p - camera_origin}, plane_point, plane_dir);
-      auto p0_on_plane = intersect_plane(
-          ray3f{camera_origin, p0 - camera_origin}, plane_point, plane_dir);
-      auto p1_on_plane = intersect_plane(
-          ray3f{camera_origin, p1 - camera_origin}, plane_point, plane_dir);
+      auto screen_p = transform_point(
+          camera_frame, screen_space_point(camera_p, plane_distance));
+      auto screen_p0 = transform_point(
+          camera_frame, screen_space_point(camera_p0, plane_distance));
+      auto screen_p1 = transform_point(
+          camera_frame, screen_space_point(camera_p1, plane_distance));
 
-      auto dir       = normalize(p1_on_plane - p0_on_plane);
-      auto p_on_line = p0_on_plane + dot(p_on_plane - p0_on_plane, dir) * dir;
+      auto screen_dir = normalize(screen_p1 - screen_p0);
+      auto line_p     = screen_p0 +
+                    dot(screen_p - screen_p0, screen_dir) * screen_dir;
 
-      auto p_sign = sign(
-          dot(p1_on_plane - p0_on_plane, p_on_line - p0_on_plane));
+      auto p_sign = sign(dot(screen_p1 - screen_p0, line_p - screen_p0));
 
-      u += p_sign * distance(p_on_line, p0_on_plane);
+      u += p_sign * distance(line_p, screen_p0);
       u *= size.x / film.x;
 
-      v = distance(p_on_line, p_on_plane);
+      v = distance(line_p, screen_p);
       v *= size.x / film.x;
     }
 

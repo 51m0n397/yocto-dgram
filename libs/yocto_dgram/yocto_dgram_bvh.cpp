@@ -37,7 +37,7 @@
 #include <algorithm>
 #include <future>
 
-#include "yocto_dgram_intersection.h"
+#include "yocto_dgram_geometry.h"
 
 // -----------------------------------------------------------------------------
 // USING DIRECTIVES
@@ -389,19 +389,20 @@ namespace yocto {
             }
           } else if (i -= shape.points.size(), size += shape.lines.size();
                      prim < size) {
-            auto& l            = shape.lines[i];
-            auto& end          = shape.ends[i];
-            auto& arrow_dir    = shape.arrow_dirs[i];
-            auto& arrow_dir0   = shape.arrow_dirs0[i];
-            auto& arrow_dir1   = shape.arrow_dirs1[i];
-            auto& arrow_point0 = shape.arrow_points0[i];
-            auto& arrow_point1 = shape.arrow_points1[i];
-            auto& arrow_rad0   = shape.arrow_rads0[i];
-            auto& arrow_rad1   = shape.arrow_rads1[i];
+            auto& l                    = shape.lines[i];
+            auto& end                  = shape.ends[i];
+            auto& screen_line_dir      = shape.screen_line_dirs[i];
+            auto& screen_line_dir_45_0 = shape.screen_line_dirs_45_0[i];
+            auto& screen_line_dir_45_1 = shape.screen_line_dirs_45_1[i];
+            auto& arrow_center0        = shape.arrow_centers0[i];
+            auto& arrow_center1        = shape.arrow_centers1[i];
+            auto& arrow_radius0        = shape.arrow_radii0[i];
+            auto& arrow_radius1        = shape.arrow_radii1[i];
             if (intersect_line(ray, shape.positions[l.x], shape.positions[l.y],
-                    shape.radii[l.x], shape.radii[l.y], end.a, end.b, arrow_dir,
-                    arrow_dir0, arrow_dir1, arrow_point0, arrow_point1,
-                    arrow_rad0, arrow_rad1, uv, dist, pos, norm, hit_arrow)) {
+                    shape.radii[l.x], shape.radii[l.y], end.a, end.b,
+                    screen_line_dir, screen_line_dir_45_0, screen_line_dir_45_1,
+                    arrow_center0, arrow_center1, arrow_radius0, arrow_radius1,
+                    uv, dist, pos, norm, hit_arrow)) {
               if (dist < ray.tmax - ray_eps)
                 intersections.intersections.clear();
               ray.tmax = dist;
