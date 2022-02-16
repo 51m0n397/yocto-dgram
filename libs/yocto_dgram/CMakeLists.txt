@@ -8,7 +8,6 @@ add_library(yocto_dgram STATIC
   yocto_dgram_gui.h yocto_dgram_gui.cpp
   ext/base64.h ext/base64.cpp
   ext/HTTPRequest.hpp
-  ext/earcut.hpp
 )
 
 set_target_properties(yocto_dgram PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED YES)

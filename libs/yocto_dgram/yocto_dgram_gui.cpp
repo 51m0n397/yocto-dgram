@@ -479,7 +479,6 @@ namespace yocto {
         draw_gui_label("quads", (int)shape.quads.size());
         draw_gui_label("fills", (int)shape.fills.size());
         draw_gui_label("line ends", (int)shape.ends.size());
-        draw_gui_label("cclips", (int)shape.cclips.size());
 
         one_edited += draw_gui_checkbox("cull", shape.cull);
         one_edited += draw_gui_checkbox("boundary", shape.boundary);

@@ -111,8 +111,6 @@ namespace yocto {
 
     bool cull     = false;
     bool boundary = false;
-
-    vector<vec3f> cclips = {};
   };
 
   struct dgram_label {

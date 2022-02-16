@@ -73,9 +73,6 @@ namespace yocto {
     vector<float>     line_lengths          = {};
     vector<float>     border_lengths        = {};
 
-    vector<vec3f> cclip_positions = {};
-    vector<vec3i> cclip_indices   = {};
-
     int material = -1;
   };
 

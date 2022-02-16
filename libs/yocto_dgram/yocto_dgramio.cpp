@@ -322,8 +322,6 @@ namespace yocto {
 
               get_opt(jshape, "lines", shape.lines);
               get_opt(jshape, "ends", shape.ends);
-
-              get_opt(jshape, "cclips", shape.cclips);
             }
           }
 

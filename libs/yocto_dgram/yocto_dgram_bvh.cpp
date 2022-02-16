@@ -530,14 +530,6 @@ namespace yocto {
           auto uv   = zero2f;
           auto dist = 0.0f;
 
-          for (auto& cclip : shape.cclip_indices) {
-            if (!intersect_triangle(ray, shape.cclip_positions[cclip.x],
-                    shape.cclip_positions[cclip.y],
-                    shape.cclip_positions[cclip.z], uv, dist)) {
-              skip = true;
-            }
-          }
-
           if (!skip) {
             intersect_bvh(
                 bvh.shapes[id], shapes.shapes[id], id, ray, intersections);

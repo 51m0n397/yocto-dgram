@@ -37,7 +37,6 @@
 
 #include <future>
 
-#include "ext/earcut.hpp"
 #include "yocto_dgram_geometry.h"
 
 // -----------------------------------------------------------------------------
@@ -47,9 +46,6 @@ namespace yocto {
 
   // using directives
   using std::vector;
-
-  using Point = std::array<float, 2>;
-  using mapbox::earcut;
 
 }  // namespace yocto
 
@@ -112,26 +108,6 @@ namespace yocto {
   static vector<vec2i> get_boundary(vector<vec4i> quads, int num_vertices) {
     auto triangles = quads_to_triangles(quads);
     return get_boundary(triangles, num_vertices);
-  }
-
-  static vector<vec3i> triangularize_cclips(const vector<vec3f>& cclips) {
-    auto points = vector<Point>{};
-    for (auto& cclip : cclips) {
-      points.push_back({cclip.x, cclip.y});
-    }
-
-    auto polygon = vector<vector<Point>>{points};
-
-    vector<int> indices = earcut<int>(polygon);
-
-    auto triangles = vector<vec3i>{};
-
-    for (auto idx = 0; idx + 2 < indices.size(); idx += 3) {
-      triangles.push_back(
-          vec3i{indices[idx], indices[idx + 1], indices[idx + 2]});
-    }
-
-    return triangles;
   }
 
   trace_shape make_shape(const dgram_scene& scene, const dgram_object& object,
@@ -237,17 +213,6 @@ namespace yocto {
                                      : get_edges(shape.quads);
 
       shape.borders.insert(shape.borders.end(), borders.begin(), borders.end());
-    }
-
-    // cclips
-    if (!dshape.cclips.empty()) {
-      shape.cclip_indices   = triangularize_cclips(dshape.cclips);
-      shape.cclip_positions = dshape.cclips;
-
-      /*for (auto& pos : dshape.cclips) {
-        auto& p = shape.cclip_positions.emplace_back();
-        p       = transform_point(object.frame, pos);
-      }*/
     }
 
     // arrow dirs
