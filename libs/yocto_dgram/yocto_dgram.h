@@ -92,7 +92,7 @@ namespace yocto {
     float         dash_on     = 12.0f;
     dash_cap_type dash_cap    = dash_cap_type::square;
 
-    dashed_line dashed = dashed_line::transparency;
+    dashed_line dashed = dashed_line::never;
   };
 
   struct dgram_shape {
