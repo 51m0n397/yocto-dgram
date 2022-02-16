@@ -146,7 +146,7 @@ namespace yocto {
     auto thickness      = orthographic ? material.thickness * film.x *
                                         camera_distance / (2 * lens * scale)
                                        : material.thickness * film.x / (2 * size.x);
-    auto plane_distance = lens * scale / size.x;
+    auto plane_distance = -lens * scale / size.x;
 
     for (auto& pos : dshape.positions) {
       // position
@@ -161,7 +161,10 @@ namespace yocto {
         // similarities
         auto camera_p = transform_point(inverse(camera_frame), p);
 
-        shape.radii.push_back(thickness * -camera_p.z / plane_distance);
+        // fix for when point is behind the camera
+        if (camera_p.z > 0) camera_p.z = 0;
+
+        shape.radii.push_back(thickness * abs(camera_p.z / plane_distance));
       }
     }
 
@@ -289,6 +292,10 @@ namespace yocto {
         shape.arrow_radii0.push_back(4 / sqrt(2.0) * thickness);
         shape.arrow_radii1.push_back(4 / sqrt(2.0) * thickness);
       } else {
+        // fix for when point is behind the camera
+        if (camera_p0.z >= 0) camera_p0.z = -ray_eps;
+        if (camera_p1.z >= 0) camera_p1.z = -ray_eps;
+
         // computing the line scree-space length
         auto screen_camera_p0 = screen_space_point(camera_p0, plane_distance);
         auto screen_camera_p1 = screen_space_point(camera_p1, plane_distance);
@@ -301,8 +308,8 @@ namespace yocto {
         shape.line_lengths.push_back(screen_length);
 
         // computing the line direction in screen-space
-        auto screen_camera_dir = normalize(screen_camera_p0 - screen_camera_p1);
-        auto screen_dir        = normalize(screen_p0 - screen_p1);
+        auto screen_camera_dir = normalize(screen_camera_p1 - screen_camera_p0);
+        auto screen_dir        = normalize(screen_p1 - screen_p0);
         auto screen_dir_45_0   = transform_direction(
               camera_frame, vec3f{screen_camera_dir.x + screen_camera_dir.y,
                               screen_camera_dir.y - screen_camera_dir.x, 0});
@@ -330,9 +337,9 @@ namespace yocto {
 
         // computing the arrow-head base radius
         auto arrow_radius0 = thickness * 4 / sqrt(2.0) *
-                             abs(camera_arrow_center0.z) / plane_distance;
+                             abs(camera_arrow_center0.z / plane_distance);
         auto arrow_radius1 = thickness * 4 / sqrt(2.0) *
-                             abs(camera_arrow_center1.z) / plane_distance;
+                             abs(camera_arrow_center1.z / plane_distance);
 
         shape.arrow_radii0.push_back(arrow_radius0);
         shape.arrow_radii1.push_back(arrow_radius1);
@@ -354,6 +361,10 @@ namespace yocto {
 
         shape.border_lengths.push_back(distance(screen_p0, screen_p1));
       } else {
+        // fix for when point is behind the camera
+        if (camera_p0.z >= 0) camera_p0.z = -ray_eps;
+        if (camera_p1.z >= 0) camera_p1.z = -ray_eps;
+
         auto screen_p0 = transform_point(
             camera_frame, screen_space_point(camera_p0, plane_distance));
         auto screen_p1 = transform_point(
@@ -445,7 +456,7 @@ namespace yocto {
     auto film = aspect >= 1 ? vec2f{camera.film, camera.film / aspect}
                             : vec2f{camera.film * aspect, camera.film};
 
-    auto plane_distance = camera.lens * scale / size.x;
+    auto plane_distance = -camera.lens * scale / size.x;
 
     auto u = 0.0f;
     auto v = 0.0f;
@@ -487,6 +498,11 @@ namespace yocto {
       v = distance(line_p, screen_p);
       v *= scale * camera.lens / (camera_distance * film.x);
     } else {
+      // fix for when point is behind the camera
+      if (camera_p.z >= 0) camera_p.z = -ray_eps;
+      if (camera_p0.z >= 0) camera_p0.z = -ray_eps;
+      if (camera_p1.z >= 0) camera_p1.z = -ray_eps;
+
       auto screen_p = transform_point(
           camera_frame, screen_space_point(camera_p, plane_distance));
       auto screen_p0 = transform_point(
