@@ -523,17 +523,9 @@ namespace yocto {
         }
       } else {
         for (auto idx = node.start; idx < node.start + node.num; idx++) {
-          auto  id    = bvh.primitives[idx];
-          auto& shape = shapes.shapes[id];
-
-          auto skip = false;
-          auto uv   = zero2f;
-          auto dist = 0.0f;
-
-          if (!skip) {
-            intersect_bvh(
-                bvh.shapes[id], shapes.shapes[id], id, ray, intersections);
-          }
+          auto id = bvh.primitives[idx];
+          intersect_bvh(
+              bvh.shapes[id], shapes.shapes[id], id, ray, intersections);
         }
       }
     }
