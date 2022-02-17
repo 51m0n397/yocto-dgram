@@ -302,8 +302,8 @@ namespace yocto {
   }
 
   inline bool intersect_cylinder(const ray3f& ray, const vec3f& p0,
-      const vec3f& p1, float r, const vec3f& dir, const frame3f& frame,
-      const int sign, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+      const vec3f& p1, float r, const vec3f& dir, float& dist, vec3f& pos,
+      vec3f& norm) {
     auto av = ray.d - dot(ray.d, dir) * dir;
     auto a  = dot(av, av);
     auto dp = ray.o - p0;
@@ -343,13 +343,7 @@ namespace yocto {
     auto pt = p0 + d * dir;
     auto n  = normalize(p - pt);
 
-    auto tn = transform_normal(frame, n);
-    auto u  = (pif - atan2(tn.y, tn.x)) / (2 * pif);
-    auto v  = distance(pt, p1) / distance(p0, p1);
-    if (sign < 0) v = 1 - v;
-
     // intersection occurred: set params and exit
-    uv   = {u, v};
     dist = t;
     pos  = p;
     norm = n;
@@ -357,8 +351,8 @@ namespace yocto {
   }
 
   inline bool intersect_cone(const ray3f& ray, const vec3f& p0, const vec3f& p1,
-      float r0, float r1, const vec3f& dir, const frame3f& frame,
-      const int sign, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+      float r0, float r1, const vec3f& dir, float& dist, vec3f& pos,
+      vec3f& norm) {
     auto ab = distance(p1, p0);    // Distance between the two ends
     auto o = r0 * ab / (r1 - r0);  // Distance of the apex of the cone along the
                                    // cone's axis, from p0
@@ -405,16 +399,7 @@ namespace yocto {
     auto cp = p - pa;
     auto n  = normalize(cp * dot(dir, cp) / dot(cp, cp) - dir);
 
-    auto d  = dot(p - p0, dir);
-    auto pt = p0 + d * dir;
-
-    auto tn = transform_normal(frame, n);
-    auto u  = (pif - atan2(tn.y, tn.x)) / (2 * pif);
-    auto v  = distance(pt, p1) / distance(p0, p1);
-    if (sign < 0) v = 1 - v;
-
     // intersection occurred: set params and exit
-    uv   = {u, v};
     dist = t;
     pos  = p;
     norm = n;
@@ -422,8 +407,8 @@ namespace yocto {
   }
 
   inline bool intersect_arrow(const ray3f& ray, const vec3f& p0,
-      const vec3f& p1, float r, const vec3f& dir, const frame3f& frame,
-      const int sign, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+      const vec3f& p1, float r, const vec3f& dir, float& dist, vec3f& pos,
+      vec3f& norm) {
     auto ab    = distance(p1, p0);
     auto tga   = ((double)r) / (double)ab;
     auto cosa2 = 1 / (1 + tga * tga);
@@ -465,16 +450,7 @@ namespace yocto {
     auto cp = p - p0;
     auto n  = normalize(cp * dot(dir, cp) / dot(cp, cp) - dir);
 
-    auto d  = dot(p - p0, dir);
-    auto pt = p0 + d * dir;
-
-    auto tn = transform_normal(frame, n);
-    auto u  = (pif - atan2(tn.y, tn.x)) / (2 * pif);
-    auto v  = distance(pt, p1) / distance(p0, p1);
-    if (sign < 0) v = 1 - v;
-
     // intersection occurred: set params and exit
-    uv   = {u, v};
     dist = t;
     pos  = p;
     norm = n;
@@ -482,8 +458,8 @@ namespace yocto {
   }
 
   inline bool intersect_cap(const ray3f& ray, const vec3f& pa, const vec3f& pb,
-      const vec3f& pc, float r, const vec3f& dir, const frame3f& frame,
-      const int sign, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
+      const vec3f& pc, float r, const vec3f& dir, float& dist, vec3f& pos,
+      vec3f& norm) {
     auto a = dot(ray.d, ray.d);
     auto b = 2 * dot(ray.d, ray.o - pc);
     auto c = dot(ray.o - pc, ray.o - pc) - r * r;
@@ -516,21 +492,14 @@ namespace yocto {
 
     auto n = normalize(p - pc);
 
-    auto tn = transform_normal(frame, p - pa);
-    auto u  = (pif - atan2(tn.y, tn.x)) / (2 * pif);
-    auto v  = (pif - 2 * asin(tn.z)) / (2 * pif);
-    if (transform_direction(frame, pb - pa).z < 0) v = 1 - v;
-    if (sign < 0) v = 1 - v;
-
     // intersection occurred: set params and exit
-    uv   = {u, v};
     dist = t;
     pos  = p;
     norm = n;
     return true;
   }
 
-  inline static bool intersect_arrow_plane(
+  inline static bool intersect_arrow_halfspace(
       const ray3f& ray, const vec3f& p, const vec3f& dir) {
     auto o   = ray.o - p;
     auto den = dot(ray.d, ray.d);
@@ -548,8 +517,6 @@ namespace yocto {
       const vec3f& ad0, const vec3f& ad1, const vec3f& ap0, const vec3f& ap1,
       float ar0, float ar1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm,
       bool& hit_arrow) {
-    // TODO(simone): cleanup
-
     if (p0 == p1) return false;
 
     auto pa    = p0;
@@ -558,7 +525,6 @@ namespace yocto {
     auto pb    = p1;
     auto rb    = r1;
     auto eb    = e1;
-    auto sign  = 1;
     auto adir  = ad;
     auto adir0 = ad0;
     auto adir1 = ad1;
@@ -574,7 +540,6 @@ namespace yocto {
       pb    = p0;
       rb    = r0;
       eb    = e0;
-      sign  = -1;
       adir  = -ad;
       adir0 = -ad0;
       adir1 = -ad1;
@@ -605,41 +570,16 @@ namespace yocto {
     auto t    = ray.tmax;
     auto p    = vec3f{0, 0, 0};
     auto n    = vec3f{0, 0, 0};
-    auto tuv  = vec2f{0, 0};
 
     auto rac = ra;
     auto rbc = rb;
     auto pac = pa;
     auto pbc = pb;
 
-    auto frame = frame_fromz({0, 0, 0}, normalize(p1 - p0));
-    frame.y    = -frame.y;
-    frame.x    = frame.z.z < 0 ? frame.x : -frame.x;
-
-    auto la = 0.0f;
-    auto lc = distance(pa, pb);
-    auto lb = 0.0f;
-
-    if (ea == line_end::cap) {
-      la = sqrt(ra * ra + rac * rac);
-    }
-
-    if (eb == line_end::cap) {
-      lb = sqrt(rb * rb + rbc * rbc);
-    }
-
-    if ((ea == line_end::cap || !intersect_arrow_plane(ray, paa, adir)) &&
-        (eb == line_end::cap || !intersect_arrow_plane(ray, pba, -adir))) {
+    if ((ea == line_end::cap || !intersect_arrow_halfspace(ray, paa, adir)) &&
+        (eb == line_end::cap || !intersect_arrow_halfspace(ray, pba, -adir))) {
       if (ra == rb) {
-        if (intersect_cylinder(
-                ray, pa, pb, ra, dir, frame, sign, tuv, t, p, n)) {
-          if (sign > 0) {
-            tuv = {tuv.x, (lb + tuv.y * lc) / (lb + lc + la)};
-          } else {
-            tuv = {tuv.x, (la + tuv.y * lc) / (lb + lc + la)};
-          }
-          hit = true;
-        }
+        hit += intersect_cylinder(ray, pa, pb, ra, dir, t, p, n);
       } else {
         auto cosa = sqrt(ob * ob - rb * rb) / ob;
 
@@ -647,52 +587,26 @@ namespace yocto {
         if (ea == line_end::cap) {
           rac = ra / cosa;
           pac = o + dir * ((double)oa + (double)tga * (double)rac);
-          la  = sqrt(ra * ra + rac * rac);
         }
 
         if (eb == line_end::cap) {
           rbc = rb / cosa;
           pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
-          lb  = sqrt(rb * rb + rbc * rbc);
         }
 
-        if (intersect_cone(
-                ray, pa, pb, ra, rb, dir, frame, sign, tuv, t, p, n)) {
-          if (sign > 0) {
-            tuv = {tuv.x, (lb + tuv.y * lc) / (lb + lc + la)};
-          } else {
-            tuv = {tuv.x, (la + tuv.y * lc) / (lb + lc + la)};
-          }
-          hit = true;
-        }
+        hit += intersect_cone(ray, pa, pb, ra, rb, dir, t, p, n);
       }
     }
 
     if (ea == line_end::cap) {
-      if (intersect_cap(
-              ray, pa, pb, pac, rac, dir, frame, sign, tuv, t, p, n)) {
-        if (sign > 0) {
-          tuv = {tuv.x, (lb + lc + 2 * (tuv.y - 0.5f) * la) / (lb + lc + la)};
-        } else {
-          tuv = {tuv.x, (2 * tuv.y * la) / (lb + lc + la)};
-        }
-        hit = true;
-      }
-
+      hit += intersect_cap(ray, pa, pb, pac, rac, dir, t, p, n);
     } else {
       if ((ea == line_end::stealth_arrow &&
-              (intersect_arrow_plane(ray, paa, adir0) ||
-                  intersect_arrow_plane(ray, paa, adir1))) ||
+              (intersect_arrow_halfspace(ray, paa, adir0) ||
+                  intersect_arrow_halfspace(ray, paa, adir1))) ||
           (ea == line_end::triangle_arrow &&
-              intersect_arrow_plane(ray, paa, adir))) {
-        if (intersect_arrow(
-                ray, pa, paa, raa, dir, frame, sign, tuv, t, p, n)) {
-          auto laa = distance(pa, paa);
-          if (sign > 0) {
-            tuv = {tuv.x, (lb + lc - (1 - tuv.y) * laa) / (lb + lc + la)};
-          } else {
-            tuv = {tuv.x, (tuv.y * laa) / (lb + lc + la)};
-          }
+              intersect_arrow_halfspace(ray, paa, adir))) {
+        if (intersect_arrow(ray, pa, paa, raa, dir, t, p, n)) {
           hit       = true;
           hit_arrow = true;
         }
@@ -700,30 +614,17 @@ namespace yocto {
     }
 
     if (eb == line_end::cap) {
-      if (intersect_cap(
-              ray, pb, pa, pbc, rbc, -dir, frame, -sign, tuv, t, p, n)) {
-        if (sign > 0) {
-          tuv = {tuv.x, (2 * tuv.y * lb) / (lb + lc + la)};
-        } else {
-          tuv = {tuv.x, (la + lc + 2 * (tuv.y - 0.5f) * lb) / (lb + lc + la)};
-        }
+      if (intersect_cap(ray, pb, pa, pbc, rbc, -dir, t, p, n)) {
         hit       = true;
         hit_arrow = false;
       }
     } else {
       if ((eb == line_end::stealth_arrow &&
-              (intersect_arrow_plane(ray, pba, -adir0) ||
-                  intersect_arrow_plane(ray, pba, -adir1))) ||
+              (intersect_arrow_halfspace(ray, pba, -adir0) ||
+                  intersect_arrow_halfspace(ray, pba, -adir1))) ||
           (eb == line_end::triangle_arrow &&
-              intersect_arrow_plane(ray, pba, -adir))) {
-        if (intersect_arrow(
-                ray, pb, pba, rba, -dir, frame, -sign, tuv, t, p, n)) {
-          auto lba = distance(pb, pba);
-          if (sign > 0) {
-            tuv = {tuv.x, (tuv.y * lba) / (lb + lc + la)};
-          } else {
-            tuv = {tuv.x, (la + lc - (1 - tuv.y) * lba) / (lb + lc + la)};
-          }
+              intersect_arrow_halfspace(ray, pba, -adir))) {
+        if (intersect_arrow(ray, pb, pba, rba, -dir, t, p, n)) {
           hit       = true;
           hit_arrow = true;
         }
@@ -732,8 +633,12 @@ namespace yocto {
 
     if (!hit) return false;
 
+    auto d  = dot(p - p0, normalize(p1 - p0));
+    auto pt = p0 + d * normalize(p1 - p0);
+    auto v  = sign(d) * distance(pt, p0) / l;
+
     // intersection occurred: set params and exit
-    uv   = tuv;
+    uv   = {0.5, v};
     dist = t;
     pos  = p;
     norm = n;
@@ -744,18 +649,16 @@ namespace yocto {
       float r0, float r1, vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
     if (p0 == p1) return false;
 
-    auto pa   = p0;
-    auto pb   = p1;
-    auto ra   = r0;
-    auto rb   = r1;
-    auto sign = 1;
+    auto pa = p0;
+    auto pb = p1;
+    auto ra = r0;
+    auto rb = r1;
 
     if (r1 < r0) {
-      pa   = p1;
-      pb   = p0;
-      ra   = r1;
-      rb   = r0;
-      sign = -1;
+      pa = p1;
+      pb = p0;
+      ra = r1;
+      rb = r0;
     }
 
     auto dir = normalize(pb - pa);  // The direction of the line
@@ -783,70 +686,33 @@ namespace yocto {
     auto t   = ray.tmax;
     auto p   = vec3f{0, 0, 0};
     auto n   = vec3f{0, 0, 0};
-    auto tuv = vec2f{0, 0};
-
-    auto frame = frame_fromz({0, 0, 0}, normalize(p1 - p0));
-    frame.y    = -frame.y;
-    frame.x    = frame.z.z < 0 ? frame.x : -frame.x;
-
-    auto la = sqrt(ra * ra + rac * rac);
-    auto lc = distance(pa, pb);
-    auto lb = sqrt(rb * rb + rbc * rbc);
 
     if (ra == rb) {
-      if (intersect_cylinder(ray, pa, pb, ra, dir, frame, sign, tuv, t, p, n)) {
-        if (sign > 0) {
-          tuv = {tuv.x, (lb + tuv.y * lc) / (lb + lc + la)};
-        } else {
-          tuv = {tuv.x, (la + tuv.y * lc) / (lb + lc + la)};
-        }
-        hit = true;
-      }
+      hit += intersect_cylinder(ray, pa, pb, ra, dir, t, p, n);
     } else {
       auto cosa = sqrt(ob * ob - rb * rb) / ob;
 
       // Computing ends' parameters
       rac = ra / cosa;
       pac = o + dir * ((double)oa + (double)tga * (double)rac);
-      la  = sqrt(ra * ra + rac * rac);
 
       rbc = rb / cosa;
       pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
-      lb  = sqrt(rb * rb + rbc * rbc);
 
-      if (intersect_cone(ray, pa, pb, ra, rb, dir, frame, sign, tuv, t, p, n)) {
-        if (sign > 0) {
-          tuv = {tuv.x, (lb + tuv.y * lc) / (lb + lc + la)};
-        } else {
-          tuv = {tuv.x, (la + tuv.y * lc) / (lb + lc + la)};
-        }
-        hit = true;
-      }
+      hit += intersect_cone(ray, pa, pb, ra, rb, dir, t, p, n);
     }
 
-    if (intersect_cap(ray, pa, pb, pac, rac, dir, frame, sign, tuv, t, p, n)) {
-      if (sign > 0) {
-        tuv = {tuv.x, (lb + lc + 2 * (tuv.y - 0.5f) * la) / (lb + lc + la)};
-      } else {
-        tuv = {tuv.x, (2 * tuv.y * la) / (lb + lc + la)};
-      }
-      hit = true;
-    }
-
-    if (intersect_cap(
-            ray, pb, pa, pbc, rbc, -dir, frame, -sign, tuv, t, p, n)) {
-      if (sign > 0) {
-        tuv = {tuv.x, (2 * tuv.y * lb) / (lb + lc + la)};
-      } else {
-        tuv = {tuv.x, (la + lc + 2 * (tuv.y - 0.5f) * lb) / (lb + lc + la)};
-      }
-      hit = true;
-    }
+    hit += intersect_cap(ray, pa, pb, pac, rac, dir, t, p, n);
+    hit += intersect_cap(ray, pb, pa, pbc, rbc, -dir, t, p, n);
 
     if (!hit) return false;
 
+    auto d  = dot(p - p0, normalize(p1 - p0));
+    auto pt = p0 + d * normalize(p1 - p0);
+    auto v  = sign(d) * distance(pt, p0) / l;
+
     // intersection occurred: set params and exit
-    uv   = tuv;
+    uv   = {0.5, v};
     dist = t;
     pos  = p;
     norm = n;
