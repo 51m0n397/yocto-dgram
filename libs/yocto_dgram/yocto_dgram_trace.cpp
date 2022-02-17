@@ -186,7 +186,7 @@ namespace yocto {
 
     if (!intersections.intersections.empty()) {
       auto uv = intersections.intersections[0].uv;
-      return {fmod(uv.x, 1.0f), fmod(uv.y, 1.0f), 0, 1};
+      return {uv.x, uv.y, 0, 1};
     }
 
     return vec4f{0, 0, 0, 0};
