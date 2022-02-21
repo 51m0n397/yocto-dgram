@@ -119,9 +119,9 @@ namespace yocto {
     auto& dshape   = scene.shapes[object.shape];
     auto& material = scene.materials[object.material];
 
-    auto thickness      = orthographic ? material.thickness * film.x *
-                                        camera_distance / (2 * lens * scale)
-                                       : material.thickness * film.x / (2 * size.x);
+    auto radius = orthographic ? material.thickness * film.x * camera_distance /
+                                     (2 * lens * scale)
+                               : material.thickness * film.x / (2 * size.x);
     auto plane_distance = -lens * scale / size.x;
 
     for (auto& pos : dshape.positions) {
@@ -131,7 +131,7 @@ namespace yocto {
 
       // radius
       if (orthographic)
-        shape.radii.push_back(thickness);
+        shape.radii.push_back(radius);
       else {
         // compuing world-space radius from screen-space radius using triangles
         // similarities
@@ -140,7 +140,7 @@ namespace yocto {
         // fix for when point is behind the camera
         if (camera_p.z > 0) camera_p.z = 0;
 
-        shape.radii.push_back(thickness * abs(camera_p.z / plane_distance));
+        shape.radii.push_back(radius * abs(camera_p.z / plane_distance));
       }
     }
 
@@ -251,9 +251,9 @@ namespace yocto {
 
         // computing the arrow-head base center
         auto camera_arrow_center0 = line_point(
-            camera_p0, camera_p1, 8 * thickness / screen_length);
+            camera_p0, camera_p1, 8 * radius / screen_length);
         auto camera_arrow_center1 = line_point(
-            camera_p1, camera_p0, 8 * thickness / screen_length);
+            camera_p1, camera_p0, 8 * radius / screen_length);
 
         auto arrow_center0 = transform_point(
             camera_frame, camera_arrow_center0);
@@ -264,8 +264,8 @@ namespace yocto {
         shape.arrow_centers1.push_back(arrow_center1);
 
         // computing the arrow-head base radius
-        auto arrow_radius0 = thickness * 8 / 3;
-        auto arrow_radius1 = thickness * 8 / 3;
+        auto arrow_radius0 = radius * 8 / 3;
+        auto arrow_radius1 = radius * 8 / 3;
 
         shape.arrow_radii0.push_back(arrow_radius0);
         shape.arrow_radii1.push_back(arrow_radius1);
@@ -301,9 +301,9 @@ namespace yocto {
 
         // computing the arrow-head base center
         auto camera_arrow_center0 = perspective_line_point(
-            camera_p0, camera_p1, 8 * thickness / screen_length);
+            camera_p0, camera_p1, 8 * radius / screen_length);
         auto camera_arrow_center1 = perspective_line_point(
-            camera_p1, camera_p0, 8 * thickness / screen_length);
+            camera_p1, camera_p0, 8 * radius / screen_length);
 
         auto arrow_center0 = transform_point(
             camera_frame, camera_arrow_center0);
@@ -314,9 +314,9 @@ namespace yocto {
         shape.arrow_centers1.push_back(arrow_center1);
 
         // computing the arrow-head base radius
-        auto arrow_radius0 = thickness * 8 / 3 *
+        auto arrow_radius0 = radius * 8 / 3 *
                              abs(camera_arrow_center0.z / plane_distance);
-        auto arrow_radius1 = thickness * 8 / 3 *
+        auto arrow_radius1 = radius * 8 / 3 *
                              abs(camera_arrow_center1.z / plane_distance);
 
         shape.arrow_radii0.push_back(arrow_radius0);
