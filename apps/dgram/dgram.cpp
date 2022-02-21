@@ -89,7 +89,6 @@ void run_render(const render_params& params_) {
   auto aspect = dgram.size.x / dgram.size.y;
   auto width  = params.resolution;
   auto height = (int)round(params.resolution / aspect);
-  if (aspect < 1) swap(width, height);
 
   auto image = make_image(width, height, true);
 
@@ -193,7 +192,6 @@ void run_view(const view_params& params_) {
   auto aspect = dgram.size.x / dgram.size.y;
   auto width  = res;
   auto height = (int)round(res / aspect);
-  if (aspect < 1) swap(width, height);
 
   params.width  = width;
   params.height = height;
