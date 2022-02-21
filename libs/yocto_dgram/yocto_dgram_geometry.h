@@ -88,7 +88,7 @@ namespace yocto {
 namespace yocto {
 
   // Intersect a ray with a point
-  inline bool intersect_point(const ray3f& ray, const vec3f& p, float r,
+  inline bool intersect_point(const ray3f& ray, const vec3f& pc, float r,
       vec2f& uv, float& dist, vec3f& pos, vec3f& norm);
 
   // Intersect a ray with a line
@@ -262,11 +262,11 @@ namespace yocto {
   }
 
   // Intersect a ray with a point
-  inline bool intersect_point(const ray3f& ray, const vec3f& p, float r,
+  inline bool intersect_point(const ray3f& ray, const vec3f& pc, float r,
       vec2f& uv, float& dist, vec3f& pos, vec3f& norm) {
     auto a = dot(ray.d, ray.d);
-    auto b = 2 * dot(ray.d, ray.o - p);
-    auto c = dot(ray.o - p, ray.o - p) - r * r;
+    auto b = 2 * dot(ray.d, ray.o - pc);
+    auto c = dot(ray.o - pc, ray.o - pc) - r * r;
 
     auto t1 = 0.0f;
     auto t2 = 0.0f;
@@ -287,16 +287,15 @@ namespace yocto {
 
     if (!hit) return false;
 
-    // compute local point for uvs
-    auto pl = ray.o + t * ray.d;
-    auto n  = normalize(pl - p);
-    auto u  = (pif - atan2(n.z, n.x)) / (2 * pif);
-    auto v  = (pif - 2 * asin(n.y)) / (2 * pif);
+    auto p = ray.o + t * ray.d;
+    auto n = normalize(p - pc);
+    auto u = (pif - atan2(n.z, n.x)) / (2 * pif);
+    auto v = (pif - 2 * asin(n.y)) / (2 * pif);
 
     // intersection occurred: set params and exit
     uv   = {u, v};
     dist = t;
-    pos  = pl;
+    pos  = p;
     norm = n;
     return true;
   }
