@@ -193,13 +193,13 @@ namespace yocto {
     if (ea == line_end::stealth_arrow) {
       rac = ra * 4;
     } else if (ea == line_end::triangle_arrow) {
-      rac = ra * 4 / sqrt(2.0);
+      rac = ra * 8 / 3;
     }
 
     if (eb == line_end::stealth_arrow) {
       rbc = rb * 4;
     } else if (eb == line_end::triangle_arrow) {
-      rbc = rb * 4 / sqrt(2.0);
+      rbc = rb * 8 / 3;
     }
 
     if (ra != rb) {  // Cone

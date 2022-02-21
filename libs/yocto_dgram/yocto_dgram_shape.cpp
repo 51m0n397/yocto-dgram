@@ -225,37 +225,50 @@ namespace yocto {
 
       if (orthographic) {
         // computing the line scree-space length
-        auto screen_p0 = transform_point(
-            camera_frame, vec3f{camera_p0.x, camera_p0.y, 0});
-        auto screen_p1 = transform_point(
-            camera_frame, vec3f{camera_p1.x, camera_p1.y, 0});
+        auto screen_camera_p0 = vec3f{camera_p0.x, camera_p0.y, plane_distance};
+        auto screen_camera_p1 = vec3f{camera_p1.x, camera_p1.y, plane_distance};
 
-        shape.line_lengths.push_back(distance(screen_p0, screen_p1));
+        auto screen_p0 = transform_point(camera_frame, screen_camera_p0);
+        auto screen_p1 = transform_point(camera_frame, screen_camera_p1);
+
+        auto screen_length = distance(screen_p0, screen_p1);
+
+        shape.line_lengths.push_back(screen_length);
 
         // computing the line direction in screen-space
-        auto world_dir  = normalize(p1 - p0);
-        auto camera_dir = transform_direction(inverse(camera_frame), world_dir);
-
-        auto screen_dir = transform_direction(
-            camera_frame, vec3f{camera_dir.x, camera_dir.y, 0});
-        auto screen_dir_45_0 = transform_direction(camera_frame,
-            vec3f{camera_dir.x + camera_dir.y, camera_dir.y - camera_dir.x, 0});
-        auto screen_dir_45_1 = transform_direction(camera_frame,
-            vec3f{camera_dir.x - camera_dir.y, camera_dir.y + camera_dir.x, 0});
+        auto screen_camera_dir = normalize(screen_camera_p1 - screen_camera_p0);
+        auto screen_dir        = normalize(screen_p1 - screen_p0);
+        auto screen_dir_45_0   = transform_direction(
+              camera_frame, vec3f{screen_camera_dir.x + screen_camera_dir.y,
+                              screen_camera_dir.y - screen_camera_dir.x, 0});
+        auto screen_dir_45_1 = transform_direction(
+            camera_frame, vec3f{screen_camera_dir.x - screen_camera_dir.y,
+                              screen_camera_dir.y + screen_camera_dir.x, 0});
 
         shape.screen_line_dirs.push_back(screen_dir);
         shape.screen_line_dirs_45_0.push_back(screen_dir_45_0);
         shape.screen_line_dirs_45_1.push_back(screen_dir_45_1);
 
         // computing the arrow-head base center
-        shape.arrow_centers0.push_back(
-            p0 + 8 * thickness / dot(world_dir, screen_dir) * world_dir);
-        shape.arrow_centers1.push_back(
-            p1 - 8 * thickness / dot(world_dir, screen_dir) * world_dir);
+        auto camera_arrow_center0 = line_point(
+            camera_p0, camera_p1, 8 * thickness / screen_length);
+        auto camera_arrow_center1 = line_point(
+            camera_p1, camera_p0, 8 * thickness / screen_length);
+
+        auto arrow_center0 = transform_point(
+            camera_frame, camera_arrow_center0);
+        auto arrow_center1 = transform_point(
+            camera_frame, camera_arrow_center1);
+
+        shape.arrow_centers0.push_back(arrow_center0);
+        shape.arrow_centers1.push_back(arrow_center1);
 
         // computing the arrow-head base radius
-        shape.arrow_radii0.push_back(4 / sqrt(2.0) * thickness);
-        shape.arrow_radii1.push_back(4 / sqrt(2.0) * thickness);
+        auto arrow_radius0 = thickness * 8 / 3;
+        auto arrow_radius1 = thickness * 8 / 3;
+
+        shape.arrow_radii0.push_back(arrow_radius0);
+        shape.arrow_radii1.push_back(arrow_radius1);
       } else {
         // fix for when point is behind the camera
         if (camera_p0.z >= 0) camera_p0.z = -ray_eps;
@@ -301,9 +314,9 @@ namespace yocto {
         shape.arrow_centers1.push_back(arrow_center1);
 
         // computing the arrow-head base radius
-        auto arrow_radius0 = thickness * 4 / sqrt(2.0) *
+        auto arrow_radius0 = thickness * 8 / 3 *
                              abs(camera_arrow_center0.z / plane_distance);
-        auto arrow_radius1 = thickness * 4 / sqrt(2.0) *
+        auto arrow_radius1 = thickness * 8 / 3 *
                              abs(camera_arrow_center1.z / plane_distance);
 
         shape.arrow_radii0.push_back(arrow_radius0);
