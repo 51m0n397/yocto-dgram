@@ -208,12 +208,12 @@ namespace yocto {
       // Computing ends' parameters
       if (ea == line_end::cap) {
         rac = ra / cosa;
-        pac = o + dir * ((double)oa + (double)tga * (double)rac);
+        pac = o + dir * ((double)oa + (double)tga * (double)ra);
       }
 
       if (eb == line_end::cap) {
         rbc = rb / cosa;
-        pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
+        pbc = o + dir * ((double)ob + (double)tga * (double)rb);
       }
     }
 
@@ -585,12 +585,12 @@ namespace yocto {
         // Computing ends' parameters
         if (ea == line_end::cap) {
           rac = ra / cosa;
-          pac = o + dir * ((double)oa + (double)tga * (double)rac);
+          pac = o + dir * ((double)oa + (double)tga * (double)ra);
         }
 
         if (eb == line_end::cap) {
           rbc = rb / cosa;
-          pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
+          pbc = o + dir * ((double)ob + (double)tga * (double)rb);
         }
 
         hit += intersect_cone(ray, pa, pb, ra, rb, dir, t, p, n);
@@ -693,10 +693,10 @@ namespace yocto {
 
       // Computing ends' parameters
       rac = ra / cosa;
-      pac = o + dir * ((double)oa + (double)tga * (double)rac);
+      pac = o + dir * ((double)oa + (double)tga * (double)ra);
 
       rbc = rb / cosa;
-      pbc = o + dir * ((double)ob + (double)tga * (double)rbc);
+      pbc = o + dir * ((double)ob + (double)tga * (double)rb);
 
       hit += intersect_cone(ray, pa, pb, ra, rb, dir, t, p, n);
     }
