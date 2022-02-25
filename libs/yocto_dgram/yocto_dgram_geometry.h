@@ -174,7 +174,6 @@ namespace yocto {
                                     // along the cone's axis, from pa
     auto ob = oa + l;               // Distance of the apex of the cone
                                     // along the cone's axis, from pb
-    auto o   = pa - dir * oa;       // Cone's apex point
     auto tga = ((double)rb - (double)ra) /
                (double)l;              // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
@@ -208,12 +207,12 @@ namespace yocto {
       // Computing ends' parameters
       if (ea == line_end::cap) {
         rac = ra / cosa;
-        pac = o + dir * ((double)oa + (double)tga * (double)ra);
+        pac = pa + dir * ((double)tga * (double)rac);
       }
 
       if (eb == line_end::cap) {
         rbc = rb / cosa;
-        pbc = o + dir * ((double)ob + (double)tga * (double)rb);
+        pbc = pb + dir * ((double)tga * (double)rbc);
       }
     }
 
@@ -554,7 +553,6 @@ namespace yocto {
                                     // along the cone's axis, from pa
     auto ob = oa + l;               // Distance of the apex of the cone
                                     // along the cone's axis, from pb
-    auto o   = pa - dir * oa;       // Cone's apex point
     auto tga = ((double)rb - (double)ra) /
                (double)l;              // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
@@ -585,12 +583,12 @@ namespace yocto {
         // Computing ends' parameters
         if (ea == line_end::cap) {
           rac = ra / cosa;
-          pac = o + dir * ((double)oa + (double)tga * (double)ra);
+          pac = pa + dir * ((double)tga * (double)rac);
         }
 
         if (eb == line_end::cap) {
           rbc = rb / cosa;
-          pbc = o + dir * ((double)ob + (double)tga * (double)rb);
+          pbc = pb + dir * ((double)tga * (double)rbc);
         }
 
         hit += intersect_cone(ray, pa, pb, ra, rb, dir, t, p, n);
@@ -666,7 +664,6 @@ namespace yocto {
                                     // along the cone's axis, from pa
     auto ob = oa + l;               // Distance of the apex of the cone
                                     // along the cone's axis, from pb
-    auto o   = pa - dir * oa;       // Cone's apex point
     auto tga = ((double)rb - (double)ra) /
                (double)l;              // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
@@ -693,10 +690,10 @@ namespace yocto {
 
       // Computing ends' parameters
       rac = ra / cosa;
-      pac = o + dir * ((double)oa + (double)tga * (double)ra);
+      pac = pa + dir * ((double)tga * (double)rac);
 
       rbc = rb / cosa;
-      pbc = o + dir * ((double)ob + (double)tga * (double)rb);
+      pbc = pb + dir * ((double)tga * (double)rbc);
 
       hit += intersect_cone(ray, pa, pb, ra, rb, dir, t, p, n);
     }
