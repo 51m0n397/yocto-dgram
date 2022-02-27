@@ -235,21 +235,7 @@ namespace yocto {
 
         shape.line_lengths.push_back(screen_length);
 
-        // computing the line direction in screen-space
-        auto screen_camera_dir = normalize(screen_camera_p1 - screen_camera_p0);
-        auto screen_dir        = normalize(screen_p1 - screen_p0);
-        auto screen_dir_45_0   = transform_direction(
-              camera_frame, vec3f{screen_camera_dir.x + screen_camera_dir.y,
-                              screen_camera_dir.y - screen_camera_dir.x, 0});
-        auto screen_dir_45_1 = transform_direction(
-            camera_frame, vec3f{screen_camera_dir.x - screen_camera_dir.y,
-                              screen_camera_dir.y + screen_camera_dir.x, 0});
-
-        shape.screen_line_dirs.push_back(screen_dir);
-        shape.screen_line_dirs_45_0.push_back(screen_dir_45_0);
-        shape.screen_line_dirs_45_1.push_back(screen_dir_45_1);
-
-        // computing the arrow-head base center
+        // computing the arrow-heads base centers
         auto camera_arrow_center0 = line_point(
             camera_p0, camera_p1, 8 * radius / screen_length);
         auto camera_arrow_center1 = line_point(
@@ -263,12 +249,29 @@ namespace yocto {
         shape.arrow_centers0.push_back(arrow_center0);
         shape.arrow_centers1.push_back(arrow_center1);
 
-        // computing the arrow-head base radius
+        // computing the arrow-heads base radii
         auto arrow_radius0 = radius * 8 / 3;
         auto arrow_radius1 = radius * 8 / 3;
 
         shape.arrow_radii0.push_back(arrow_radius0);
         shape.arrow_radii1.push_back(arrow_radius1);
+
+        // computing the truncation planes normals
+        auto screen_camera_dir = normalize(screen_camera_p1 - screen_camera_p0);
+        auto screen_dir        = normalize(screen_p1 - screen_p0);
+        auto screen_dir_45a    = transform_direction(
+               camera_frame, vec3f{screen_camera_dir.x + screen_camera_dir.y,
+                              screen_camera_dir.y - screen_camera_dir.x, 0});
+        auto screen_dir_45b = transform_direction(
+            camera_frame, vec3f{screen_camera_dir.x - screen_camera_dir.y,
+                              screen_camera_dir.y + screen_camera_dir.x, 0});
+
+        shape.plane_norms_0.push_back(screen_dir);
+        shape.plane_45a_norms_0.push_back(screen_dir_45a);
+        shape.plane_45b_norms_0.push_back(screen_dir_45b);
+        shape.plane_norms_1.push_back(-screen_dir);
+        shape.plane_45a_norms_1.push_back(-screen_dir_45a);
+        shape.plane_45b_norms_1.push_back(-screen_dir_45b);
       } else {
         // fix for when point is behind the camera
         if (camera_p0.z >= 0) camera_p0.z = -ray_eps;
@@ -285,21 +288,7 @@ namespace yocto {
 
         shape.line_lengths.push_back(screen_length);
 
-        // computing the line direction in screen-space
-        auto screen_camera_dir = normalize(screen_camera_p1 - screen_camera_p0);
-        auto screen_dir        = normalize(screen_p1 - screen_p0);
-        auto screen_dir_45_0   = transform_direction(
-              camera_frame, vec3f{screen_camera_dir.x + screen_camera_dir.y,
-                              screen_camera_dir.y - screen_camera_dir.x, 0});
-        auto screen_dir_45_1 = transform_direction(
-            camera_frame, vec3f{screen_camera_dir.x - screen_camera_dir.y,
-                              screen_camera_dir.y + screen_camera_dir.x, 0});
-
-        shape.screen_line_dirs.push_back(screen_dir);
-        shape.screen_line_dirs_45_0.push_back(screen_dir_45_0);
-        shape.screen_line_dirs_45_1.push_back(screen_dir_45_1);
-
-        // computing the arrow-head base center
+        // computing the arrow-heads base centers
         auto camera_arrow_center0 = perspective_line_point(
             camera_p0, camera_p1, 8 * radius / screen_length);
         auto camera_arrow_center1 = perspective_line_point(
@@ -313,7 +302,7 @@ namespace yocto {
         shape.arrow_centers0.push_back(arrow_center0);
         shape.arrow_centers1.push_back(arrow_center1);
 
-        // computing the arrow-head base radius
+        // computing the arrow-heads base radii
         auto arrow_radius0 = radius * 8 / 3 *
                              abs(camera_arrow_center0.z / plane_distance);
         auto arrow_radius1 = radius * 8 / 3 *
@@ -321,6 +310,28 @@ namespace yocto {
 
         shape.arrow_radii0.push_back(arrow_radius0);
         shape.arrow_radii1.push_back(arrow_radius1);
+
+        // computing the truncation planes normals
+        auto screen_camera_dir = normalize(screen_camera_p1 - screen_camera_p0);
+        auto screen_dir        = normalize(screen_p1 - screen_p0);
+        auto screen_dir_45a    = transform_direction(
+               camera_frame, vec3f{screen_camera_dir.x + screen_camera_dir.y,
+                              screen_camera_dir.y - screen_camera_dir.x, 0});
+        auto screen_dir_45b = transform_direction(
+            camera_frame, vec3f{screen_camera_dir.x - screen_camera_dir.y,
+                              screen_camera_dir.y + screen_camera_dir.x, 0});
+
+        auto ray0 = transform_direction(camera_frame, camera_arrow_center0);
+        auto ray1 = transform_direction(camera_frame, camera_arrow_center1);
+
+        shape.plane_norms_0.push_back(orthonormalize(screen_dir, ray0));
+        shape.plane_45a_norms_0.push_back(orthonormalize(screen_dir_45a, ray0));
+        shape.plane_45b_norms_0.push_back(orthonormalize(screen_dir_45b, ray0));
+        shape.plane_norms_1.push_back(orthonormalize(-screen_dir, ray1));
+        shape.plane_45a_norms_1.push_back(
+            orthonormalize(-screen_dir_45a, ray1));
+        shape.plane_45b_norms_1.push_back(
+            orthonormalize(-screen_dir_45b, ray1));
       }
     }
 

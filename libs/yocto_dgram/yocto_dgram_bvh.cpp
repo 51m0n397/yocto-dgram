@@ -389,18 +389,25 @@ namespace yocto {
             }
           } else if (i -= shape.points.size(), size += shape.lines.size();
                      prim < size) {
-            auto& l                    = shape.lines[i];
-            auto& end                  = shape.ends[i];
-            auto& screen_line_dir      = shape.screen_line_dirs[i];
-            auto& screen_line_dir_45_0 = shape.screen_line_dirs_45_0[i];
-            auto& screen_line_dir_45_1 = shape.screen_line_dirs_45_1[i];
-            auto& arrow_center0        = shape.arrow_centers0[i];
-            auto& arrow_center1        = shape.arrow_centers1[i];
-            auto& arrow_radius0        = shape.arrow_radii0[i];
-            auto& arrow_radius1        = shape.arrow_radii1[i];
+            auto& l   = shape.lines[i];
+            auto& end = shape.ends[i];
+
+            auto& plane_norm_0     = shape.plane_norms_0[i];
+            auto& plane_norm_1     = shape.plane_norms_1[i];
+            auto& plane_45a_norm_0 = shape.plane_45a_norms_0[i];
+            auto& plane_45a_norm_1 = shape.plane_45a_norms_1[i];
+            auto& plane_45b_norm_0 = shape.plane_45b_norms_0[i];
+            auto& plane_45b_norm_1 = shape.plane_45b_norms_1[i];
+
+            auto& arrow_center0 = shape.arrow_centers0[i];
+            auto& arrow_center1 = shape.arrow_centers1[i];
+            auto& arrow_radius0 = shape.arrow_radii0[i];
+            auto& arrow_radius1 = shape.arrow_radii1[i];
+
             if (intersect_line(ray, shape.positions[l.x], shape.positions[l.y],
                     shape.radii[l.x], shape.radii[l.y], end.a, end.b,
-                    screen_line_dir, screen_line_dir_45_0, screen_line_dir_45_1,
+                    plane_norm_0, plane_norm_1, plane_45a_norm_0,
+                    plane_45a_norm_1, plane_45b_norm_0, plane_45b_norm_1,
                     arrow_center0, arrow_center1, arrow_radius0, arrow_radius1,
                     uv, dist, pos, norm, hit_arrow)) {
               if (dist < ray.tmax - ray_eps)

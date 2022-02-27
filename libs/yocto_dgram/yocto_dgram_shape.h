@@ -60,18 +60,21 @@ namespace yocto {
     vector<vec4i> quads     = {};
     vector<vec2i> borders   = {};
 
-    vector<vec4f>     fills                 = {};
-    vector<line_ends> ends                  = {};
-    vector<float>     radii                 = {};
-    vector<vec3f>     screen_line_dirs      = {};
-    vector<vec3f>     screen_line_dirs_45_0 = {};
-    vector<vec3f>     screen_line_dirs_45_1 = {};
-    vector<float>     arrow_radii0          = {};
-    vector<float>     arrow_radii1          = {};
-    vector<vec3f>     arrow_centers0        = {};
-    vector<vec3f>     arrow_centers1        = {};
-    vector<float>     line_lengths          = {};
-    vector<float>     border_lengths        = {};
+    vector<vec4f>     fills            = {};
+    vector<line_ends> ends             = {};
+    vector<float>     radii            = {};
+    vector<vec3f>     plane_norms_0     = {};
+    vector<vec3f>     plane_norms_1     = {};
+    vector<vec3f>     plane_45a_norms_0 = {};
+    vector<vec3f>     plane_45a_norms_1 = {};
+    vector<vec3f>     plane_45b_norms_0 = {};
+    vector<vec3f>     plane_45b_norms_1 = {};
+    vector<float>     arrow_radii0     = {};
+    vector<float>     arrow_radii1     = {};
+    vector<vec3f>     arrow_centers0   = {};
+    vector<vec3f>     arrow_centers1   = {};
+    vector<float>     line_lengths     = {};
+    vector<float>     border_lengths   = {};
 
     int material = -1;
   };
