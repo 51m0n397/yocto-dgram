@@ -636,10 +636,10 @@ namespace yocto {
 
     auto d  = dot(p - p0, normalize(p1 - p0));
     auto pt = p0 + d * normalize(p1 - p0);
-    auto v  = sign(d) * distance(pt, p0) / l;
+    auto u  = sign(d) * distance(pt, p0) / l;
 
     // intersection occurred: set params and exit
-    uv   = {0.5, v};
+    uv   = {u, 0};
     dist = t;
     pos  = p;
     norm = n;
