@@ -459,10 +459,12 @@ namespace yocto {
     auto& p0 = shape.positions[lines[element.index].x];
     auto& p1 = shape.positions[lines[element.index].y];
 
+    // getting the positions on the image plane
     auto camera_p  = transform_point(inverse(camera_frame), p);
     auto camera_p0 = transform_point(inverse(camera_frame), p0);
     auto camera_p1 = transform_point(inverse(camera_frame), p1);
 
+    // summing the lengths of the preceding lines
     for (auto idx = 0; idx < element.index; idx++) {
       u += lengths[idx];
     }
