@@ -196,72 +196,79 @@ namespace yocto {
     }
 
     // Computing text positions
-    auto p = transform_point(object.frame, label.positions[j]);
+    auto p        = transform_point(object.frame, label.positions[j]);
+    auto camera_p = transform_point(inverse(camera_frame), p);
 
     auto offset   = label.offsets[j];
     auto baseline = 7.0f;
 
-    auto align_x0 = 0.0f;
-    auto align_x1 = 0.0f;
-    auto align_x2 = 0.0f;
-    auto align_x3 = 0.0f;
+    auto plane_distance = -lens * scale / size.x;
 
-    if (label.alignments[j].x > 0) {
-      align_x0 = 1.0f;
-      align_x1 = 0.0f;
-      align_x2 = 0.0f;
-      align_x3 = 1.0f;
-    } else if (label.alignments[j].x < 0) {
-      align_x0 = 0.0f;
-      align_x1 = -1.0f;
-      align_x2 = -1.0f;
-      align_x3 = 0.0f;
-    } else {
-      align_x0 = 0.5f;
-      align_x1 = -0.5f;
-      align_x2 = -0.5f;
-      align_x3 = 0.5f;
+    // fix for when point is behind the camera
+    if (camera_p.z >= 0) camera_p.z = -ray_eps;
+
+    auto im_w = film.x;
+    auto im_h = film.y;
+    if (orthographic) {
+      im_w *= size.x * camera_distance / (scale * lens);
+      im_h *= size.x * camera_distance / (scale * lens);
     }
 
-    auto align_y0 = -1.0f;
-    auto align_y1 = -1.0f;
+    auto screen_off =
+        orthographic
+            ? vec3f{offset.x * film.x * camera_distance / (scale * lens),
+                  (-baseline - offset.y) * film.x * camera_distance /
+                      (scale * lens),
+                  0}
+            : vec3f{offset.x * film.x / size.x,
+                  (-baseline - offset.y) * film.x / size.x, 0};
+
+    float align_x0, align_x1, align_x2, align_x3;
+
+    if (label.alignments[j].x > 0) {
+      align_x0 = im_w;
+      align_x1 = 0.0f;
+      align_x2 = 0.0f;
+      align_x3 = im_w;
+    } else if (label.alignments[j].x < 0) {
+      align_x0 = 0.0f;
+      align_x1 = -im_w;
+      align_x2 = -im_w;
+      align_x3 = 0.0f;
+    } else {
+      align_x0 = im_w / 2;
+      align_x1 = -im_w / 2;
+      align_x2 = -im_w / 2;
+      align_x3 = im_w / 2;
+    }
+
+    auto align_y0 = -im_h;
+    auto align_y1 = -im_h;
     auto align_y2 = 0.0f;
     auto align_y3 = 0.0f;
 
     vec3f p0, p1, p2, p3;
 
+    auto screen_camera_p = orthographic
+                               ? vec3f{camera_p.x, camera_p.y, 0}
+                               : screen_space_point(camera_p, plane_distance);
+    screen_camera_p += screen_off;
+
+    auto screen_camera_p0 = screen_camera_p - vec3f{align_x0, align_y0, 0};
+    auto screen_camera_p1 = screen_camera_p - vec3f{align_x1, align_y1, 0};
+    auto screen_camera_p2 = screen_camera_p - vec3f{align_x2, align_y2, 0};
+    auto screen_camera_p3 = screen_camera_p - vec3f{align_x3, align_y3, 0};
+
     if (orthographic) {
-      auto s    = size.x * camera_distance / (scale * lens);
-      auto poff = transform_point(inverse(camera_frame), p) +
-                  vec3f{offset.x * film.x * camera_distance / (scale * lens),
-                      (-baseline - offset.y) * film.x * camera_distance /
-                          (scale * lens),
-                      0};
-      p0 = poff - vec3f{align_x0 * film.x * s, align_y0 * film.y * s, 0};
-      p1 = poff - vec3f{align_x1 * film.x * s, align_y1 * film.y * s, 0};
-      p2 = poff - vec3f{align_x2 * film.x * s, align_y2 * film.y * s, 0};
-      p3 = poff - vec3f{align_x3 * film.x * s, align_y3 * film.y * s, 0};
-      p0 = transform_point(camera_frame, p0);
-      p1 = transform_point(camera_frame, p1);
-      p2 = transform_point(camera_frame, p2);
-      p3 = transform_point(camera_frame, p3);
+      p0 = transform_point(camera_frame,
+          vec3f{screen_camera_p0.x, screen_camera_p0.y, camera_p.z});
+      p1 = transform_point(camera_frame,
+          vec3f{screen_camera_p1.x, screen_camera_p1.y, camera_p.z});
+      p2 = transform_point(camera_frame,
+          vec3f{screen_camera_p2.x, screen_camera_p2.y, camera_p.z});
+      p3 = transform_point(camera_frame,
+          vec3f{screen_camera_p3.x, screen_camera_p3.y, camera_p.z});
     } else {
-      auto plane_distance = lens * scale / size.x;
-
-      auto camera_p        = transform_point(inverse(camera_frame), p);
-      auto screen_camera_p = screen_space_point(camera_p, plane_distance);
-      screen_camera_p += vec3f{-offset.x / size.x * film.x,
-          (baseline + offset.y) / size.x * film.x, 0};
-
-      auto screen_camera_p0 = screen_camera_p +
-                              vec3f{align_x0 * film.x, align_y0 * film.y, 0};
-      auto screen_camera_p1 = screen_camera_p +
-                              vec3f{align_x1 * film.x, align_y1 * film.y, 0};
-      auto screen_camera_p2 = screen_camera_p +
-                              vec3f{align_x2 * film.x, align_y2 * film.y, 0};
-      auto screen_camera_p3 = screen_camera_p +
-                              vec3f{align_x3 * film.x, align_y3 * film.y, 0};
-
       p0 = transform_point(
           camera_frame, world_space_point(screen_camera_p0, camera_p.z));
       p1 = transform_point(
