@@ -169,14 +169,13 @@ namespace yocto {
       eb = e0;
     }
 
-    auto dir = normalize(pb - pa);  // The direction of the line
-    auto l   = distance(pb, pa);    // Distance between the two ends
-    auto oa  = ra * l / (rb - ra);  // Distance of the apex of the cone
-                                    // along the cone's axis, from pa
-    auto ob = oa + l;               // Distance of the apex of the cone
-                                    // along the cone's axis, from pb
-    auto tga = ((double)rb - (double)ra) /
-               (double)l;              // Tangent of Cone's angle
+    auto dir = normalize(pb - pa);     // The direction of the line
+    auto l   = distance(pb, pa);       // Distance between the two ends
+    auto oa  = ra * l / (rb - ra);     // Distance of the apex of the cone
+                                       // along the cone's axis, from pa
+    auto ob = oa + l;                  // Distance of the apex of the cone
+                                       // along the cone's axis, from pb
+    auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
 
     if (cosa2 > 0.999995) {
@@ -208,12 +207,12 @@ namespace yocto {
       // Computing ends' parameters
       if (ea == line_end::cap) {
         rac = ra / cosa;
-        pac = pa + dir * ((double)tga * (double)rac);
+        pac = pa + dir * (tga * rac);
       }
 
       if (eb == line_end::cap) {
         rbc = rb / cosa;
-        pbc = pb + dir * ((double)tga * (double)rbc);
+        pbc = pb + dir * (tga * rbc);
       }
     }
 
@@ -239,23 +238,6 @@ namespace yocto {
       float q = (b > 0) ? -0.5 * (b + sqrt(discr)) : -0.5 * (b - sqrt(discr));
       x0      = q / a;
       x1      = c / q;
-    }
-
-    return true;
-  }
-
-  inline bool solve_quadratic(const double& a, const double& b, const double& c,
-      double& x0, double& x1) {
-    // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection
-    double discr = b * b - 4 * a * c;
-    if (discr < 0)
-      return false;
-    else if (discr == 0)
-      x0 = x1 = -0.5 * b / a;
-    else {
-      double q = (b > 0) ? -0.5 * (b + sqrt(discr)) : -0.5 * (b - sqrt(discr));
-      x0       = q / a;
-      x1       = c / q;
     }
 
     return true;
@@ -356,24 +338,22 @@ namespace yocto {
     auto o = r0 * ab / (r1 - r0);  // Distance of the apex of the cone along the
                                    // cone's axis, from p0
     auto pa    = p0 - dir * o;     // Cone's apex point
-    auto tga   = ((double)r1 - (double)r0) / (double)ab;
+    auto tga   = (r1 - r0) / ab;
     auto cosa2 = 1 / (1 + tga * tga);
 
     auto co = ray.o - pa;
 
-    auto a = (double)dot(ray.d, dir) * (double)dot(ray.d, dir) - cosa2;
-    auto b = 2 * ((double)dot(ray.d, dir) * (double)dot(co, dir) -
-                     (double)dot(ray.d, co) * cosa2);
-    auto c = (double)dot(co, dir) * (double)dot(co, dir) -
-             (double)dot(co, co) * cosa2;
+    auto a = dot(ray.d, dir) * dot(ray.d, dir) - cosa2;
+    auto b = 2 * (dot(ray.d, dir) * dot(co, dir) - dot(ray.d, co) * cosa2);
+    auto c = dot(co, dir) * dot(co, dir) - dot(co, co) * cosa2;
 
-    auto t1 = 0.0;
-    auto t2 = 0.0;
+    auto t1 = 0.0f;
+    auto t2 = 0.0f;
 
     if (!solve_quadratic(a, b, c, t1, t2)) return false;
 
-    auto q1 = ray.o + (float)t1 * ray.d;
-    auto q2 = ray.o + (float)t2 * ray.d;
+    auto q1 = ray.o + t1 * ray.d;
+    auto q2 = ray.o + t2 * ray.d;
 
     auto hit = false;
     auto t   = dist;
@@ -409,24 +389,22 @@ namespace yocto {
       const vec3f& p1, float r, const vec3f& dir, const vec3f& pn0,
       const vec3f& pn1, float& dist, vec3f& pos, vec3f& norm) {
     auto ab    = distance(p1, p0);
-    auto tga   = ((double)r) / (double)ab;
+    auto tga   = (r) / ab;
     auto cosa2 = 1 / (1 + tga * tga);
 
     auto co = ray.o - p0;
 
-    auto a = (double)dot(ray.d, dir) * (double)dot(ray.d, dir) - cosa2;
-    auto b = 2 * ((double)dot(ray.d, dir) * (double)dot(co, dir) -
-                     (double)dot(ray.d, co) * cosa2);
-    auto c = (double)dot(co, dir) * (double)dot(co, dir) -
-             (double)dot(co, co) * cosa2;
+    auto a = dot(ray.d, dir) * dot(ray.d, dir) - cosa2;
+    auto b = 2 * (dot(ray.d, dir) * dot(co, dir) - dot(ray.d, co) * cosa2);
+    auto c = dot(co, dir) * dot(co, dir) - dot(co, co) * cosa2;
 
-    auto t1 = 0.0;
-    auto t2 = 0.0;
+    auto t1 = 0.0f;
+    auto t2 = 0.0f;
 
     if (!solve_quadratic(a, b, c, t1, t2)) return false;
 
-    auto q1 = ray.o + (float)t1 * ray.d;
-    auto q2 = ray.o + (float)t2 * ray.d;
+    auto q1 = ray.o + t1 * ray.d;
+    auto q2 = ray.o + t2 * ray.d;
 
     auto hit = false;
     auto t   = dist;
@@ -544,14 +522,13 @@ namespace yocto {
       pba    = ap0;
     }
 
-    auto dir = normalize(pb - pa);  // The direction of the line
-    auto l   = distance(pb, pa);    // Distance between the two ends
-    auto oa  = ra * l / (rb - ra);  // Distance of the apex of the cone
-                                    // along the cone's axis, from pa
-    auto ob = oa + l;               // Distance of the apex of the cone
-                                    // along the cone's axis, from pb
-    auto tga = ((double)rb - (double)ra) /
-               (double)l;              // Tangent of Cone's angle
+    auto dir = normalize(pb - pa);     // The direction of the line
+    auto l   = distance(pb, pa);       // Distance between the two ends
+    auto oa  = ra * l / (rb - ra);     // Distance of the apex of the cone
+                                       // along the cone's axis, from pa
+    auto ob = oa + l;                  // Distance of the apex of the cone
+                                       // along the cone's axis, from pb
+    auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
 
     if (cosa2 > 0.999995) {
@@ -578,12 +555,12 @@ namespace yocto {
       // Computing ends' parameters
       if (ea == line_end::cap) {
         rac = ra / cosa;
-        pac = pa + dir * ((double)tga * (double)rac);
+        pac = pa + dir * (tga * rac);
       }
 
       if (eb == line_end::cap) {
         rbc = rb / cosa;
-        pbc = pb + dir * ((double)tga * (double)rbc);
+        pbc = pb + dir * (tga * rbc);
       }
 
       hit += intersect_cone(ray, pa, pb, ra, rb, dir, t, p, n);
@@ -662,14 +639,13 @@ namespace yocto {
       rb = r0;
     }
 
-    auto dir = normalize(pb - pa);  // The direction of the line
-    auto l   = distance(pb, pa);    // Distance between the two ends
-    auto oa  = ra * l / (rb - ra);  // Distance of the apex of the cone
-                                    // along the cone's axis, from pa
-    auto ob = oa + l;               // Distance of the apex of the cone
-                                    // along the cone's axis, from pb
-    auto tga = ((double)rb - (double)ra) /
-               (double)l;              // Tangent of Cone's angle
+    auto dir = normalize(pb - pa);     // The direction of the line
+    auto l   = distance(pb, pa);       // Distance between the two ends
+    auto oa  = ra * l / (rb - ra);     // Distance of the apex of the cone
+                                       // along the cone's axis, from pa
+    auto ob = oa + l;                  // Distance of the apex of the cone
+                                       // along the cone's axis, from pb
+    auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
 
     if (cosa2 > 0.999995) {
@@ -694,10 +670,10 @@ namespace yocto {
 
       // Computing ends' parameters
       rac = ra / cosa;
-      pac = pa + dir * ((double)tga * (double)rac);
+      pac = pa + dir * (tga * rac);
 
       rbc = rb / cosa;
-      pbc = pb + dir * ((double)tga * (double)rbc);
+      pbc = pb + dir * (tga * rbc);
 
       hit += intersect_cone(ray, pa, pb, ra, rb, dir, t, p, n);
     }
