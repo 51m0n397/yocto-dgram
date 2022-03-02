@@ -447,8 +447,18 @@ namespace yocto {
 
     auto plane_distance = -camera.lens * scale / size.x;
 
-    auto u = 0.0f;
-    auto v = 0.0f;
+    auto camera_scale = camera.orthographic
+                            ? film.x * camera_distance / (camera.lens * scale)
+                            : film.x / (size.x);
+
+    auto r  = material.thickness * camera_scale / 2;
+    auto on = material.dash_on * camera_scale;
+    if (material.dash_cap == dash_cap_type::round) on = max(on, 2 * r);
+    auto phase  = material.dash_phase * camera_scale;
+    auto period = material.dash_period * camera_scale;
+
+    auto xp = 0.0f;
+    auto yp = 0.0f;
 
     auto& lines   = element.primitive == primitive_type::line ? shape.lines
                                                               : shape.borders;
@@ -466,7 +476,7 @@ namespace yocto {
 
     // summing the lengths of the preceding lines
     for (auto idx = 0; idx < element.index; idx++) {
-      u += lengths[idx];
+      xp += lengths[idx];
     }
 
     if (camera.orthographic) {
@@ -483,11 +493,8 @@ namespace yocto {
 
       auto p_sign = sign(dot(screen_p1 - screen_p0, line_p - screen_p0));
 
-      u += p_sign * distance(line_p, screen_p0);
-      u *= scale * camera.lens / (camera_distance * film.x);
-
-      v = distance(line_p, screen_p);
-      v *= scale * camera.lens / (camera_distance * film.x);
+      xp += p_sign * distance(line_p, screen_p0);
+      yp = distance(line_p, screen_p);
     } else {
       // fix for when point is behind the camera
       if (camera_p.z >= 0) camera_p.z = -ray_eps;
@@ -507,31 +514,22 @@ namespace yocto {
 
       auto p_sign = sign(dot(screen_p1 - screen_p0, line_p - screen_p0));
 
-      u += p_sign * distance(line_p, screen_p0);
-      u *= size.x / film.x;
-
-      v = distance(line_p, screen_p);
-      v *= size.x / film.x;
+      xp += p_sign * distance(line_p, screen_p0);
+      yp = distance(line_p, screen_p);
     }
 
-    auto r  = material.thickness / 2;
-    auto on = material.dash_on;
-    if (material.dash_cap == dash_cap_type::round) on = max(on, 2 * r);
+    if (period < on) return true;
 
-    if (material.dash_period < on) return true;
-
-    auto fm = fmod(u + material.dash_phase, material.dash_period);
+    auto fm = fmod(xp + phase, period);
 
     if (material.dash_cap == dash_cap_type::square) return fm < on;
 
     if (fm < r) {
       auto x = r - fm;
-      auto y = v;
-      return pow(x, 2) + pow(y, 2) < pow(r, 2);
+      return pow(x, 2) + pow(yp, 2) < pow(r, 2);
     } else if (fm < on && fm > on - r) {
       auto x = r - on + fm;
-      auto y = v;
-      return pow(x, 2) + pow(y, 2) < pow(r, 2);
+      return pow(x, 2) + pow(yp, 2) < pow(r, 2);
     } else
       return fm < on;
   }
