@@ -210,15 +210,15 @@
           "ends": [
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ],
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ],
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ]
           ]
         },
@@ -265,15 +265,15 @@
           "ends": [
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ],
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ],
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ]
           ]
         },
@@ -329,15 +329,15 @@
           "ends": [
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ],
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ],
             [
               "cap",
-              "stealth_arrow"
+              "triangle_arrow"
             ]
           ]
         },
@@ -992,7 +992,7 @@
               ],
               "offset": [
                 0.0,
-                16.0
+                12.0
               ]
             },
             {
