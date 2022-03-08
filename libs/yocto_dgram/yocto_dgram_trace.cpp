@@ -266,7 +266,17 @@ namespace yocto {
         scene, shapes, bvh, ray, state.rngs[idx], params, true);
     auto text = trace_text(texts, ray, state.rngs[idx], params);
     radiance  = composite(text, radiance);
-    state.image[idx] += radiance;
+    if (radiance.w > 0) {
+      if (state.image[idx].w > 0)
+        state.image[idx] += radiance;
+      else
+        state.image[idx] += radiance +
+                            vec4f{radiance.x, radiance.y, radiance.z, 0} *
+                                state.samples;
+    } else {
+      auto c = xyz(state.image[idx]) / (state.samples + 1);
+      state.image[idx] += {c.x, c.y, c.z, 0};
+    }
   }
 
   void trace_samples(dgram_trace_state& state, const dgram_scene& scene,
