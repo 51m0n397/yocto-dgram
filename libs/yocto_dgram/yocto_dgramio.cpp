@@ -287,9 +287,7 @@ namespace yocto {
               auto& material = scene.materials.emplace_back();
 
               get_opt(jmaterial, "fill", material.fill);
-              material.fill = srgb_to_rgb(material.fill);
               get_opt(jmaterial, "stroke", material.stroke);
-              material.stroke = srgb_to_rgb(material.stroke);
 
               get_opt(jmaterial, "thickness", material.thickness);
 
@@ -315,7 +313,6 @@ namespace yocto {
 
               get_opt(jshape, "positions", shape.positions);
               get_opt(jshape, "fills", shape.fills);
-              for (auto& fill : shape.fills) fill = srgb_to_rgb(fill);
 
               get_opt(jshape, "cull", shape.cull);
               get_opt(jshape, "boundary", shape.boundary);

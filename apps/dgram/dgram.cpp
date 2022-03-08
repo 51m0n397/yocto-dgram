@@ -90,7 +90,7 @@ void run_render(const render_params& params_) {
   auto width  = params.resolution;
   auto height = (int)round(params.resolution / aspect);
 
-  auto image = make_image(width, height, true);
+  auto image = make_image(width, height, false);
 
   if (!params.transparent_background)
     image.pixels = vector<vec4f>(width * height, vec4f{1, 1, 1, 1});
@@ -137,7 +137,7 @@ void run_render(const render_params& params_) {
 
   // save image
   timer = simple_timer{};
-  if (!is_hdr_filename(params.output)) image = tonemap_image(image, 0);
+  if (is_hdr_filename(params.output)) convert_image(image, true);
   save_image(params.output, image);
   print_info("save image: {}", elapsed_formatted(timer));
 }

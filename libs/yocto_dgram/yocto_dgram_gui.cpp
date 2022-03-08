@@ -115,8 +115,7 @@ namespace yocto {
   }
 
   static bool draw_image_inspector(const gui_input& input,
-      const image_data& image, const image_data& display,
-      glimage_params& glparams) {
+      const image_data& image, glimage_params& glparams) {
     if (draw_gui_header("inspect")) {
       draw_gui_slider("zoom", glparams.scale, 0.1f, 10);
       draw_gui_checkbox("fit", glparams.fit);
@@ -125,14 +124,11 @@ namespace yocto {
           {image.width, image.height});
       auto ij     = vec2i{i, j};
       draw_gui_dragger("mouse", ij);
-      auto image_pixel   = zero4f;
-      auto display_pixel = zero4f;
+      auto image_pixel = zero4f;
       if (i >= 0 && i < image.width && j >= 0 && j < image.height) {
-        image_pixel   = image.pixels[j * image.width + i];
-        display_pixel = image.pixels[j * image.width + i];
+        image_pixel = image.pixels[j * image.width + i];
       }
       draw_gui_coloredit("image", image_pixel);
-      draw_gui_coloredit("display", display_pixel);
       end_gui_header();
     }
     return false;
@@ -184,9 +180,8 @@ namespace yocto {
     auto text_edited     = true;
 
     auto renders = vector<image_data>(
-        dgram.scenes.size(), make_image(params.width, params.height, true));
-    auto image   = make_image(params.width, params.height, true);
-    auto display = make_image(params.width, params.height, false);
+        dgram.scenes.size(), make_image(params.width, params.height, false));
+    auto image = make_image(params.width, params.height, false);
 
     // opengl image
     auto glimage  = glimage_state{};
@@ -220,7 +215,7 @@ namespace yocto {
           texts  = trace_texts{};
           state  = make_state(params);
 
-          render = make_image(params.width, params.height, true);
+          render = make_image(params.width, params.height, false);
 
           render_worker = {};
           render_stop   = false;
@@ -287,7 +282,7 @@ namespace yocto {
     callbacks.init = [&](const gui_input& input) {
       auto lock = std::lock_guard{render_mutex};
       init_image(glimage);
-      set_image(glimage, display);
+      set_image(glimage, image);
     };
     callbacks.clear = [&](const gui_input& input) { clear_image(glimage); };
     callbacks.draw  = [&](const gui_input& input) {
@@ -295,14 +290,13 @@ namespace yocto {
       if (render_update) {
         auto lock = std::lock_guard{render_mutex};
 
-        image   = make_image(params.width, params.height, true);
-        display = make_image(params.width, params.height, false);
+        image = make_image(params.width, params.height, false);
 
         if (!transparent_background)
           image.pixels = vector<vec4f>(
               params.width * params.height, vec4f{1, 1, 1, 1});
         for (auto& render : renders) {
-          auto scaled = make_image(params.width, params.height, true);
+          auto scaled = make_image(params.width, params.height, false);
           auto ratio  = params.width / render.width;
           for (auto idx = 0; idx < params.width * params.height; idx++) {
             auto i = idx % scaled.width, j = idx / scaled.width;
@@ -312,9 +306,8 @@ namespace yocto {
           }
           image = composite_image(scaled, image);
         }
-        tonemap_image_mt(display, image, 0);
 
-        set_image(glimage, display);
+        set_image(glimage, image);
         render_update = false;
       }
       update_image_params(input, image, glparams);
@@ -545,7 +538,7 @@ namespace yocto {
         needs_rendering = vector<bool>(dgram.scenes.size(), true);
         reset_display();
       }
-      draw_image_inspector(input, image, display, glparams);
+      draw_image_inspector(input, image, glparams);
     };
     callbacks.uiupdate = [&](const gui_input& input) {
       auto camera = dgram.scenes[selection.scene].cameras[params.camera];

@@ -266,7 +266,6 @@ namespace yocto {
         scene, shapes, bvh, ray, state.rngs[idx], params, true);
     auto text = trace_text(texts, ray, state.rngs[idx], params);
     radiance  = composite(text, radiance);
-    if (!isfinite(radiance)) radiance = {0, 0, 0};
     state.image[idx] += radiance;
   }
 
@@ -298,12 +297,12 @@ namespace yocto {
   }
 
   image_data get_render(const dgram_trace_state& state) {
-    auto image = make_image(state.width, state.height, true);
+    auto image = make_image(state.width, state.height, false);
     get_render(image, state);
     return image;
   }
   void get_render(image_data& image, const dgram_trace_state& state) {
-    check_image(image, state.width, state.height, true);
+    check_image(image, state.width, state.height, false);
     auto scale = 1.0f / (float)state.samples;
     for (auto idx = 0; idx < state.width * state.height; idx++) {
       image.pixels[idx] = state.image[idx] * scale;

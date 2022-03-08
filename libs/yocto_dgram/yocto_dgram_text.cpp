@@ -182,7 +182,7 @@ namespace yocto {
     auto& object   = scene.objects[i];
     auto& label    = scene.labels[object.labels];
     auto& material = scene.materials[object.material];
-    auto  color    = rgb_to_srgb(material.stroke);
+    auto& color    = material.stroke;
 
     if (rerender) {
       text.image = make_text_image(label.texts[j], label.alignments[j].x, color,
@@ -298,7 +298,7 @@ namespace yocto {
       if (object.labels != -1) {
         auto& label    = scene.labels[object.labels];
         auto& material = scene.materials[object.material];
-        auto  color    = rgb_to_srgb(material.stroke);
+        auto& color    = material.stroke;
         for (auto j = 0; j < label.texts.size(); j++) {
           auto& text_image = images.images.emplace_back();
           text_image.image = make_text_image(label.texts[j],
@@ -376,7 +376,7 @@ namespace yocto {
 namespace yocto {
 
   vec4f eval_text(const trace_text& text, const vec2f& uv) {
-    return eval_image(text.image, uv, true);
+    return eval_image(text.image, uv, false);
   }
 
 }  // namespace yocto
