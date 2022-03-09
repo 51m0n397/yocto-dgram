@@ -334,14 +334,12 @@ namespace yocto {
   inline bool intersect_cone(const ray3f& ray, const vec3f& p0, const vec3f& p1,
       float r0, float r1, const vec3f& dir, float& dist, vec3f& pos,
       vec3f& norm) {
-    auto ab = distance(p1, p0);    // Distance between the two ends
-    auto o = r0 * ab / (r1 - r0);  // Distance of the apex of the cone along the
-                                   // cone's axis, from p0
-    auto pa    = p0 - dir * o;     // Cone's apex point
+    auto ab    = distance(p1, p0);  // Distance between the two ends
+    auto pc    = p0 - dir * r0 * ab / (r1 - r0);  // Cone's apex point
     auto tga   = (r1 - r0) / ab;
     auto cosa2 = 1 / (1 + tga * tga);
 
-    auto co = ray.o - pa;
+    auto co = ray.o - pc;
 
     auto a = dot(ray.d, dir) * dot(ray.d, dir) - cosa2;
     auto b = 2 * (dot(ray.d, dir) * dot(co, dir) - dot(ray.d, co) * cosa2);
@@ -375,8 +373,8 @@ namespace yocto {
 
     if (!hit) return false;
 
-    auto cp = p - pa;
-    auto n  = normalize(cp * dot(dir, cp) / dot(cp, cp) - dir);
+    auto ppc = p - pc;
+    auto n   = normalize(ppc * dot(dir, ppc) / dot(ppc, ppc) - dir);
 
     // intersection occurred: set params and exit
     dist = t;
@@ -389,7 +387,7 @@ namespace yocto {
       const vec3f& p1, float r, const vec3f& dir, const vec3f& pn0,
       const vec3f& pn1, float& dist, vec3f& pos, vec3f& norm) {
     auto ab    = distance(p1, p0);
-    auto tga   = (r) / ab;
+    auto tga   = r / ab;
     auto cosa2 = 1 / (1 + tga * tga);
 
     auto co = ray.o - p0;
@@ -531,7 +529,7 @@ namespace yocto {
     auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
 
-    if (cosa2 > 0.999995) {
+    if (cosa2 > 0.9999995) {
       ra = (r0 + r1) / 2;
       rb = ra;
     }
