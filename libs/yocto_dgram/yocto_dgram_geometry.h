@@ -611,7 +611,7 @@ namespace yocto {
 
     auto d  = dot(p - p0, normalize(p1 - p0));
     auto pt = p0 + d * normalize(p1 - p0);
-    auto u  = sign(d) * distance(pt, p0) / l;
+    auto u  = clamp(sign(d) * distance(pt, p0) / l, 0.0f, 1.0f);
 
     // intersection occurred: set params and exit
     uv   = {u, 0};
@@ -683,10 +683,10 @@ namespace yocto {
 
     auto d  = dot(p - p0, normalize(p1 - p0));
     auto pt = p0 + d * normalize(p1 - p0);
-    auto v  = sign(d) * distance(pt, p0) / l;
+    auto u  = clamp(sign(d) * distance(pt, p0) / l, 0.0f, 1.0f);
 
     // intersection occurred: set params and exit
-    uv   = {0.5, v};
+    uv   = {u, 0};
     dist = t;
     pos  = p;
     norm = n;
