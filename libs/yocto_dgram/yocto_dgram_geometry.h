@@ -178,7 +178,7 @@ namespace yocto {
     auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
 
-    if (cosa2 > 0.999995) {
+    if (cosa2 > 0.999999) {
       ra = (r0 + r1) / 2;
       rb = ra;
     }
@@ -529,7 +529,7 @@ namespace yocto {
     auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
 
-    if (cosa2 > 0.9999995) {
+    if (cosa2 > 0.999999) {
       ra = (r0 + r1) / 2;
       rb = ra;
     }
@@ -646,7 +646,7 @@ namespace yocto {
     auto tga   = (rb - ra) / l;        // Tangent of Cone's angle
     auto cosa2 = 1 / (1 + tga * tga);  // Consine^2 of Cone's angle
 
-    if (cosa2 > 0.999995) {
+    if (cosa2 > 0.999999) {
       ra = (r0 + r1) / 2;
       rb = ra;
     }

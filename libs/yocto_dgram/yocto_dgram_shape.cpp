@@ -137,9 +137,6 @@ namespace yocto {
         // similarities
         auto camera_p = transform_point(inverse(camera_frame), p);
 
-        // fix for when point is behind the camera
-        if (camera_p.z > 0) camera_p.z = 0;
-
         shape.radii.push_back(radius * abs(camera_p.z / plane_distance));
       }
     }
@@ -153,64 +150,74 @@ namespace yocto {
 
     // triangles
     if (!dshape.triangles.empty()) {
-      if (!dshape.cull)
-        shape.triangles = dshape.triangles;
-      else {
-        // culling triangles
-        for (auto& triangle : dshape.triangles) {
-          auto p0 = shape.positions[triangle.x];
-          auto p1 = shape.positions[triangle.y];
-          auto p2 = shape.positions[triangle.z];
+      auto culled = vector<vec3i>();
 
-          auto dir = camera_frame.z;
-          if (!orthographic) {
-            auto fcenter = (p0 + p1 + p2) / 3;
-            dir          = camera_frame.o - fcenter;
-          }
+      // culling triangles
+      for (auto& triangle : dshape.triangles) {
+        auto p0 = shape.positions[triangle.x];
+        auto p1 = shape.positions[triangle.y];
+        auto p2 = shape.positions[triangle.z];
 
-          if (dot(dir, cross(p1 - p0, p2 - p0)) < 0) continue;
-          shape.triangles.push_back(triangle);
+        auto dir = camera_frame.z;
+        if (!orthographic) {
+          auto fcenter = (p0 + p1 + p2) / 3;
+          dir          = camera_frame.o - fcenter;
         }
+
+        if (dot(dir, cross(p1 - p0, p2 - p0)) > 0)
+          culled.push_back(triangle);
       }
 
+      if (!dshape.cull)
+        shape.triangles = dshape.triangles;
+      else
+        shape.triangles = culled;
+
       // computing triangles borders
-      auto borders = dshape.boundary ? get_boundary(shape.triangles,
-                                           (int)shape.positions.size())
-                                     : get_edges(shape.triangles);
+      auto borders = dshape.boundary
+                         ? get_boundary(culled, (int)shape.positions.size())
+                         : get_edges(shape.triangles);
 
       shape.borders.insert(shape.borders.end(), borders.begin(), borders.end());
     }
 
     // quads
     if (!dshape.quads.empty()) {
+      auto culled       = vector<vec4i>();
+      auto culled_fills = vector<vec4f>();
+
+      // culling quads
+      for (auto idx = 0; idx < dshape.quads.size(); idx++) {
+        auto& quad = dshape.quads[idx];
+        auto  p0   = shape.positions[quad.x];
+        auto  p1   = shape.positions[quad.y];
+        auto  p2   = shape.positions[quad.z];
+        auto  p3   = shape.positions[quad.w];
+
+        auto dir = camera_frame.z;
+        if (!orthographic) {
+          auto fcenter = (p0 + p1 + p2 + p3) / 4;
+          dir          = camera_frame.o - fcenter;
+        }
+
+        if (dot(dir, cross(p1 - p0, p2 - p0)) > 0) {
+          culled.push_back(quad);
+          if (!dshape.fills.empty()) culled_fills.push_back(dshape.fills[idx]);
+        }
+      }
+
       if (!dshape.cull) {
         shape.quads = dshape.quads;
         shape.fills = dshape.fills;
       } else {
-        // culling quads
-        for (auto idx = 0; idx < dshape.quads.size(); idx++) {
-          auto& quad = dshape.quads[idx];
-          auto  p0   = shape.positions[quad.x];
-          auto  p1   = shape.positions[quad.y];
-          auto  p2   = shape.positions[quad.z];
-          auto  p3   = shape.positions[quad.w];
-
-          auto dir = camera_frame.z;
-          if (!orthographic) {
-            auto fcenter = (p0 + p1 + p2 + p3) / 4;
-            dir          = camera_frame.o - fcenter;
-          }
-
-          if (dot(dir, cross(p1 - p0, p2 - p0)) < 0) continue;
-          shape.quads.push_back(quad);
-          if (!dshape.fills.empty()) shape.fills.push_back(dshape.fills[idx]);
-        }
+        shape.quads = culled;
+        shape.fills = culled_fills;
       }
 
       // computing quads borders
-      auto borders = dshape.boundary ? get_boundary(shape.quads,
-                                           (int)shape.positions.size())
-                                     : get_edges(shape.quads);
+      auto borders = dshape.boundary
+                         ? get_boundary(culled, (int)shape.positions.size())
+                         : get_edges(shape.quads);
 
       shape.borders.insert(shape.borders.end(), borders.begin(), borders.end());
     }
@@ -273,10 +280,6 @@ namespace yocto {
         shape.plane_45a_norms_1.push_back(-screen_dir_45a);
         shape.plane_45b_norms_1.push_back(-screen_dir_45b);
       } else {
-        // fix for when point is behind the camera
-        if (camera_p0.z >= 0) camera_p0.z = -ray_eps;
-        if (camera_p1.z >= 0) camera_p1.z = -ray_eps;
-
         // computing the line scree-space length
         auto screen_camera_p0 = screen_space_point(camera_p0, plane_distance);
         auto screen_camera_p1 = screen_space_point(camera_p1, plane_distance);
@@ -350,10 +353,6 @@ namespace yocto {
 
         shape.border_lengths.push_back(distance(screen_p0, screen_p1));
       } else {
-        // fix for when point is behind the camera
-        if (camera_p0.z >= 0) camera_p0.z = -ray_eps;
-        if (camera_p1.z >= 0) camera_p1.z = -ray_eps;
-
         auto screen_p0 = transform_point(
             camera_frame, screen_space_point(camera_p0, plane_distance));
         auto screen_p1 = transform_point(
@@ -496,11 +495,6 @@ namespace yocto {
       xp += p_sign * distance(line_p, screen_p0);
       yp = distance(line_p, screen_p);
     } else {
-      // fix for when point is behind the camera
-      if (camera_p.z >= 0) camera_p.z = -ray_eps;
-      if (camera_p0.z >= 0) camera_p0.z = -ray_eps;
-      if (camera_p1.z >= 0) camera_p1.z = -ray_eps;
-
       auto screen_p = transform_point(
           camera_frame, screen_space_point(camera_p, plane_distance));
       auto screen_p0 = transform_point(
@@ -520,18 +514,18 @@ namespace yocto {
 
     if (period < on) return true;
 
-    auto fm = fmod(xp + phase, period);
+    auto mp = fmod(xp + phase, period);
 
-    if (material.dash_cap == dash_cap_type::square) return fm < on;
+    if (material.dash_cap == dash_cap_type::square) return mp <= on;
 
-    if (fm < r) {
-      auto x = r - fm;
-      return pow(x, 2) + pow(yp, 2) < pow(r, 2);
-    } else if (fm < on && fm > on - r) {
-      auto x = r - on + fm;
-      return pow(x, 2) + pow(yp, 2) < pow(r, 2);
+    if (mp < r) {
+      auto x = r - mp;
+      return pow(x, 2) + pow(yp, 2) <= pow(r, 2);
+    } else if (mp <= on && mp > on - r) {
+      auto x = r - on + mp;
+      return pow(x, 2) + pow(yp, 2) <= pow(r, 2);
     } else
-      return fm < on;
+      return mp <= on;
   }
 
 }  // namespace yocto
