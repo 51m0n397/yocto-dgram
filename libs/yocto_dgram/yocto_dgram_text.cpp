@@ -204,9 +204,6 @@ namespace yocto {
 
     auto plane_distance = -lens * scale / size.x;
 
-    // fix for when point is behind the camera
-    if (camera_p.z >= 0) camera_p.z = -ray_eps;
-
     auto im_w = film.x;
     auto im_h = film.y;
     if (orthographic) {
