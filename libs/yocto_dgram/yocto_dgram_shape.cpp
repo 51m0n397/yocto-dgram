@@ -150,74 +150,64 @@ namespace yocto {
 
     // triangles
     if (!dshape.triangles.empty()) {
-      auto culled = vector<vec3i>();
-
-      // culling triangles
-      for (auto& triangle : dshape.triangles) {
-        auto p0 = shape.positions[triangle.x];
-        auto p1 = shape.positions[triangle.y];
-        auto p2 = shape.positions[triangle.z];
-
-        auto dir = camera_frame.z;
-        if (!orthographic) {
-          auto fcenter = (p0 + p1 + p2) / 3;
-          dir          = camera_frame.o - fcenter;
-        }
-
-        if (dot(dir, cross(p1 - p0, p2 - p0)) > 0)
-          culled.push_back(triangle);
-      }
-
       if (!dshape.cull)
         shape.triangles = dshape.triangles;
-      else
-        shape.triangles = culled;
+      else {
+        // culling triangles
+        for (auto& triangle : dshape.triangles) {
+          auto p0 = shape.positions[triangle.x];
+          auto p1 = shape.positions[triangle.y];
+          auto p2 = shape.positions[triangle.z];
+
+          auto dir = camera_frame.z;
+          if (!orthographic) {
+            auto fcenter = (p0 + p1 + p2) / 3;
+            dir          = camera_frame.o - fcenter;
+          }
+
+          if (dot(dir, cross(p1 - p0, p2 - p0)) <= 0) continue;
+          shape.triangles.push_back(triangle);
+        }
+      }
 
       // computing triangles borders
-      auto borders = dshape.boundary
-                         ? get_boundary(culled, (int)shape.positions.size())
-                         : get_edges(shape.triangles);
+      auto borders = dshape.boundary ? get_boundary(shape.triangles,
+                                           (int)shape.positions.size())
+                                     : get_edges(shape.triangles);
 
       shape.borders.insert(shape.borders.end(), borders.begin(), borders.end());
     }
 
     // quads
     if (!dshape.quads.empty()) {
-      auto culled       = vector<vec4i>();
-      auto culled_fills = vector<vec4f>();
-
-      // culling quads
-      for (auto idx = 0; idx < dshape.quads.size(); idx++) {
-        auto& quad = dshape.quads[idx];
-        auto  p0   = shape.positions[quad.x];
-        auto  p1   = shape.positions[quad.y];
-        auto  p2   = shape.positions[quad.z];
-        auto  p3   = shape.positions[quad.w];
-
-        auto dir = camera_frame.z;
-        if (!orthographic) {
-          auto fcenter = (p0 + p1 + p2 + p3) / 4;
-          dir          = camera_frame.o - fcenter;
-        }
-
-        if (dot(dir, cross(p1 - p0, p2 - p0)) > 0) {
-          culled.push_back(quad);
-          if (!dshape.fills.empty()) culled_fills.push_back(dshape.fills[idx]);
-        }
-      }
-
       if (!dshape.cull) {
         shape.quads = dshape.quads;
         shape.fills = dshape.fills;
       } else {
-        shape.quads = culled;
-        shape.fills = culled_fills;
+        // culling quads
+        for (auto idx = 0; idx < dshape.quads.size(); idx++) {
+          auto& quad = dshape.quads[idx];
+          auto  p0   = shape.positions[quad.x];
+          auto  p1   = shape.positions[quad.y];
+          auto  p2   = shape.positions[quad.z];
+          auto  p3   = shape.positions[quad.w];
+
+          auto dir = camera_frame.z;
+          if (!orthographic) {
+            auto fcenter = (p0 + p1 + p2 + p3) / 4;
+            dir          = camera_frame.o - fcenter;
+          }
+
+          if (dot(dir, cross(p1 - p0, p2 - p0)) <= 0) continue;
+          shape.quads.push_back(quad);
+          if (!dshape.fills.empty()) shape.fills.push_back(dshape.fills[idx]);
+        }
       }
 
       // computing quads borders
-      auto borders = dshape.boundary
-                         ? get_boundary(culled, (int)shape.positions.size())
-                         : get_edges(shape.quads);
+      auto borders = dshape.boundary ? get_boundary(shape.quads,
+                                           (int)shape.positions.size())
+                                     : get_edges(shape.quads);
 
       shape.borders.insert(shape.borders.end(), borders.begin(), borders.end());
     }
