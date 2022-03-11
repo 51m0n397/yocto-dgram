@@ -5563,12 +5563,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "pi estimate!!t",
-              "spans": [
-                {
-                  "text": "pi estimate"
-                }
-              ],
+              "unprocessed": "pi estimate",
               "offset": [
                 0.0,
                 -8.0
@@ -5611,88 +5606,49 @@
           ],
           "labels": [
             {
-              "unprocessed": "1!!b",
-              "spans": [
-                {
-                  "text": "1"
-                }
-              ],
+              "unprocessed": "1",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "100!!b",
-              "spans": [
-                {
-                  "text": "100"
-                }
-              ],
+              "unprocessed": "100",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "trial!!b",
-              "spans": [
-                {
-                  "text": "trial"
-                }
-              ],
+              "unprocessed": "trial",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "pi - 0.2!!l",
-              "spans": [
-                {
-                  "text": "pi - 0.2"
-                }
-              ],
+              "unprocessed": "pi - 0.2",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             },
             {
-              "unprocessed": "pi + 0.2!!l",
-              "spans": [
-                {
-                  "text": "pi + 0.2"
-                }
-              ],
+              "unprocessed": "pi + 0.2",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             },
             {
-              "unprocessed": "pi!!l",
-              "spans": [
-                {
-                  "text": "pi"
-                }
-              ],
+              "unprocessed": "pi",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         }

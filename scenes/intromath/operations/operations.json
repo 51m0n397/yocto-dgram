@@ -171,40 +171,12 @@
           "labels": [
             {
               "name": "v_0",
-              "unprocessed": "$\\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -219,40 +191,12 @@
           "labels": [
             {
               "name": "u_0",
-              "unprocessed": "$\\mathbf{u}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{u}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -266,45 +210,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{u} + \\mathbf{v}$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " + "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{u} + \\mathbf{v}$",
               "offset": [
                 0.0,
                 -8.0
@@ -436,40 +342,12 @@
           "labels": [
             {
               "name": "v_1",
-              "unprocessed": "$\\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -483,47 +361,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$s \\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "s",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$s \\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }
@@ -651,40 +494,12 @@
           "labels": [
             {
               "name": "v_2",
-              "unprocessed": "$\\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -698,46 +513,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$- \\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": " − "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$- \\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }
@@ -910,40 +691,12 @@
           "labels": [
             {
               "name": "v_3",
-              "unprocessed": "$\\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -958,32 +711,7 @@
           "labels": [
             {
               "name": "u_1",
-              "unprocessed": "$\\mathbf{u}$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{u}$",
               "offset": [
                 0.0,
                 -8.0
@@ -1001,45 +729,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{v} - \\mathbf{u}$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " − "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v} - \\mathbf{u}$",
               "offset": [
                 0.0,
                 -8.0

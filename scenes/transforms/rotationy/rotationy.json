@@ -459,30 +459,6 @@
           "labels": [
             {
               "unprocessed": "$\\theta$",
-              "spans": [
-                {},
-                {
-                  "text": "θ"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
               "offset": [
                 3.0,
                 15.0
@@ -502,12 +478,7 @@
           "labels": [
             {
               "name": "formula",
-              "unprocessed": "$\\mathbf{F}(\\cos \\theta \\mathbf{y} + \\sin \\theta \\mathbf{z}, \\mathbf{y}, \\cos \\theta \\mathbf{y} + \\sin \\theta \\mathbf{z} , \\mathbf{t})$!!t",
-              "spans": [
-                {
-                  "text": "\\mathbf{F} = \\cos \\theta \\mathbf{y} + \\sin \\theta \\mathbf{z}, \\mathbf{y}, \\cos \\theta \\mathbf{y} + \\sin \\theta \\mathbf{z} , \\mathbf{t})"
-                }
-              ],
+              "unprocessed": "$\\mathbf{F}(\\cos \\theta \\mathbf{y} + \\sin \\theta \\mathbf{z}, \\mathbf{y}, \\cos \\theta \\mathbf{y} + \\sin \\theta \\mathbf{z} , \\mathbf{t})$",
               "offset": [
                 0.0,
                 -8.0

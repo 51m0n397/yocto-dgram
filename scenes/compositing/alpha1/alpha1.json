@@ -189,41 +189,6 @@
             {
               "name": "alpha_A_0",
               "unprocessed": "$\\alpha_A$",
-              "spans": [
-                {},
-                {
-                  "text": "α"
-                },
-                {
-                  "text": "A",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -243,53 +208,6 @@
             {
               "name": "1-alpha_A_0",
               "unprocessed": "$1 - \\alpha_A$",
-              "spans": [
-                {},
-                {
-                  "text": "1"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " − "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "α"
-                },
-                {
-                  "text": "A",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -307,32 +225,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$A$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "A",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$A$",
               "offset": [
                 0.0,
                 -8.0
@@ -458,57 +351,6 @@
           "labels": [
             {
               "unprocessed": "$\\alpha_B = 1$",
-              "spans": [
-                {},
-                {
-                  "text": "α"
-                },
-                {
-                  "text": "B",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " = ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -526,32 +368,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$B$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "B",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$B$",
               "offset": [
                 0.0,
                 -8.0
@@ -746,41 +563,6 @@
             {
               "name": "alpha_A_1",
               "unprocessed": "$\\alpha_A$",
-              "spans": [
-                {},
-                {
-                  "text": "α"
-                },
-                {
-                  "text": "A",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -800,53 +582,6 @@
             {
               "name": "1-alpha_A_1",
               "unprocessed": "$1 - \\alpha_A$",
-              "spans": [
-                {},
-                {
-                  "text": "1"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " − "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "α"
-                },
-                {
-                  "text": "A",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -864,45 +599,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$A\\:\\mathrm{over}\\:B$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "A",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "over"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "B",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$A\\:\\mathrm{over}\\:B$",
               "offset": [
                 0.0,
                 -8.0

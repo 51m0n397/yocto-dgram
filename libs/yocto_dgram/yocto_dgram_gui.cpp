@@ -505,9 +505,9 @@ namespace yocto {
 
           auto alignments = vector<string>{"left", "center", "right"};
           auto idx        = 1;
-          if (labels.alignments[selection.label].x > 0)
+          if (labels.alignments[selection.label] > 0)
             idx = 0;
-          else if (labels.alignments[selection.label].x < 0)
+          else if (labels.alignments[selection.label] < 0)
             idx = 2;
 
           if (draw_gui_combobox("alignment", idx, alignments)) {
@@ -516,11 +516,11 @@ namespace yocto {
           }
 
           if (idx == 0)
-            labels.alignments[selection.label].x = 1.0f;
+            labels.alignments[selection.label] = 1.0f;
           else if (idx == 1)
-            labels.alignments[selection.label].x = 0.0f;
+            labels.alignments[selection.label] = 0.0f;
           else
-            labels.alignments[selection.label].x = -1.0f;
+            labels.alignments[selection.label] = -1.0f;
         }
 
         end_gui_header();

@@ -190,30 +190,14 @@
           ],
           "labels": [
             {
-              "unprocessed": "*e*!!b",
-              "spans": [
-                {},
-                {
-                  "text": "e",
-                  "bold": true
-                },
-                {}
-              ],
+              "unprocessed": "*e*",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "*d*!!b",
-              "spans": [
-                {},
-                {
-                  "text": "d",
-                  "bold": true
-                },
-                {}
-              ],
+              "unprocessed": "*d*",
               "offset": [
                 0.0,
                 16.0
@@ -242,181 +226,28 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{F} \\cdot \\mathbf{p}_1$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "∙"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{F} \\cdot \\mathbf{p}_1$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             },
             {
-              "unprocessed": "$\\mathbf{F} \\cdot \\mathbf{p}_2$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "∙"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{F} \\cdot \\mathbf{p}_2$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             },
             {
-              "unprocessed": "$\\mathbf{F} \\cdot \\mathbf{p}_3$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "∙"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "3",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{F} \\cdot \\mathbf{p}_3$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -430,42 +261,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{r}(t)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "r",
-                  "bold": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "t",
-                  "italic": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{r}(t)$",
               "offset": [
                 0.0,
                 16.0
@@ -661,106 +457,14 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{F}^i \\cdot \\mathbf{e}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": "i",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": "∙",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": "e",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{F}^i \\cdot \\mathbf{e}$",
               "offset": [
                 0.0,
                 20.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{F}^i \\cdot \\mathbf{d}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": "i",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": "∙",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": "d",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{F}^i \\cdot \\mathbf{d}$",
               "offset": [
                 0.0,
                 20.0
@@ -789,142 +493,28 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{p}_1$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}_1$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             },
             {
-              "unprocessed": "$\\mathbf{p}_2$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}_2$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             },
             {
-              "unprocessed": "$\\mathbf{p}_3$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "3",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}_3$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -938,63 +528,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{F}^i \\cdot \\mathbf{r}(t)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": "i",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": "∙",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": "r",
-                  "bold": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "t",
-                  "italic": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{F}^i \\cdot \\mathbf{r}(t)$",
               "offset": [
                 0.0,
                 20.0

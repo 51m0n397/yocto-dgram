@@ -89,40 +89,12 @@
           "labels": [
             {
               "name": "p_0",
-              "unprocessed": "$\\mathbf{p}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -136,20 +108,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "points!!r",
-              "spans": [
-                {
-                  "text": "points"
-                }
-              ],
+              "unprocessed": "points",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }
@@ -292,76 +256,20 @@
           "labels": [
             {
               "name": "p_1",
-              "unprocessed": "$\\mathbf{p}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$\\mathbf{q}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "q",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{q}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -376,40 +284,12 @@
           "labels": [
             {
               "name": "v_0",
-              "unprocessed": "$\\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -423,20 +303,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "vectors!!r",
-              "spans": [
-                {
-                  "text": "vectors"
-                }
-              ],
+              "unprocessed": "vectors",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }
@@ -586,40 +458,12 @@
           "labels": [
             {
               "name": "v_1",
-              "unprocessed": "$\\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -633,40 +477,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{d}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "d",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{d}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -680,20 +496,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "directions!!r",
-              "spans": [
-                {
-                  "text": "directions"
-                }
-              ],
+              "unprocessed": "directions",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }

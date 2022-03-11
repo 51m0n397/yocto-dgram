@@ -388,132 +388,29 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{x}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{x}$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{y}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{y}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$\\mathbf{z}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{z}$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{o}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{o}$",
               "offset": [
                 0.0,
                 16.0
@@ -542,160 +439,28 @@
           ],
           "labels": [
             {
-              "unprocessed": "$p^l_x$!!tr",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "text": "x",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$p^l_x$",
               "offset": [
                 6.0,
                 -8.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$p^l_y$!!tr",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "text": "y",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$p^l_y$",
               "offset": [
                 6.0,
                 -8.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$p^l_z$!!tl",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "text": "z",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$p^l_z$",
               "offset": [
                 -6.0,
                 -8.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -709,40 +474,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{p}$!!bl",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}$",
               "offset": [
                 -6.0,
                 16.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         }

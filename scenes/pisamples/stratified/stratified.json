@@ -13244,68 +13244,36 @@
           "labels": [
             {
               "name": "samples_0",
-              "unprocessed": "samples: 1024!!r",
-              "spans": [
-                {
-                  "text": "samples: 1024"
-                }
-              ],
+              "unprocessed": "samples: 1024",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "count:   811!!r",
-              "spans": [
-                {
-                  "text": "count:   811"
-                }
-              ],
+              "unprocessed": "count:   811",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "pi:      3.167969!!r",
-              "spans": [
-                {
-                  "text": "pi:      3.167969"
-                }
-              ],
+              "unprocessed": "pi:      3.167969",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "error:   0.026376!!r",
-              "spans": [
-                {
-                  "text": "error:   0.026376"
-                }
-              ],
+              "unprocessed": "error:   0.026376",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }
@@ -13403,68 +13371,36 @@
           "labels": [
             {
               "name": "samples_1",
-              "unprocessed": "samples: 1024!!r",
-              "spans": [
-                {
-                  "text": "samples: 1024"
-                }
-              ],
+              "unprocessed": "samples: 1024",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "count:   800!!r",
-              "spans": [
-                {
-                  "text": "count:   800"
-                }
-              ],
+              "unprocessed": "count:   800",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "pi:      3.125000!!r",
-              "spans": [
-                {
-                  "text": "pi:      3.125000"
-                }
-              ],
+              "unprocessed": "pi:      3.125000",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "error:   0.016593!!r",
-              "spans": [
-                {
-                  "text": "error:   0.016593"
-                }
-              ],
+              "unprocessed": "error:   0.016593",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }

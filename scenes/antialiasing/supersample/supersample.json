@@ -1677,12 +1677,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "samples!!t",
-              "spans": [
-                {
-                  "text": "samples"
-                }
-              ],
+              "unprocessed": "samples",
               "offset": [
                 0.0,
                 -8.0
@@ -2227,12 +2222,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "reconstruction!!t",
-              "spans": [
-                {
-                  "text": "reconstruction"
-                }
-              ],
+              "unprocessed": "reconstruction",
               "offset": [
                 0.0,
                 -8.0

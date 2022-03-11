@@ -238,32 +238,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{t}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "t",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{t}$",
               "offset": [
                 0.0,
                 16.0
@@ -282,80 +257,6 @@
           "labels": [
             {
               "unprocessed": "$\\mathbf{F} = (\\mathbf{x}, \\mathbf{y}, \\mathbf{z}, \\mathbf{t})$",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " = "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": ","
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": ","
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": ","
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "t",
-                  "bold": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
               "offset": [
                 0.0,
                 4.0

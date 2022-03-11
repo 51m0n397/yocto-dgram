@@ -2367,20 +2367,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "pixel!!bl",
-              "spans": [
-                {
-                  "text": "pixel"
-                }
-              ],
+              "unprocessed": "pixel",
               "offset": [
                 -6.0,
                 16.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -2394,20 +2386,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "lens!!L",
-              "spans": [
-                {
-                  "text": "lens"
-                }
-              ],
+              "unprocessed": "lens",
               "offset": [
                 -12.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -2421,20 +2405,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "visible!!r",
-              "spans": [
-                {
-                  "text": "visible"
-                }
-              ],
+              "unprocessed": "visible",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -2448,20 +2424,13 @@
           ],
           "labels": [
             {
-              "unprocessed": "point!!r",
-              "spans": [
-                {
-                  "text": "point"
-                }
-              ],
+              "name": "point_0",
+              "unprocessed": "point",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -2475,12 +2444,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "next!!b",
-              "spans": [
-                {
-                  "text": "next"
-                }
-              ],
+              "unprocessed": "next",
               "offset": [
                 0.0,
                 16.0
@@ -2498,12 +2462,8 @@
           ],
           "labels": [
             {
-              "unprocessed": "point!!b",
-              "spans": [
-                {
-                  "text": "point"
-                }
-              ],
+              "name": "point_1",
+              "unprocessed": "point",
               "offset": [
                 0.0,
                 16.0
@@ -2521,12 +2481,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "light!!T",
-              "spans": [
-                {
-                  "text": "light"
-                }
-              ],
+              "unprocessed": "light",
               "offset": [
                 0.0,
                 -16.0
@@ -2544,20 +2499,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "film!!l",
-              "spans": [
-                {
-                  "text": "film"
-                }
-              ],
+              "unprocessed": "film",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },

@@ -314,32 +314,7 @@
           "labels": [
             {
               "name": "x1",
-              "unprocessed": "$\\mathbf{x}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{x}$",
               "offset": [
                 0.0,
                 16.0
@@ -347,69 +322,16 @@
             },
             {
               "name": "y1",
-              "unprocessed": "$\\mathbf{y}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{y}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
               "name": "z1",
-              "unprocessed": "$\\mathbf{z}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{z}$",
               "offset": [
                 0.0,
                 16.0
@@ -417,32 +339,7 @@
             },
             {
               "name": "o1",
-              "unprocessed": "$\\mathbf{o}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{o}$",
               "offset": [
                 0.0,
                 16.0
@@ -476,32 +373,7 @@
           "labels": [
             {
               "name": "x2",
-              "unprocessed": "$\\mathbf{x}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{x}$",
               "offset": [
                 0.0,
                 16.0
@@ -509,69 +381,16 @@
             },
             {
               "name": "y2",
-              "unprocessed": "$\\mathbf{y}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{y}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
               "name": "z2",
-              "unprocessed": "$\\mathbf{z}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{z}$",
               "offset": [
                 0.0,
                 16.0
@@ -579,32 +398,7 @@
             },
             {
               "name": "o2",
-              "unprocessed": "$\\mathbf{o}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{o}$",
               "offset": [
                 0.0,
                 16.0
@@ -622,62 +416,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{p}_1 \\equiv \\mathbf{p}_2$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "≡",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}_1 \\equiv \\mathbf{p}_2$",
               "offset": [
                 0.0,
                 16.0
@@ -695,89 +434,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$p^l_{1,x} \\ne p^l_{2,x}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "subscript": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "x",
-                  "italic": true,
-                  "subscript": true
-                },
-                {},
-                {
-                  "text": " "
-                },
-                {
-                  "text": "≠"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "subscript": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "x",
-                  "italic": true,
-                  "subscript": true
-                },
-                {},
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$p^l_{1,x} \\ne p^l_{2,x}$",
               "offset": [
                 0.0,
                 16.0
@@ -795,89 +452,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$p^l_{1,y} \\ne p^l_{2,y}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "subscript": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "y",
-                  "italic": true,
-                  "subscript": true
-                },
-                {},
-                {
-                  "text": " "
-                },
-                {
-                  "text": "≠"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "subscript": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "y",
-                  "italic": true,
-                  "subscript": true
-                },
-                {},
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$p^l_{1,y} \\ne p^l_{2,y}$",
               "offset": [
                 0.0,
                 16.0
@@ -895,89 +470,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$p^l_{1,z} \\ne p^l_{2,z}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "subscript": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "z",
-                  "italic": true,
-                  "subscript": true
-                },
-                {},
-                {
-                  "text": " "
-                },
-                {
-                  "text": "≠"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "p",
-                  "italic": true
-                },
-                {
-                  "text": "l",
-                  "italic": true,
-                  "superscript": true
-                },
-                {
-                  "subscript": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "z",
-                  "italic": true,
-                  "subscript": true
-                },
-                {},
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$p^l_{1,z} \\ne p^l_{2,z}$",
               "offset": [
                 0.0,
                 16.0

@@ -189,12 +189,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "valid over!!t",
-              "spans": [
-                {
-                  "text": "valid over"
-                }
-              ],
+              "unprocessed": "valid over",
               "offset": [
                 0.0,
                 -8.0
@@ -570,12 +565,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "invalid over!!t",
-              "spans": [
-                {
-                  "text": "invalid over"
-                }
-              ],
+              "unprocessed": "invalid over",
               "offset": [
                 0.0,
                 -8.0

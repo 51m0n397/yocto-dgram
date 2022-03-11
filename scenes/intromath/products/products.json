@@ -398,40 +398,12 @@
           "labels": [
             {
               "name": "v_0",
-              "unprocessed": "$\\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -446,40 +418,12 @@
           "labels": [
             {
               "name": "u_0",
-              "unprocessed": "$\\mathbf{u}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{u}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -493,20 +437,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "θ!!r",
-              "spans": [
-                {
-                  "text": "θ"
-                }
-              ],
+              "unprocessed": "θ",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -521,88 +457,6 @@
           "labels": [
             {
               "unprocessed": "$\\mathbf{u} \\cdot \\mathbf{v} = |\\mathbf{u}| |\\mathbf{v}| \\cos \\theta$",
-              "spans": [
-                {},
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "∙"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " = "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "cos"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "θ"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -1045,40 +899,12 @@
           "labels": [
             {
               "name": "v_1",
-              "unprocessed": "$\\mathbf{v}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{v}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -1093,40 +919,12 @@
           "labels": [
             {
               "name": "u_1",
-              "unprocessed": "$\\mathbf{u}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{u}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -1141,45 +939,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{u} \\times \\mathbf{v}$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "×"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{u} \\times \\mathbf{v}$",
               "offset": [
                 0.0,
                 -8.0
@@ -1198,94 +958,6 @@
           "labels": [
             {
               "unprocessed": "$|\\mathbf{u} \\times \\mathbf{v}| = |\\mathbf{u}| |\\mathbf{v}| \\sin \\theta$",
-              "spans": [
-                {},
-                {
-                  "text": "|"
-                },
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "×"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " = "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": "u",
-                  "bold": true
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": "v",
-                  "bold": true
-                },
-                {
-                  "text": "|"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "sin"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "θ"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
               "offset": [
                 0.0,
                 4.0

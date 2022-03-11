@@ -377,132 +377,29 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{x}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{x}$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{y}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{y}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$\\mathbf{z}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{z}$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{o}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{o}$",
               "offset": [
                 0.0,
                 16.0
@@ -535,172 +432,29 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{x}_1$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{x}_1$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{y}_1$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{y}_1$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$\\mathbf{z}_1$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{z}_1$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{o}_1$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{o}_1$",
               "offset": [
                 0.0,
                 16.0
@@ -718,126 +472,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{F}_1 = (\\mathbf{x}_1, \\mathbf{y}_1, \\mathbf{z}_1, \\mathbf{o}_1)$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " = ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "(",
-                  "subscript": true
-                },
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{F}_1 = (\\mathbf{x}_1, \\mathbf{y}_1, \\mathbf{z}_1, \\mathbf{o}_1)$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -866,172 +506,29 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{x}_2$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{x}_2$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{y}_2$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{y}_2$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$\\mathbf{z}_2$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{z}_2$",
               "offset": [
                 0.0,
                 12.0
               ]
             },
             {
-              "unprocessed": "$\\mathbf{o}_2$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{o}_2$",
               "offset": [
                 0.0,
                 16.0
@@ -1049,126 +546,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{F}_2 = (\\mathbf{x}_2, \\mathbf{y}_2, \\mathbf{z}_2, \\mathbf{o}_2)$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " = ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "(",
-                  "subscript": true
-                },
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{F}_2 = (\\mathbf{x}_2, \\mathbf{y}_2, \\mathbf{z}_2, \\mathbf{o}_2)$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         }

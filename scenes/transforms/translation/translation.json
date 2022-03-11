@@ -235,40 +235,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{t}$!!tr",
-              "spans": [
-                {},
-                {
-                  "text": "t",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{t}$",
               "offset": [
                 6.0,
                 -8.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -283,72 +255,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{F}(\\mathbf{x}, \\mathbf{y}, \\mathbf{z}, \\mathbf{t})$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "bold": true
-                },
-                {
-                  "text": ","
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "y",
-                  "bold": true
-                },
-                {
-                  "text": ","
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "z",
-                  "bold": true
-                },
-                {
-                  "text": ","
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "t",
-                  "bold": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{F}(\\mathbf{x}, \\mathbf{y}, \\mathbf{z}, \\mathbf{t})$",
               "offset": [
                 0.0,
                 -8.0

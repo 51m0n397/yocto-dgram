@@ -336,11 +336,6 @@
           "labels": [
             {
               "unprocessed": "image coordinates",
-              "spans": [
-                {
-                  "text": "image coordinates"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -358,40 +353,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$i$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "i",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$i$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -405,40 +372,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$j$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "j",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$j$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -488,11 +427,6 @@
           "labels": [
             {
               "unprocessed": "(0, 0)",
-              "spans": [
-                {
-                  "text": "(0, 0)"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -500,11 +434,6 @@
             },
             {
               "unprocessed": "(1, 0)",
-              "spans": [
-                {
-                  "text": "(1, 0)"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -512,11 +441,6 @@
             },
             {
               "unprocessed": "(2, 0)",
-              "spans": [
-                {
-                  "text": "(2, 0)"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -524,11 +448,6 @@
             },
             {
               "unprocessed": "(3, 0)",
-              "spans": [
-                {
-                  "text": "(3, 0)"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -536,11 +455,6 @@
             },
             {
               "unprocessed": "(0, 1)",
-              "spans": [
-                {
-                  "text": "(0, 1)"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -548,11 +462,6 @@
             },
             {
               "unprocessed": "(1, 1)",
-              "spans": [
-                {
-                  "text": "(1, 1)"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -560,11 +469,6 @@
             },
             {
               "unprocessed": "(2, 1)",
-              "spans": [
-                {
-                  "text": "(2, 1)"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -572,11 +476,6 @@
             },
             {
               "unprocessed": "(3, 1)",
-              "spans": [
-                {
-                  "text": "(3, 1)"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -840,11 +739,6 @@
           "labels": [
             {
               "unprocessed": "memory layout",
-              "spans": [
-                {
-                  "text": "memory layout"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -898,11 +792,6 @@
           "labels": [
             {
               "unprocessed": "c[0]",
-              "spans": [
-                {
-                  "text": "c[0]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -910,11 +799,6 @@
             },
             {
               "unprocessed": "c[1]",
-              "spans": [
-                {
-                  "text": "c[1]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -922,11 +806,6 @@
             },
             {
               "unprocessed": "c[2]",
-              "spans": [
-                {
-                  "text": "c[2]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -934,11 +813,6 @@
             },
             {
               "unprocessed": "c[3]",
-              "spans": [
-                {
-                  "text": "c[3]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -946,11 +820,6 @@
             },
             {
               "unprocessed": "c[4]",
-              "spans": [
-                {
-                  "text": "c[4]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -958,11 +827,6 @@
             },
             {
               "unprocessed": "c[5]",
-              "spans": [
-                {
-                  "text": "c[5]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -970,11 +834,6 @@
             },
             {
               "unprocessed": "c[6]",
-              "spans": [
-                {
-                  "text": "c[6]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -982,11 +841,6 @@
             },
             {
               "unprocessed": "c[7]",
-              "spans": [
-                {
-                  "text": "c[7]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0

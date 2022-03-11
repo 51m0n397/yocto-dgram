@@ -185,14 +185,14 @@ namespace yocto {
     auto& color    = material.stroke;
 
     if (rerender) {
-      text.image = make_text_image(label.texts[j], label.alignments[j].x, color,
+      text.image = make_text_image(label.texts[j], label.alignments[j], color,
           width, height, width / size.x);
       label.images[j] = text.image;
     } else {
       if (!label.images[j].pixels.empty() && label.images[j].width == width * 2)
         text.image = label.images[j];
       else
-        text.image = make_placeholder(label.alignments[j].x, width, height);
+        text.image = make_placeholder(label.alignments[j], width, height);
     }
 
     // Computing text positions
@@ -225,12 +225,12 @@ namespace yocto {
 
     float align_x0, align_x1, align_x2, align_x3;
 
-    if (label.alignments[j].x > 0) {
+    if (label.alignments[j] > 0) {
       align_x0 = im_w;
       align_x1 = 0.0f;
       align_x2 = 0.0f;
       align_x3 = im_w;
-    } else if (label.alignments[j].x < 0) {
+    } else if (label.alignments[j] < 0) {
       align_x0 = 0.0f;
       align_x1 = -im_w;
       align_x2 = -im_w;
@@ -302,7 +302,7 @@ namespace yocto {
         for (auto j = 0; j < label.texts.size(); j++) {
           auto& text_image = images.images.emplace_back();
           text_image.image = make_text_image(label.texts[j],
-              label.alignments[j].x, color, width, height, width / size.x);
+              label.alignments[j], color, width, height, width / size.x);
           text_image.name  = label.names[j];
         }
       }

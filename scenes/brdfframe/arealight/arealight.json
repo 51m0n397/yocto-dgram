@@ -1149,40 +1149,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{p}$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -1196,40 +1168,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{o}$!!bl",
-              "spans": [
-                {},
-                {
-                  "text": "o",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{o}$",
               "offset": [
                 -6.0,
                 16.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -1243,40 +1187,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{n}$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "n",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{n}$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -1292,40 +1208,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{e}$!!L",
-              "spans": [
-                {},
-                {
-                  "text": "e",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{e}$",
               "offset": [
                 -12.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -1339,62 +1227,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{i} = \\mathrm{random}(\\mathbf{n})$!!br",
-              "spans": [
-                {},
-                {
-                  "text": "i",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " = "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "random"
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "n",
-                  "bold": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{i} = \\mathrm{random}(\\mathbf{n})$",
               "offset": [
                 6.0,
                 16.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -1409,40 +1247,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{q}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "q",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{q}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -1456,72 +1266,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{q} = \\mathrm{raytrace}(\\mathbf{p}, \\mathbf{i})$!!R",
-              "spans": [
-                {},
-                {
-                  "text": "q",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " = "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "raytrace"
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": ","
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "i",
-                  "bold": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{q} = \\mathrm{raytrace}(\\mathbf{p}, \\mathbf{i})$",
               "offset": [
                 12.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },

@@ -267,42 +267,6 @@
             {
               "name": "zm_0",
               "unprocessed": "$z_M$",
-              "spans": [
-                {},
-                {
-                  "text": "z",
-                  "italic": true
-                },
-                {
-                  "text": "M",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -323,42 +287,6 @@
             {
               "name": "zm_1",
               "unprocessed": "$z_m$",
-              "spans": [
-                {},
-                {
-                  "text": "z",
-                  "italic": true
-                },
-                {
-                  "text": "m",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -631,42 +559,6 @@
             {
               "name": "ym_0",
               "unprocessed": "$y_m$",
-              "spans": [
-                {},
-                {
-                  "text": "y",
-                  "italic": true
-                },
-                {
-                  "text": "m",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 12.0,
                 4.0
@@ -687,42 +579,6 @@
             {
               "name": "ym_1",
               "unprocessed": "$y_M$",
-              "spans": [
-                {},
-                {
-                  "text": "y",
-                  "italic": true
-                },
-                {
-                  "text": "M",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 18.0
@@ -995,42 +851,6 @@
             {
               "name": "xm_0",
               "unprocessed": "$x_m$",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "m",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -1051,42 +871,6 @@
             {
               "name": "xm_1",
               "unprocessed": "$x_M$",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "M",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
               "offset": [
                 0.0,
                 4.0

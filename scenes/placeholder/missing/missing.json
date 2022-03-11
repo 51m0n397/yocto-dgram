@@ -85,11 +85,6 @@
           "labels": [
             {
               "unprocessed": "missing",
-              "spans": [
-                {
-                  "text": "missing"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0

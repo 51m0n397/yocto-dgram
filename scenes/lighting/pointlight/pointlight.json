@@ -17042,31 +17042,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$1$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "1"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$1$",
               "offset": [
                 0.0,
                 -8.0
@@ -17085,40 +17061,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{I}$!!lb",
-              "spans": [
-                {},
-                {
-                  "text": "I",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{I}$",
               "offset": [
                 -6.0,
                 16.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         }
@@ -34162,32 +34110,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$r$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "r",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$r$",
               "offset": [
                 0.0,
                 -8.0
@@ -34206,57 +34129,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{I}/r^2$!!lb",
-              "spans": [
-                {},
-                {
-                  "text": "I",
-                  "bold": true
-                },
-                {
-                  "text": "/"
-                },
-                {
-                  "text": "r",
-                  "italic": true
-                },
-                {
-                  "text": "2",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                },
-                {
-                  "text": " ",
-                  "superscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{I}/r^2$",
               "offset": [
                 -6.0,
                 16.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         }

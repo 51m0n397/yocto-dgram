@@ -307,30 +307,14 @@
           ],
           "labels": [
             {
-              "unprocessed": "*e*!!b",
-              "spans": [
-                {},
-                {
-                  "text": "e",
-                  "bold": true
-                },
-                {}
-              ],
+              "unprocessed": "*e*",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "*d*!!b",
-              "spans": [
-                {},
-                {
-                  "text": "d",
-                  "bold": true
-                },
-                {}
-              ],
+              "unprocessed": "*d*",
               "offset": [
                 0.0,
                 16.0
@@ -350,86 +334,13 @@
           ],
           "labels": [
             {
-              "unprocessed": "$(x_m,y_m,z_m)$!!bl",
-              "spans": [
-                {},
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "m",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "y",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": "m",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "z",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": "m",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "name": "xm_0",
+              "unprocessed": "$(x_m,y_m,z_m)$",
               "offset": [
                 -6.0,
                 16.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -443,86 +354,13 @@
           ],
           "labels": [
             {
-              "unprocessed": "$(x_M,y_M,z_M)$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "M",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "y",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": "M",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ",",
-                  "subscript": true
-                },
-                {
-                  "text": "z",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": "M",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "name": "xm_1",
+              "unprocessed": "$(x_M,y_M,z_M)$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -536,42 +374,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{r}(t)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "r",
-                  "bold": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "t",
-                  "italic": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{r}(t)$",
               "offset": [
                 0.0,
                 16.0

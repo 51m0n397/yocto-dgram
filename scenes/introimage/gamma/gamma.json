@@ -510,11 +510,6 @@
           "labels": [
             {
               "unprocessed": "approximately-equal steps in sRGB encoding",
-              "spans": [
-                {
-                  "text": "approximately-equal steps in sRGB encoding"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -533,11 +528,6 @@
           "labels": [
             {
               "unprocessed": "approximately-equal steps in linear encoding",
-              "spans": [
-                {
-                  "text": "approximately-equal steps in linear encoding"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0

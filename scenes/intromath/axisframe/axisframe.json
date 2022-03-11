@@ -235,40 +235,12 @@
           "labels": [
             {
               "name": "a_0",
-              "unprocessed": "$\\mathbf{a}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "a",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{a}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }
@@ -536,40 +508,12 @@
           "labels": [
             {
               "name": "a_1",
-              "unprocessed": "$\\mathbf{a}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "a",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{a}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -583,40 +527,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{e}$!!tl",
-              "spans": [
-                {},
-                {
-                  "text": "e",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{e}$",
               "offset": [
                 -6.0,
                 -8.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         }
@@ -1102,31 +1018,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\theta$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "θ"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\theta$",
               "offset": [
                 0.0,
                 -8.0
@@ -1145,40 +1037,12 @@
           "labels": [
             {
               "name": "a_2",
-              "unprocessed": "$\\mathbf{a}$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "a",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{a}$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }
@@ -1476,40 +1340,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{F}$!!br",
-              "spans": [
-                {},
-                {
-                  "text": "F",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{F}$",
               "offset": [
                 6.0,
                 16.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -1523,32 +1359,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{t}$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "t",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{t}$",
               "offset": [
                 0.0,
                 16.0

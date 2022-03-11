@@ -2987,20 +2987,13 @@
           ],
           "labels": [
             {
-              "unprocessed": "surface!!r",
-              "spans": [
-                {
-                  "text": "surface"
-                }
-              ],
+              "name": "surface_0",
+              "unprocessed": "surface",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -3014,12 +3007,8 @@
           ],
           "labels": [
             {
-              "unprocessed": "surface!!b",
-              "spans": [
-                {
-                  "text": "surface"
-                }
-              ],
+              "name": "surface_1",
+              "unprocessed": "surface",
               "offset": [
                 0.0,
                 16.0
@@ -3037,20 +3026,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "film!!bl",
-              "spans": [
-                {
-                  "text": "film"
-                }
-              ],
+              "unprocessed": "film",
               "offset": [
                 -6.0,
                 16.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -3064,20 +3045,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "lens!!L",
-              "spans": [
-                {
-                  "text": "lens"
-                }
-              ],
+              "unprocessed": "lens",
               "offset": [
                 -12.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         },
@@ -3091,12 +3064,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "light!!T",
-              "spans": [
-                {
-                  "text": "light"
-                }
-              ],
+              "unprocessed": "light",
               "offset": [
                 0.0,
                 -16.0

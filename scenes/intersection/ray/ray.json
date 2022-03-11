@@ -195,30 +195,14 @@
           ],
           "labels": [
             {
-              "unprocessed": "*e*!!b",
-              "spans": [
-                {},
-                {
-                  "text": "e",
-                  "bold": true
-                },
-                {}
-              ],
+              "unprocessed": "*e*",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "*d*!!b",
-              "spans": [
-                {},
-                {
-                  "text": "d",
-                  "bold": true
-                },
-                {}
-              ],
+              "unprocessed": "*d*",
               "offset": [
                 0.0,
                 16.0
@@ -237,83 +221,12 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{r}(t) = \\mathbf{e} + t \\mathbf{d}$!!br",
-              "spans": [
-                {},
-                {
-                  "text": "r",
-                  "bold": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "t",
-                  "italic": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " = "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "e",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " + "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "t",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "d",
-                  "bold": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{r}(t) = \\mathbf{e} + t \\mathbf{d}$",
               "offset": [
                 6.0,
                 16.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         },
@@ -327,32 +240,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$t$!!t",
-              "spans": [
-                {},
-                {
-                  "text": "t",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$t$",
               "offset": [
                 0.0,
                 -8.0

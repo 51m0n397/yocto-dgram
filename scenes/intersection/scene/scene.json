@@ -267,30 +267,14 @@
           ],
           "labels": [
             {
-              "unprocessed": "*e*!!b",
-              "spans": [
-                {},
-                {
-                  "text": "e",
-                  "bold": true
-                },
-                {}
-              ],
+              "unprocessed": "*e*",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "*d*!!b",
-              "spans": [
-                {},
-                {
-                  "text": "d",
-                  "bold": true
-                },
-                {}
-              ],
+              "unprocessed": "*d*",
               "offset": [
                 0.0,
                 16.0
@@ -311,53 +295,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{p}(t_1)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "t",
-                  "italic": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}(t_1)$",
               "offset": [
                 0.0,
                 16.0
@@ -375,53 +313,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{p}(t_2)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "t",
-                  "italic": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}(t_2)$",
               "offset": [
                 0.0,
                 16.0

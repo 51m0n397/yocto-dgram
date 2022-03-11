@@ -963,55 +963,6 @@
             {
               "name": "int f(x)dx_0",
               "unprocessed": "$\\int f(x)dx$",
-              "spans": [
-                {},
-                {
-                  "text": "∫"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": "d",
-                  "italic": true
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -1034,64 +985,14 @@
           ],
           "labels": [
             {
-              "unprocessed": "$a$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "a",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$a$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$b$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "b",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$b$",
               "offset": [
                 0.0,
                 16.0
@@ -1888,396 +1789,60 @@
           ],
           "labels": [
             {
-              "unprocessed": "$f(x_0)$!!tr",
-              "spans": [
-                {},
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "0",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$f(x_0)$",
               "offset": [
                 6.0,
                 -8.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$x_0$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "0",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$x_0$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$f(x_1)$!!tr",
-              "spans": [
-                {},
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$f(x_1)$",
               "offset": [
                 6.0,
                 -8.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$x_1$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$x_1$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$f(x_2)$!!tr",
-              "spans": [
-                {},
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$f(x_2)$",
               "offset": [
                 6.0,
                 -8.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$x_2$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$x_2$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$f(x_3)$!!tr",
-              "spans": [
-                {},
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "3",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$f(x_3)$",
               "offset": [
                 6.0,
                 -8.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$x_3$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "3",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$x_3$",
               "offset": [
                 0.0,
                 16.0
@@ -3375,56 +2940,7 @@
           "labels": [
             {
               "name": "int f(x)dx_1",
-              "unprocessed": "$\\int f(x)dx$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "∫"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": ")"
-                },
-                {
-                  "text": "d",
-                  "italic": true
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\int f(x)dx$",
               "offset": [
                 0.0,
                 16.0
@@ -3442,37 +2958,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$= ($!!b",
-              "spans": [
-                {},
-                {
-                  "text": " = "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$= ($",
               "offset": [
                 0.0,
                 16.0
@@ -3526,75 +3012,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "$f(x_0)(b-a)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "0",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": "(",
-                  "subscript": true
-                },
-                {
-                  "text": "b",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " − ",
-                  "subscript": true
-                },
-                {
-                  "text": "a",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$f(x_0)(b-a)$",
               "offset": [
                 0.0,
                 16.0
@@ -3602,106 +3020,14 @@
             },
             {
               "name": "plus_0",
-              "unprocessed": "$+$!!b",
-              "spans": [
-                {},
-                {
-                  "text": " + "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$+$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$f(x_1)(b-a)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "1",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": "(",
-                  "subscript": true
-                },
-                {
-                  "text": "b",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " − ",
-                  "subscript": true
-                },
-                {
-                  "text": "a",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$f(x_1)(b-a)$",
               "offset": [
                 0.0,
                 16.0
@@ -3709,106 +3035,14 @@
             },
             {
               "name": "plus_1",
-              "unprocessed": "$+$!!b",
-              "spans": [
-                {},
-                {
-                  "text": " + "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$+$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$f(x_2)(b-a)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "2",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": "(",
-                  "subscript": true
-                },
-                {
-                  "text": "b",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " − ",
-                  "subscript": true
-                },
-                {
-                  "text": "a",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$f(x_2)(b-a)$",
               "offset": [
                 0.0,
                 16.0
@@ -3816,143 +3050,21 @@
             },
             {
               "name": "plus_2",
-              "unprocessed": "$+$!!b",
-              "spans": [
-                {},
-                {
-                  "text": " + "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$+$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$f(x_3)(b-a)$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "f",
-                  "italic": true
-                },
-                {
-                  "text": "("
-                },
-                {
-                  "text": "x",
-                  "italic": true
-                },
-                {
-                  "text": "3",
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": "(",
-                  "subscript": true
-                },
-                {
-                  "text": "b",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": " − ",
-                  "subscript": true
-                },
-                {
-                  "text": "a",
-                  "italic": true,
-                  "subscript": true
-                },
-                {
-                  "text": ")",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                },
-                {
-                  "text": " ",
-                  "subscript": true
-                }
-              ],
+              "unprocessed": "$f(x_3)(b-a)$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$)/4$!!b",
-              "spans": [
-                {},
-                {
-                  "text": ")"
-                },
-                {
-                  "text": "/"
-                },
-                {
-                  "text": "4"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$)/4$",
               "offset": [
                 0.0,
                 16.0

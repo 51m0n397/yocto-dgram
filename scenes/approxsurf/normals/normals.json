@@ -1005,24 +1005,14 @@
           ],
           "labels": [
             {
-              "unprocessed": "smooth!!t",
-              "spans": [
-                {
-                  "text": "smooth"
-                }
-              ],
+              "unprocessed": "smooth",
               "offset": [
                 0.0,
                 -8.0
               ]
             },
             {
-              "unprocessed": "surface!!b",
-              "spans": [
-                {
-                  "text": "surface"
-                }
-              ],
+              "unprocessed": "surface",
               "offset": [
                 0.0,
                 16.0
@@ -2675,12 +2665,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "face!!t",
-              "spans": [
-                {
-                  "text": "face"
-                }
-              ],
+              "unprocessed": "face",
               "offset": [
                 0.0,
                 -8.0
@@ -2688,12 +2673,7 @@
             },
             {
               "name": "normals0",
-              "unprocessed": "normals!!b",
-              "spans": [
-                {
-                  "text": "normals"
-                }
-              ],
+              "unprocessed": "normals",
               "offset": [
                 0.0,
                 16.0
@@ -4134,12 +4114,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "vertex!!t",
-              "spans": [
-                {
-                  "text": "vertex"
-                }
-              ],
+              "unprocessed": "vertex",
               "offset": [
                 0.0,
                 -8.0
@@ -4147,12 +4122,7 @@
             },
             {
               "name": "normals1",
-              "unprocessed": "normals!!b",
-              "spans": [
-                {
-                  "text": "normals"
-                }
-              ],
+              "unprocessed": "normals",
               "offset": [
                 0.0,
                 16.0

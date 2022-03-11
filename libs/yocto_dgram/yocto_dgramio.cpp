@@ -342,10 +342,9 @@ namespace yocto {
                   if (text != "") {
                     label.texts.emplace_back(text);
                     auto& offset    = label.offsets.emplace_back(vec2f{0, 0});
-                    auto& alignment = label.alignments.emplace_back(
-                        vec2f{0, 0});
-                    auto& image = label.images.emplace_back();
-                    auto& name  = label.names.emplace_back(escape_string(text));
+                    auto& alignment = label.alignments.emplace_back(0.0f);
+                    auto& image     = label.images.emplace_back();
+                    auto& name = label.names.emplace_back(escape_string(text));
 
                     get_opt(elem, "offset", offset);
                     get_opt(elem, "alignment", alignment);

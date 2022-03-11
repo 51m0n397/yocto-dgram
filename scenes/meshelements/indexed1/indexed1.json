@@ -178,229 +178,44 @@
           ],
           "labels": [
             {
-              "unprocessed": "$\\mathbf{p}[0]$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "["
-                },
-                {
-                  "text": "0"
-                },
-                {
-                  "text": "]"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}[0]$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
-            },
+              "alignment": 1.0
+            },         
             {
-              "unprocessed": "$\\mathbf{p}[1]$!!tr",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "["
-                },
-                {
-                  "text": "1"
-                },
-                {
-                  "text": "]"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}[1]$",
               "offset": [
                 6.0,
                 -8.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             },
             {
-              "unprocessed": "$\\mathbf{p}[2]$!!l",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "["
-                },
-                {
-                  "text": "2"
-                },
-                {
-                  "text": "]"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}[2]$",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
-            },
+              "alignment": 1.0
+            },       
             {
-              "unprocessed": "$\\mathbf{p}[3]$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "["
-                },
-                {
-                  "text": "3"
-                },
-                {
-                  "text": "]"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}[3]$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
-            },
+              "alignment": -1.0
+            },     
             {
-              "unprocessed": "$\\mathbf{p}[4]$!!r",
-              "spans": [
-                {},
-                {
-                  "text": "p",
-                  "bold": true
-                },
-                {
-                  "text": "["
-                },
-                {
-                  "text": "4"
-                },
-                {
-                  "text": "]"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\mathbf{p}[4]$",
               "offset": [
                 6.0,
                 4.0
               ],
-              "alignment": [
-                -1.0,
-                0.0
-              ]
+              "alignment": -1.0
             }
           ]
         }
@@ -474,11 +289,6 @@
           "labels": [
             {
               "unprocessed": "triangles[0] = [0,1,2]",
-              "spans": [
-                {
-                  "text": "triangles[0] = [0,1,2]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -486,11 +296,6 @@
             },
             {
               "unprocessed": "triangles[1] = [2,1,3]",
-              "spans": [
-                {
-                  "text": "triangles[1] = [2,1,3]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0
@@ -498,11 +303,6 @@
             },
             {
               "unprocessed": "triangles[2] = [3,1,4]",
-              "spans": [
-                {
-                  "text": "triangles[2] = [3,1,4]"
-                }
-              ],
               "offset": [
                 0.0,
                 4.0

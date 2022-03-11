@@ -1923,12 +1923,7 @@
           ],
           "labels": [
             {
-              "unprocessed": "conductor Fresnel!!t",
-              "spans": [
-                {
-                  "text": "conductor Fresnel"
-                }
-              ],
+              "unprocessed": "conductor Fresnel",
               "offset": [
                 0.0,
                 -8.0
@@ -1961,85 +1956,36 @@
           ],
           "labels": [
             {
-              "unprocessed": "0!!b",
-              "spans": [
-                {
-                  "text": "0"
-                }
-              ],
+              "name": "0_0",
+              "unprocessed": "0",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "$\\pi/2$!!b",
-              "spans": [
-                {},
-                {
-                  "text": "π"
-                },
-                {
-                  "text": "/"
-                },
-                {
-                  "text": "2"
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                },
-                {
-                  "text": " "
-                }
-              ],
+              "unprocessed": "$\\pi/2$",
               "offset": [
                 0.0,
                 16.0
               ]
             },
             {
-              "unprocessed": "0!!l",
-              "spans": [
-                {
-                  "text": "0"
-                }
-              ],
+              "name": "0_1",
+              "unprocessed": "0",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             },
             {
-              "unprocessed": "1!!l",
-              "spans": [
-                {
-                  "text": "1"
-                }
-              ],
+              "unprocessed": "1",
               "offset": [
                 -6.0,
                 4.0
               ],
-              "alignment": [
-                1.0,
-                0.0
-              ]
+              "alignment": 1.0
             }
           ]
         }

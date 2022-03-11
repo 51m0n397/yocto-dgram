@@ -87,12 +87,9 @@ var service = server.listen(port, function (request, response) {
 
       var color =
         "color: rgba(" +
-        request.post.r +
-        "," +
-        request.post.g +
-        "," +
-        request.post.b +
-        "," +
+        request.post.r + "," +
+        request.post.g + "," +
+        request.post.b + "," +
         request.post.a +
         ")";
 
@@ -139,7 +136,7 @@ var service = server.listen(port, function (request, response) {
               throwOnError: false,
             });
           },
-          text.indexOf("!!") > 0 ? text.slice(0, text.indexOf("!!")) : text,
+          text,
           page.viewportSize.width,
           style
         );
