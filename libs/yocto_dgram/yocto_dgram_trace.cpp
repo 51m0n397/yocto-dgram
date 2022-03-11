@@ -204,7 +204,7 @@ namespace yocto {
     for (auto& intersection : intersections.intersections) {
       hit            = true;
       auto color     = eval_material(scene, shapes, intersection);
-      auto rgb_color = rgba_to_rgb(color) * dot(intersection.normal, -ray.d);
+      auto rgb_color = rgba_to_rgb(color) * abs(dot(intersection.normal, ray.d));
       color.x        = rgb_color.x;
       color.y        = rgb_color.y;
       color.z        = rgb_color.z;
