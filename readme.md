@@ -9,7 +9,11 @@ mkdir build; cd build; cmake ..; cmake --build .
 
 ## Usage
 
-First run the text rendering server using the right `phantomjs` executable for your OS. 
+To render o view a diagram you can use the `dgram` executable in `bin` with the commands `view` or `render`.
+
+For diagrams that contain text labels you first need to render to textures said labels. Once rendered the first time they will be cached on disk.
+
+To render the labes first run the text rendering server using the right `phantomjs` executable for your OS. 
 
 You can find the executables for each OS in the respective folder inside the `text_server` folder. 
 
@@ -21,4 +25,4 @@ For example for Mac OS you need to run the command:
 ./mac/phantomjs server.js
 ```
 
-Once the server is running, you can run the `dgram` executable in `bin`.
+Then you can render the labels using the `dgram` executable with the command `render_text`.
